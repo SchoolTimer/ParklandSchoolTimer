@@ -8,9 +8,9 @@ to this section's matching END comment to see page-specific styles.
 ******************************************************************************/
 /* Our default values set as CSS variables */
 :root {
-  --color-bg: #69F7BE;
-  --color-text-main: #000000;
-  --color-primary: #FFFF00;
+  --color-bg: #ff002b;
+  --color-text-main: #e3e3e3;
+  --color-primary: #e3e3e3;
   --wrapper-height: 87vh;
   --image-max-width: 300px;
   --image-margin: 3rem;
@@ -123,7 +123,7 @@ body {
 
 /* Very light scaling for our illustration */
 .title {
-  color: #2800FF;
+  color: #ffffff;
   font-family: HK Grotesk;
   font-style: normal;
   font-weight: bold;
@@ -137,4 +137,13 @@ body {
   max-width: 100%;
   max-height: var(--image-max-width);
   margin-top: var(--image-margin);
+}
+
+
+h1 {
+  color:white
+}
+
+#link {
+  color:#ffadad;
 }
