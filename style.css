@@ -144,6 +144,16 @@ h1 {
   color:white
 }
 
-#link {
-  color:#ffadad;
+
+
+#bottom {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  bottom:10%;
+  transform: translate(-50%, 0%);
+}
+
+.thaLink {
+  color:
 }
