@@ -155,5 +155,7 @@ h1 {
 }
 
 .thaLink {
-  color:
+  color:#ffadad;
+  cursor:pointer;
+  text-decoration:underline;
 }
