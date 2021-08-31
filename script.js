@@ -1,3 +1,16 @@
+function openMessagePanel() {
+  document.getElementById('messagePanel').style.left = '50%';
+  document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  uisound();
+}
+
+function closeMessagePanel() {
+  document.getElementById('messagePanel').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  uisound();
+}
+
+
 var currentScheduleSelected = 'A';
 var numberOfPeriods = 9;
 

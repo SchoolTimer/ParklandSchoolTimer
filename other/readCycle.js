@@ -1,4 +1,4 @@
-function readJsonData() {
+/*function readJsonData() {
   fetch("https://school-timer-design.vercel.app/cycle.json", { cache: "reload" })
     .then(response => response.json())
     .then(data => {
@@ -18,3 +18,4 @@ function readJsonData() {
 }
 
 readJsonData();
+*/

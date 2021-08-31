@@ -83,6 +83,19 @@
 
   </div>
 
+   <div class="popup" id="messagePanel">
+     <div class="x" onclick="closeMessagePanel()">&#215;</div>
+     <h1 class="popupheader">Announcement</h1>
+    <hr>
+    <p>
+      Hey everyone, sorry for all of the problems with School Timer recently. I
+      just moved into college and I thought I had fixed all the issues before
+      I left but I wasn't able to test it on the school WiFi. School WiFi is funny like that sometimes with all the blocking features. <br> <br> Anyway, I will try to have School Timer back and running at <u>schooltimer.net</u> hopefully within the next month with the cycle day tracking feature. For the time being, you will find it here. <br> <br>If you have
+      any more problems please email me at luke@schooltimer.net <br> <br>
+      -Luke Gutman
+      </p>
+    </div>
+
   <div class="popup" id="moreStats">
     <div class="x" onclick="closeStatsPanel()">&#215;</div>
     <h1 class="popupheader">More Stuff</h1>
@@ -201,7 +214,7 @@
       </div>
       <div class="sidebarSquare" id="settingsDiv">
         <center>
-          <button class="shadows" onclick="window.location.href='https://schooltimer.net/app/'">Beta App</button>
+          <button class="shadows" onclick="openMessagePanel();">Read This </button>
           <button class="rightButtons shadows" onclick="openColor();">Color Picker</button>
           <button class="shadows" onclick="openStatsPanel();">More Stuff</button>
           <button class="rightButtons shadows" id="weather" onclick="openStuffPanel();"></button><i id="weather-icon"></i>
