@@ -1,3 +1,5 @@
+openMessagePanel();
+
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
   document.getElementById('everythingElse').style.filter = 'blur(2px)';
