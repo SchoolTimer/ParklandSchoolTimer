@@ -1,40 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>School Timer</title>
+<html>
 
-    <!-- meta tags for SEO and social sharing -->
-    <link rel="canonical" href="https://glitch-hello-website.glitch.me/" />
-    <meta name="description" content="A simple website, built with Glitch. Remix it to get your own." />
-    <meta name="robots" content="index,follow" />
-    <meta property="og:title" content="Hello World!" />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://glitch-hello-website.glitch.me/" />
-    <meta property="og:description" content="A simple website, built with Glitch. Remix it to get your own." />
-    <meta property="og:image" content="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2Fhello-website-social.png?v=1616712748147" />
-    <meta name="twitter:card" content="summary" />
-    
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <title>School Timer</title>
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <link rel="stylesheet" type="text/css" href="weather/weatherIcon-color.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@100&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&display=swap" rel="stylesheet">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140137723-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-    <!-- import the webpage's javascript file -->
-    <script src="/script.js" defer></script>
-  </head>
-  <body>
-    <!-- the wrapper and content divs set margins and positioning -->
-    <div class="wrapper">
-      <div class="content" role="main">
-        <!-- this is the start of content for our page -->
-        <h1 class="title">hey, we moved...</h1>
-        <h1 >
-          the new site is at <a class="thaLink" onclick="window.location.replace('https://www.schooltimer.net');">schooltimer.net</a>
-        </h1>
-        <h1 id="bottom">
-          if you are having problems accessing the site please <a class="thaLink" onclick="window.location.replace('mailto:lukegutman14@gmail.com');">email me</a>
-        </h1>
+    gtag('config', 'UA-140137723-1');
+  </script>
+
+</head>
+
+<body>
+  <div class="popup" id="colorDiv">
+    <div class="x" onclick="closeColor()">&#215;</div>
+    <h1 class="popupheader">Color Picker</h1>
+    <hr>
+      <h1 class="popuplabel">Preset Themes</h1>
+      <select id="themeSelector" class="shadows" oninput="changeColors(this.value)">
+        <option value="custom" disabled>Select</option>
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="beach">Beach</option>
+        <option value="stealth">Stealth</option>
+        <option value="eww">Eww</option>
+        <option value="hacker">Hacker</option>
+      </select>
+    <h1 class="popuplabel">Custom Colors</h1>
+    <div class="colorElement shadows">
+      <input type="color" value="#ff2b40" id="accent" oninput="customColors(this.value, this.id)">
+      <p class=>Accent</p>
+    </div>
+    <div class="colorElement shadows">
+      <input type="color" value="#ff2b40" id="background" oninput="customColors(this.value, this.id)">
+      <p>Background</p>
+    </div>
+    <div class="colorElement shadows">
+      <input type="color" value="#ff2b40" id="maintext" oninput="customColors(this.value, this.id)">
+      <p>Text</p>
+    </div>
+</div>
+  <div class="popup" id="moreStuff">
+    <div class="x" onclick="closeStuffPanel()">&#215;</div>
+    <h1 class="popupheader">Weather at School</h1>
+    <hr>
+
+    <div class="section-left">
+      <div class="section shadows">
+        <p class="weatherMainText">Condition: </p><p class="weatherDataText" id="condition"></p><!-- Condition --><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Current Temp: </p><p class="weatherDataText" id="currentTemp"></p><!-- Current Temp --><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Real Feel: </p><p class="weatherDataText" id="realfeel"></p><!-- Real Feel Temp --><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Wind Speed: </p><p class="weatherDataText" id="windspeed"></p> <!-- Wind Speed --><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Humidity: </p> <p class="weatherDataText" id="humidity"></p> <!-- Humidity --><br>
       </div>
     </div>
-  </body>
+
+    <div class="section-right">
+      <i style="font-size: 20vw;" id="weather-icon"></i>
+    </div>
+
+    <p>Weather data made possible by Krushil Amrutiya</p>
+
+  </div>
+
+  <div class="popup" id="moreStats">
+    <div class="x" onclick="closeStatsPanel()">&#215;</div>
+    <h1 class="popupheader">More Stuff</h1>
+    <hr>
+    <div id="statsDiv"></div>
+    <div class="requestButton shadows" onclick="openSoundPanel();">Sounds</div>
+    <div class="requestButton shadows" onclick="bugReport();">Bug Report</div>
+    <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div>
+
+    <div class="requestButton shadows" onclick="window.open('https://github.com/lukelmg')">Github</div>
+    <div class="requestButton shadows" onclick="alert(' Email: lukegutman14@gmail.com \n Instagram: @lg.gutman \n GitHub: @lukelmg')">Contact Me</div>
+
+    <h5 class="copy">
+      Copyright &copy Luke Gutman, 2021
+    </h5>
+  </div>
+
+  <div class="popup" id="soundDiv">
+    <div class="x" onclick="closeSoundPanel()">&#215;</div>
+    <h1 class="popupheader">Sound Effects</h1>
+    <hr>
+    <input type="checkbox" id="uisounds" onclick="soundHandler()">
+    <h1 class="popuplabel" id="soundLabel">User Interface Sounds</h1>
+    <h1 class="popuplabel">More Stuff Coming Soon...</h1>
+  </div>
+  <div class="popup" id="cycleDiv">
+    <div class="x" onclick="closeCyclePanel()">&#215;</div>
+    <h1 class="popupheader">Cycle Days</h1>
+    <hr>
+    <center>
+      <div class="sidebarSquare cycleDivs shadows">
+        <h6>Today</h6>
+        <h2 id="cycleDayToday" class="cycleOutputs"/>
+      </div>
+      <div class="sidebarSquare cycleDivs shadows">
+        <h6>Tomorrow</h6>
+        <h2 id="cycleDayTomorrow" class="cycleOutputs"/>
+      </div>
+      <div class="sidebarSquare cycleDivs shadows">
+        <h6>The Next Day</h6>
+        <h2 id="cycleDayNextDay" class="cycleOutputs"/>
+      </div>
+    </center>
+  </div>
+  <div id="everythingElse">
+    <div id="fullSidebar">
+    <div class="sidebar right">
+      <div class="sidebarSquare shadows" id="progress">
+        <h6> School Day <br> Progress </h6>
+        <div id="progressOuter" class="shadows">
+          <div id="progressInner"></div>
+        </div>
+        <h6 id="dayProgressLabel"></h6>
+      </div>
+      <div class="sidebarSquare shadows" id="year">
+        <h6> School Year<br> Progress </h6>
+        <div id="summerOuter" class="shadows">
+          <div id="summerInner"></div>
+        </div>
+        <h6 id="summerNumber">asdfasdf</h6>
+      </div>
+      <div class="sidebarSquare shadows">
+        <center>
+          <h6 id="timeLabel"> Current Time </h6>
+          <h6 id="topTime">00:00:00 PM</h6>
+          <h6 id="bottomTime">00:00:00 PM</h6>
+        </center>
+      </div>
+      <div class="sidebarSquare shadows">
+        <center>
+        <!--  <h6> Current Date </h6> -->
+          <div id="currentDateAndDay">
+            <h6 id="currentDay">Sunday</h6>
+            <h6 id="currentDate">00/00/0000</h6>
+          </div>
+        </center>
+      </div>
+    </div>
+    <div class="sidebar left">
+      <div class="sidebarRectangle shadows" id="time">
+        <h6 class="scheduleHeader"> Schedule </h6>
+        <div id="radioDiv">
+          <center>
+            <div class="singleRadio">
+              <div class="radioTooltip">Normal Schedule</div>
+              <h6 class="radioLabels">A</h6>
+              <div class="radioOuter shadows" onclick="setNew('A'); uisound();">
+                <div class="radioInner" id="Ain"></div>
+              </div>
+            </div>
+            <div class="singleRadio">
+              <h6 class="radioLabels">B</h5>
+              <div class="radioOuter shadows" onclick="setNew('E'); uisound();">
+                <div class="radioInner" id="Ein"></div>
+              </div>
+            </div>
+            <div class="singleRadio">
+              <h6 class="radioLabels">C</h5>
+              <div class="radioOuter shadows" onclick="setNew('C'); uisound();">
+                <div class="radioInner" id="Cin"></div>
+              </div>
+            </div>
+            <div class="singleRadio">
+              <h6 class="radioLabels">D</h6 class="radioLabels">
+              <div class="radioOuter shadows" onclick="setNew('D'); uisound();">
+                <div class="radioInner" id="Din"></div>
+              </div>
+            </div>
+          </center>
+        </div>
+      </div>
+      <div class="sidebarSquare shadows" id="cycle" onclick="openCyclePanel();">
+      <center>  <h6 id="cycleLabel"> Cycle Day </h6> </center>
+      <center>  <h6 id="lastUpdated"></h6> </center>
+        <h6 id="cycleDayOutput">-</h6>
+      </div>
+      <div class="sidebarSquare" id="settingsDiv">
+        <center>
+          <button class="shadows" onclick="window.location.href='https://schooltimer.net/app/'">Beta App</button>
+          <button class="rightButtons shadows" onclick="openColor();">Color Picker</button>
+          <button class="shadows" onclick="openStatsPanel();">More Stuff</button>
+          <button class="rightButtons shadows" id="weather" onclick="openStuffPanel();"></button><i id="weather-icon"></i>
+        </center>
+      </div>
+    </div>
+  </div>
+    <center><div id="timers"></div></center>
+    <h1 id="schoolOver">School Is <br> Over</h1>
+  </div>
+</body>
 </html>
+<script src="other/color/colorValues.js"></script>
+<script src="other/stats.js"></script>
+<script src="other/soundPopup.js"></script>
+<script src="other/otherTimers.js"></script>
+<script src="other/sounds.js"></script>
+<script src="other/color/color.js"></script>
+<script src="other/size.js"></script>
+<script src="other/color/customColors.js"></script>
+<script src="other/readCycle.js"></script>
+<script src="other/stuff.js"></script>
+<script src="script.js"></script>
+<script src="weather/script.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
