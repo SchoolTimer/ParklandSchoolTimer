@@ -1,5 +1,3 @@
-//openMessagePanel();
-
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
   document.getElementById('everythingElse').style.filter = 'blur(2px)';
@@ -21,7 +19,7 @@ var scheduleArray = ['startTimesA', 'startTimesB', 'startTimesC', 'startTimesD']
 var startTimesA = ['' + '07:40', '08:32', '09:19', '10:06', '10:53', '11:40', '12:27', '13:14', '13:01'];
 var endTimesA = ['' + '08:28', '09:15', '09:02', '10:49', '11:36', '12:23', '12:10', '13:57', '14:44'];
 
-var startTimesE = ['' + '07:54', '08:40', '09:26', '10:12', '10:58', '11:44', '12:30', '13:16', '14:02'];
+var startTimesE = ['' + '07:54', '08:40', '09:26', '10:12', '10:58', '11:44', '12:30', '01:16', '02:02'];
 var endTimesE = ['' + '08:36', '09:22', '10:08', '10:54', '11:40', '12:26', '13:12', '13:58', '14:44'];
 
 var startTimesC = ['' + '07:40', '08:26', '09:08', '09:50', '10:24', '10:58', '11:32', '12:06', '12:35'];
