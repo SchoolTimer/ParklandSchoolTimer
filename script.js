@@ -1,4 +1,4 @@
-//openMessagePanel();
+openMessagePanel();
 
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
@@ -9,6 +9,8 @@ function openMessagePanel() {
 function closeMessagePanel() {
   document.getElementById('messagePanel').style.left = '-50%';
   document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  var audio = document.getElementById("septemba");
+  audio.play();
   uisound();
 }
 
