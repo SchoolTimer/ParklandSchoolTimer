@@ -12,14 +12,17 @@ function readJsonData() {
   console.log(date)
   
   fetch("https://613aad1a110e000017a45364.mockapi.io/dayCycleBeta/" + date, { cache: "reload" })
+
     .then(response => response.json())
     .then(data => {
-
+      if (data.today == unedfined) {
+        data.today = 'N/A';
+      }
       document.getElementById("cycleDayOutput").innerHTML = data.today; 
       document.getElementById("cycleDayToday").innerHTML = data.today;
       document.getElementById("cycleDayTomorrow").innerHTML = data.tomorrow;
       document.getElementById("cycleDayNextDay").innerHTML = data.nextDay;
     });
-  setTimeout(readJsonData, 12*60*60*1000);
+  setTimeout(readJsonData, 60*12*60*1000);
 }
 readJsonData();

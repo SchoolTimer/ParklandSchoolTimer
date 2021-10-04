@@ -1,4 +1,4 @@
-openMessagePanel();
+//openMessagePanel();
 
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
