@@ -1,0 +1,38 @@
+.weatherIcon {
+	font-size: 5vh;
+    float: right;
+}
+
+.weatherMainText {
+    color: rgb(87, 87, 87);
+    font-size: 2.5vh;
+    font-weight: 600;
+}
+
+.weatherDataText {
+    color: rgb(87, 87, 87);
+    font-size: 2.5vh;
+    font-weight: 300;
+}
+
+.section {
+    width: 25vw; 
+    text-align: center;
+    border-radius: 40px;
+    color: #575757;
+    /* padding-top: 1vh; */
+    /* padding-bottom: 1vh; */
+    margin-bottom: 1.5vh;
+    
+}
+
+
+.section-left {
+    float: left;
+    width: 50%;
+}
+
+.section-right {
+    float: right;
+    width: 50%;
+}
