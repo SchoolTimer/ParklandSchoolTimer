@@ -15,9 +15,6 @@ function readJsonData() {
 
     .then(response => response.json())
     .then(data => {
-      if (data.today == unedfined) {
-        data.today = 'N/A';
-      }
       document.getElementById("cycleDayOutput").innerHTML = data.today; 
       document.getElementById("cycleDayToday").innerHTML = data.today;
       document.getElementById("cycleDayTomorrow").innerHTML = data.tomorrow;
