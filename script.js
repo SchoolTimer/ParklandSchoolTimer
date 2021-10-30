@@ -9,7 +9,7 @@ function openMessagePanel() {
 function closeMessagePanel() {
   document.getElementById('messagePanel').style.left = '-50%';
   document.getElementById('everythingElse').style.filter = 'blur(0px)';
-  $('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
+  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
 }
 
