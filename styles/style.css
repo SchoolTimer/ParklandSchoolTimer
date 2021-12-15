@@ -769,4 +769,12 @@ p {
   bottom: 0;
   pointer-events: none;
   z-index: 1000;
+} 
+
+.pointer {
+  cursor: pointer;
+}
+
+.highlightColor:hover {
+  color: #71CB78;
 }

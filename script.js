@@ -483,3 +483,8 @@ document.addEventListener("keypress", function(event) {
   console.log(y);
   document.body.style.transform = "translateX(" + x + "px) translateY("+ y + "px) scale("+ 1 + ") rotate(" + 0 + "deg)";
 });
+
+var playChristmasMusic = document.getElementById("playChristmasMusic"); //easter egg - plays christmas music
+function togglePlay() {
+  playChristmasMusic.play();
+};
