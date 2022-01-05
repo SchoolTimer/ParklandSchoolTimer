@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onload="openUpdatePanel()">
   <div id="snow"></div>
   <div class="popup" id="colorDiv">
     <div class="x" onclick="closeColor()">&#215;</div>
@@ -95,6 +95,23 @@
      <p><b onclick="togglePlay();" class="pointer highlightColor">Easter Eggs: </b> Discover the newly added easter egg! Keep the volume turned on to hear the easter egg!</p><br>
     <p><b>Winter break is over ;)</b></p>
     </div>
+    
+    <div class="popup" id="UpdatePanel">
+      <div class="x" onclick="closeUpdatePannel()">&#215;</div>
+      <h1 class="popupheader">Quick Update</h1>
+       <hr>
+       <p>I have been aware that the day cycle 
+         isn't displaying correct information and 
+         it should be fixed once the Parkland High 
+         School calendar website begins to function since
+        the day cycle data gets fetched from there!</p><br>
+      <p>Thanks for your patience,</p><br>
+      <p style="margin-top: -20px;"><b>Krushil</b></p>
+      
+    </div>
+  
+    
+
 
   <div class="popup" id="moreStats">
     <div class="x" onclick="closeStatsPanel()">&#215;</div>

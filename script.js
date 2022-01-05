@@ -76,6 +76,18 @@ function closeMessagePanel() {
   uisound();
 }
 
+// takes care of the quick update panel
+function openUpdatePanel() {
+  document.getElementById('UpdatePanel').style.left = '50%';
+  document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  uisound();
+}
+function closeUpdatePannel() {
+  document.getElementById('UpdatePanel').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
+  uisound();
+}
 
 var currentScheduleSelected = 'A';
 var numberOfPeriods = 9;
