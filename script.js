@@ -78,15 +78,23 @@ function closeMessagePanel() {
 
 // takes care of the quick update panel
 function openUpdatePanel() {
-  document.getElementById('UpdatePanel').style.left = '50%';
-  document.getElementById('everythingElse').style.filter = 'blur(2px)';
-  uisound();
+  const check = localStorage.getItem('ReadMessage');
+  if (check == 'Yes') {
+    document.getElementById('UpdatePanel').style.left = '-50%';
+    document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  } else {
+    document.getElementById('UpdatePanel').style.left = '50%';
+    document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  // uisound();
+  }
 }
+
 function closeUpdatePannel() {
   document.getElementById('UpdatePanel').style.left = '-50%';
   document.getElementById('everythingElse').style.filter = 'blur(0px)';
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
+  localStorage.setItem('ReadMessage', 'Yes');
 }
 
 var currentScheduleSelected = 'A';
