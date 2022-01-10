@@ -94,6 +94,7 @@ function closeUpdatePannel() {
   document.getElementById('everythingElse').style.filter = 'blur(0px)';
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
+  localStorage.removeItem('ReadMessage');
   localStorage.setItem('ReadMessage', 'Yes');
 }
 
