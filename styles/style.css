@@ -667,6 +667,24 @@ select:focus {
   cursor:pointer;
 }
 
+/* style for covid cases button */
+.requestButtonCases {
+  /* width: 30%; */
+  width: 40%;
+  text-align:center;
+  border-radius:2vh;
+  font-size:4vh;
+  color:#575757;
+  /* padding-top:1vh; */
+  /* padding-bottom:1vh; */
+  margin-bottom: 1.5vh;
+  box-shadow: -6px -6px 10px rgba(255, 255, 255, 0.8), 6px 6px 10px rgba(0, 0, 0, 0.2);
+}
+.requestButtonCases:hover {
+  cursor:pointer;
+}
+
+
 h5 {
   color: #575757;
   font-weight:thin;

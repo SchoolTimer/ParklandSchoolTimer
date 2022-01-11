@@ -76,10 +76,24 @@ function closeMessagePanel() {
   uisound();
 }
 
+
+function openCovidPanel() {
+  document.getElementById('covidPanel').style.left = '50%';
+  document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  uisound();
+}
+function closeCovidPanel() {
+  document.getElementById('covidPanel').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
+  uisound();
+}
+
+
 // takes care of the quick update panel
 function openUpdatePanel() {
   const check = localStorage.getItem('ReadMessage');
-  if (check == 'Yes') {
+  if (check == 'NowYes') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
   } else {
@@ -95,7 +109,7 @@ function closeUpdatePannel() {
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
   localStorage.removeItem('ReadMessage');
-  localStorage.setItem('ReadMessage', 'Yes');
+  localStorage.setItem('ReadMessage', 'NowYes');
 }
 
 var currentScheduleSelected = 'A';

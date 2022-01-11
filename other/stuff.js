@@ -23,7 +23,7 @@ function requestFeature() {
 
     var xhr = new XMLHttpRequest();
     var myURL =
-      "https://maker.ifttt.com/trigger/feature/with/key/bc48cOTCsHu3gBrt1nX1EE?value1=" +
+      "https://maker.ifttt.com/trigger/featureRequest/with/key/fPHfTNt8bLrnCWXPajQ7hOqTFzmWMxCSARnDX1OjbUV?value1=" +
       feature;
     xhr.open("POST", myURL, true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -47,7 +47,7 @@ function bugReport() {
     feature = type;
     var xhr = new XMLHttpRequest();
     var myURL =
-      "https://maker.ifttt.com/trigger/bug/with/key/bc48cOTCsHu3gBrt1nX1EE?value1=" +
+      "https://maker.ifttt.com/trigger/bugReport/with/key/fPHfTNt8bLrnCWXPajQ7hOqTFzmWMxCSARnDX1OjbUV?value1=" +
       feature;
     xhr.open("POST", myURL, true);
     xhr.setRequestHeader("Content-Type", "application/json");

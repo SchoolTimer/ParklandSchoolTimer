@@ -80,9 +80,6 @@
     <div class="section-right">
       <i style="font-size: 20vw;" id="weather-icon"></i>
     </div>
-
-    <p>Weather data made possible by Krushil Amrutiya</p>
-
   </div>
 
    <div class="popup" id="messagePanel">
@@ -98,17 +95,40 @@
     
     <div class="popup" id="UpdatePanel">
       <div class="x" onclick="closeUpdatePannel()">&#215;</div>
-      <h1 class="popupheader">Quick Update</h1>
+      <h1 class="popupheader">New feature</h1>
        <hr>
-       <p>The day cycle service
-      has been restored and will continue
-      to update automatically.</p><br>
-      <p>Thanks for your patience,</p><br>
-      <p style="margin-top: -20px;">Krushil</p>
+       <p>School Timer now displays live 
+         Covid-19 cases at PHS!</p><br>
+         
+        <p>It can be accessed by clicking on
+           <b>More Stuff</b> button located on the bottom
+           right of the screen and then on <b>Covid Cases at PHS</b> 
+           button!</p><br>
+        
+      <!-- <p>Thanks for your patience,</p><br> -->
+      <!-- <p style="margin-top: -20px;">Krushil</p> -->
       
     </div>
+
+    <!-- covid cases modal -->
+    <div class="popup" id="covidPanel">
+      <div class="x" onclick="closeCovidPanel()">&#215;</div>
+      <h1 class="popupheader">Covid Cases</h1>
+      <hr>
+      <div class="section shadows">
+        <p class="weatherMainText">Total Cases: </p><p class="weatherDataText" id="totalCases"></p><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Impactful Cases: </p><p class="weatherDataText" id="impactfulCases"></p><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">10 Day Rolling Cases : </p><p class="weatherDataText" id="tenDayRollingCases"></p><br>
+      </div>
+      <div class="section shadows">
+        <p class="weatherMainText">Last updated: </p><p class="weatherDataText" id="lastFetched"></p><br>
+      </div>      
+    </div>
   
-    
 
 
   <div class="popup" id="moreStats">
@@ -116,15 +136,23 @@
     <h1 class="popupheader">More Stuff</h1>
     <hr>
     <div id="statsDiv"></div>
-    <div class="requestButton shadows" onclick="openSoundPanel();">Sounds</div>
-    <div class="requestButton shadows" onclick="bugReport();">Bug Report</div>
-    <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div>
+    <div style="display: flex">
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="openSoundPanel();">Sounds</div>
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="bugReport();">Bug Report</div>
+      <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div>
+    </div>
 
-    <div class="requestButton shadows" onclick="window.open('https://github.com/lukelmg')">Github</div>
-    <div class="requestButton shadows" onclick="alert(' Email: lukegutman14@gmail.com \n Instagram: @lg.gutman \n GitHub: @lukelmg')">Contact Me</div>
+    <div style="display: flex">
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="window.open('https://github.com/lukelmg')">Github</div>
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: lukegutman14@gmail.com \n Instagram: @lg.gutman \n GitHub: @lukelmg')">Contact Luke</div>
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1')">Contact Krushil</div>
+    </div>
 
+    <div style="margin-right: 10px;" class="requestButtonCases shadows" onclick="openCovidPanel(), closeStatsPanel()">Covid Cases at PHS</div>
+    
+    <h6>Developed by Luke Gutman, maintained by Krushil Amrutiya</h6>
     <h5 class="copy">
-      Copyright &copy Luke Gutman, 2021
+      Copyright &copy Luke Gutman, 2022
     </h5>
   </div>
 
@@ -255,4 +283,5 @@
 <script src="other/stuff.js"></script>
 <script src="script.js"></script>
 <script src="weather/script.js"></script>
+<script src="covidCases/script.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
