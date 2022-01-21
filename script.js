@@ -109,7 +109,7 @@ function closeUpdatePannel() {
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
   localStorage.removeItem('ReadMessage');
-  localStorage.setItem('ReadMessage', 'NowYes');
+  // localStorage.setItem('ReadMessage', 'NowYes');
 }
 
 var currentScheduleSelected = 'A';
