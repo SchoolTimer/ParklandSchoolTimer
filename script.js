@@ -92,8 +92,9 @@ function closeCovidPanel() {
 
 // takes care of the quick update panel
 function openUpdatePanel() {
-  const check = localStorage.getItem('ReadMessage');
-  if (check == 'NowYes') {
+  localStorage.removeItem('ReadMessage');
+  const check = localStorage.getItem('newMsg');
+  if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
   } else {
@@ -109,7 +110,7 @@ function closeUpdatePannel() {
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
   localStorage.removeItem('ReadMessage');
-  // localStorage.setItem('ReadMessage', 'NowYes');
+  localStorage.setItem('newMsg', 'read');
 }
 
 var currentScheduleSelected = 'A';
