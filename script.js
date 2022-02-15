@@ -94,7 +94,7 @@ function closeCovidPanel() {
 function openUpdatePanel() {
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
-  /*const check = localStorage.getItem('newMsg');
+  const check = localStorage.getItem('maintenance');
   if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
@@ -102,17 +102,17 @@ function openUpdatePanel() {
     document.getElementById('UpdatePanel').style.left = '50%';
     document.getElementById('everythingElse').style.filter = 'blur(2px)';
   // uisound();
-  }*/
+  }
 }
 
 function closeUpdatePannel() {
-  // document.getElementById('UpdatePanel').style.left = '-50%';
-  // document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  document.getElementById('UpdatePanel').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
-  // localStorage.setItem('newMsg', 'read');
+  localStorage.setItem('maintenance', 'read');
 }
 
 var currentScheduleSelected = 'A';
