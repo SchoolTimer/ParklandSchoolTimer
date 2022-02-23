@@ -31,6 +31,7 @@ for (var i = 0; i < deadlines.length; i++) {
   label.style.display = 'inline-block';
   label.style.fontWeight = 'bold';
   label.style.marginRight = '10px';
+  label.style.margin = '0px;';
   label.style.marginLeft = '0vw';
 
   var output = document.createElement('h4');

@@ -1,3 +1,6 @@
+// var currentDay = 'E';
+
+// SNOW EFFECT
 /*document.addEventListener('DOMContentLoaded', function(){ //Snow effect JS
   var script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
@@ -61,7 +64,13 @@
       });
   }
   document.head.append(script);
-}); */
+});*/
+
+// RAIN EFFECT
+
+
+
+
 
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
@@ -89,12 +98,12 @@ function closeCovidPanel() {
   uisound();
 }
 
-
 // takes care of the quick update panel
 function openUpdatePanel() {
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
-  const check = localStorage.getItem('maintenance');
+  // const check = localStorage.getItem('discordUpdate');
+  const check = localStorage.getItem('febUpdate');
   if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
@@ -112,14 +121,17 @@ function closeUpdatePannel() {
   uisound();
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
-  localStorage.setItem('maintenance', 'read');
+  localStorage.setItem('febUpdate', 'read');
+  // localStorage.setItem('discordUpdate', 'read');
 }
 
 var currentScheduleSelected = 'A';
+// var currentScheduleSelected = currentDay;
 var numberOfPeriods = 9;
 
 var scheduleArray = ['startTimesA', 'startTimesB', 'startTimesC', 'startTimesD']
 
+// Current timing for A schedule for the countdown timer
 var startTimesA = ['' + '07:40', '08:32', '09:19', '10:06', '10:53', '11:40', '12:27', '13:14', '14:01'];
 var endTimesA = ['' + '08:28', '09:15', '10:02', '10:49', '11:36', '12:23', '13:10', '13:57', '14:44'];
 
@@ -128,12 +140,15 @@ var startTimesA = ['' + '07:40', '08:32', '09:19', '10:06', '10:49', '11:32', '1
 var endTimesA = ['' + '08:28', '09:15', '10:02', '10:45', '11:28', '12:11', '12:54', '13:58', '14:44'];
 */
 
+// Current timing for B schedule for the countdown timer
 var startTimesE = ['' + '07:54', '08:40', '09:26', '10:12', '10:58', '11:44', '12:30', '13:16', '14:02'];
 var endTimesE = ['' + '08:36', '09:22', '10:08', '10:54', '11:40', '12:26', '13:12', '13:58', '14:44'];
 
+// Current timing for C schedule for the countdown timer
 var startTimesC = ['' + '07:40', '08:26', '09:08', '09:50', '10:24', '10:58', '11:32', '12:06', '12:35'];
 var endTimesC = ['' + '08:22', '09:04', '09:46', '10:20', '10:54', '11:28', '12:02', '12:31', '13:00'];
 
+// Current timing for D schedule for the countdown timer
 var startTimesD = ['' + '09:40', '10:12', '10:41', '11:10', '11:43', '12:16', '12:46', '13:22', '14:05'];
 var endTimesD = ['' + '10:08', '10:37', '11:06', '11:39', '12:12', '12:45', '13:18', '14:01', '14:44'];
 
@@ -340,7 +355,7 @@ function setSchedule() {
 
       if (hh >= 11) {
         if (i == 2) {
-          console.log(hh);
+          // console.log(hh); 
         }
         //  console.log(curMin / 60 + curHour)
         document.getElementById(i + 'end').innerHTML = '------------'

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta content="utf-8" http-equiv="encoding">
@@ -12,7 +11,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@100&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&display=swap" rel="stylesheet">
   <audio id="septemba" src="sounds/september"></audio>
+  <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moqmar/weather.css/master/weather.min.css">
+
   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- ENABLE THIS FOR PRODUCT USE  -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140137723-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,6 +26,7 @@
   </script>
   
   <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- ENABLE THIS FOR PRODUCT USE  -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WHPCWPXR2E"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -31,11 +35,9 @@
 
     gtag('config', 'G-WHPCWPXR2E');
   </script>
-
 </head>
-
-<body onload="openUpdatePanel()">
-<!--   <div id="snow"></div> -->
+<body onload="openUpdatePanel()" class="weather rain">
+  <!-- <div id="snow"></div> -->
   <div class="popup" id="colorDiv">
     <div class="x" onclick="closeColor()">&#215;</div>
     <h1 class="popupheader">Color Picker</h1>
@@ -101,28 +103,38 @@
     <p><b>Day Cycle Letter:</b> Day cycle now displays the letter of the schedule next to the number! Ex: 2A or 3C</p>-->
      <p><b onclick="togglePlay();" class="pointer highlightColor">Easter Egg: </b> Discover the newly added easter egg! Keep the volume turned on to hear the easter egg!</p><br>
      <p><b>Covid Case Data:</b> Display's live Covid-19 data.</p><br>
+<!--      <p><b>Dashboard and Discord Server:</b> Redid some bits of the dashboard and launched a Discord server!</p><br> -->
+     <p><b>New update:</b> New configuration with the dashboard! Snow melted away! Covid dashboard replaced with colors and vice versa!</p>
     </div>
     
+    <!-- <div class="popup" id="UpdatePanel">
+      <div class="x" onclick="closeUpdatePannel()">&#215;</div>
+      <h1 class="popupheader">Discord Community</h1>
+       <hr>
+       <p>Hi everyone,
+        <br><br>
+        Got 2 new updates! I redid the dashboard where Covid cases has been swapped in place of color picker and vice versa. 
+        <br><br>
+        I have also created a Discord server as we have grown into a bigger community for School Timer! Everyone is welcomed! 
+        I'll be sharing new features that I am working, helping anyone interested in coding & more!
+        <br><br>
+        Here's the link to join if interested: <b>---</b>
+      </p><br>
+      <p>Hope to see you there,</p><br>
+      <p style="margin-top: -20px;">Krushil</p>
+    </div> -->
     <div class="popup" id="UpdatePanel">
       <div class="x" onclick="closeUpdatePannel()">&#215;</div>
-      <h1 class="popupheader">Performance issue</h1>
+      <h1 class="popupheader">New Update!!!</h1>
        <hr>
-       <p>Day cycle and Covid cases data will be inaccessible for a while as the database is getting some maintenance work.</p><br>
-         
-<!--         <p>It can be accessed by clicking on
-           <b>More Stuff</b> button located on the bottom
-           right of the screen and then on <b>Covid Cases</b> 
-           button!</p><br> -->
-        
-      <p>The services will be restored sometime today!</p><br>
-<!--       <p style="margin-top: -20px;">Krushil</p> -->
-      
+       <p>Hello everyone, <br><br>
+        I have rolled out some new updates! Covid case dashboard has been replaced with color picker and vice versa! Snow is gone because it melted! Its Raining now! Don't get your computers wet!       
     </div>
 
     <!-- covid cases modal -->
     <div class="popup" id="covidPanel">
       <div class="x" onclick="closeCovidPanel()">&#215;</div>
-      <h1 class="popupheader">Covid Cases for February</h1>
+      <h1 class="popupheader">Covid Cases for <a id="currentMonth"></a></h1>
       <hr>
       <div class="section shadows">
         <p class="weatherMainText">Total Cases: </p><p class="weatherDataText" id="totalCases"></p><br>
@@ -137,8 +149,6 @@
         <p class="weatherMainText">Last updated: </p><p class="weatherDataText" id="lastFetched"></p><br>
       </div>      
     </div>
-  
-
 
   <div class="popup" id="moreStats">
     <div class="x" onclick="closeStatsPanel()">&#215;</div>
@@ -156,8 +166,13 @@
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: lukegutman14@gmail.com \n Instagram: @lg.gutman \n GitHub: @lukelmg')">Contact Luke</div>
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1')">Contact Krushil</div>
     </div>
-
-    <div style="margin-right: 10px;" class="requestButton shadows" onclick="openCovidPanel(), closeStatsPanel()">Covid Cases</div>
+    
+    <!-- Covid Cases -> Color Picker -->
+    <div style="display: flex">
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="openColor(), closeStatsPanel()">Color Picker</div> 
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Discord Link: https://discord.gg/EZJWdQPa')">Discord Server</div>
+    </div>
+    
     
     <h6>Developed by Luke Gutman, maintained by Krushil Amrutiya</h6>
     <h5 class="copy">
@@ -180,15 +195,15 @@
     <center>
       <div class="sidebarSquare cycleDivs shadows">
         <h6>Today</h6>
-        <h2 id="cycleDayToday" class="cycleOutputs">-</h2>
+        <h6 id="cycleDayToday" class="cycleOutputs dayCycleLabels"/>
       </div>
       <div class="sidebarSquare cycleDivs shadows">
         <h6>Tomorrow</h6>
-        <h2 id="cycleDayTomorrow" class="cycleOutputs">-</h2>
+        <h6 id="cycleDayTomorrow" class="cycleOutputs dayCycleLabels"/>
       </div>
       <div class="sidebarSquare cycleDivs shadows">
         <h6>The Next Day</h6>
-        <h2 id="cycleDayNextDay" class="cycleOutputs">-</h2>
+        <h6 id="cycleDayNextDay" class="cycleOutputs dayCycleLabels"/>
       </div>
     </center>
   </div>
@@ -267,7 +282,11 @@
       <div class="sidebarSquare" id="settingsDiv">
         <center>
           <button class="shadows" onclick="openMessagePanel();">New Fixes </button>
-          <button class="rightButtons shadows" onclick="openColor();">Color Picker</button>
+
+          <!-- Color Picker -> Covid Cases -->
+          <button class="rightButtons shadows" onclick="openCovidPanel();">Covid Cases</button>
+          
+
           <button class="shadows" onclick="openStatsPanel();">More Stuff</button>
           <button class="rightButtons shadows" id="weather" onclick="openStuffPanel();"></button><i id="weather-icon"></i>
         </center>

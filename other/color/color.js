@@ -83,8 +83,11 @@ function setMainText() {
 
   var radioLabels = document.getElementsByClassName('radioInner');
   for (var i = 0; i < radioLabels.length; i++) {
-    radioLabels[0].style.backgroundColor = currentColors.maintext;
+    radioLabels[i].style.backgroundColor = currentColors.maintext;
   }
+
+  // var dayCycleLabels = document.getElementsByClassName('dayCycleLabels');
+  // dayCycleLabels.style.backgroundColor = currentColors.maintext;
 
   var requestButton = document.getElementsByClassName('requestButton');
   for (var i = 0; i < requestButton.length; i++) {
