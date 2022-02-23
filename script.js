@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function(){ //Snow effect JS
+/*document.addEventListener('DOMContentLoaded', function(){ //Snow effect JS
   var script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
   script.onload = function(){
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function(){ //Snow effect JS
       });
   }
   document.head.append(script);
-});
+}); */
 
 function openMessagePanel() {
   document.getElementById('messagePanel').style.left = '50%';
