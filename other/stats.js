@@ -11,7 +11,7 @@ function closeStatsPanel() {
 }
 
 var deadlines = [
-                 new Date("June 9, 2022 9:20:00").getTime(),
+                 new Date("June 9, 2022 9:45:00").getTime(),
                  new Date("May  27, 2022 14:30:00").getTime(),
                 ];
 
