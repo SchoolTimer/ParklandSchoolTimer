@@ -101,9 +101,10 @@ function closeCovidPanel() {
 // takes care of the quick update panel
 function openUpdatePanel() {
   localStorage.removeItem('ReadMessage');
+  localStorage.removeItem('febUpdate');
   localStorage.removeItem('newMsg');
   // const check = localStorage.getItem('discordUpdate');
-  const check = localStorage.getItem('febUpdate');
+  const check = localStorage.getItem('downUpdate');
   if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
@@ -121,7 +122,8 @@ function closeUpdatePannel() {
   uisound();
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
-  localStorage.setItem('febUpdate', 'read');
+  localStorage.removeItem('febUpdate');
+  localStorage.setItem('downUpdate', 'read');
   // localStorage.setItem('discordUpdate', 'read');
 }
 
