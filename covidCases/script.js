@@ -1,8 +1,8 @@
 function readJsonData() {
   
-//   Working 
+//   Working url: https://613aad1a110e000017a45364.mockapi.io/covidData/1
   
-    fetch("https://613aad1a110e000017a45364.mockapi.io/covidData/1", { cache: "reload" }) 
+    fetch("", { cache: "reload" }) 
   
       .then(response => response.json())
       .then(data => {
