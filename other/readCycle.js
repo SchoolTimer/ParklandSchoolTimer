@@ -48,7 +48,9 @@
 
 function readJsonData() {
   
-  fetch("https://613aad1a110e000017a45364.mockapi.io/dayCycleBeta/1", { cache: "reload" }) 
+//   Working url: https://613aad1a110e000017a45364.mockapi.io/dayCycleBeta/1
+  
+  fetch("", { cache: "reload" }) 
 
     .then(response => response.json())
     .then(data => {
