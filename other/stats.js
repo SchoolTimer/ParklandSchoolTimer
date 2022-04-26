@@ -12,7 +12,7 @@ function closeStatsPanel() {
 
 var deadlines = [
                  new Date("June 9, 2022 9:45:00").getTime(),
-                 new Date("June 6, 2022 14:30:00").getTime(),
+                 new Date("June 3, 2022 14:30:00").getTime(),
                 ];
 
 var statNames = [
