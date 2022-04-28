@@ -41,8 +41,9 @@ var curMin;
 })();
 
 (function foo() {
+  
   var today = new Date();
-  var endSchool = new Date("2022-6-5");
+  var endSchool = new Date("2022-6-9");
   var diffMs = (endSchool - today); // milliseconds between now & Christmas
 
   var percent = (((diffMs / 24192000000 * 100)-100)*-1).toFixed(0);
