@@ -102,9 +102,10 @@ function closeCovidPanel() {
 function openUpdatePanel() {
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('febUpdate');
+  localStorage.removeItem('downUpdate');
   localStorage.removeItem('newMsg');
   // const check = localStorage.getItem('discordUpdate');
-  const check = localStorage.getItem('downUpdate');
+  const check = localStorage.getItem('keystoneUpdate');
   if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
@@ -123,7 +124,8 @@ function closeUpdatePannel() {
   localStorage.removeItem('ReadMessage');
   localStorage.removeItem('newMsg');
   localStorage.removeItem('febUpdate');
-  localStorage.setItem('downUpdate', 'read');
+  localStorage.removeItem('downUpdate')
+  localStorage.setItem('keystoneUopdate', 'read');
   // localStorage.setItem('discordUpdate', 'read');
 }
 
