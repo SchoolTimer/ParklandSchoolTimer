@@ -13,12 +13,18 @@ var curMin;
     curHour = hours;
     curMin = minutes;
 
-    if (hours > 12) {
-      hours = hours - 12;
+    if (hours === 12) {
       suffix = 'PM';
+    } else if (hours > 12) {
+      hours = hours - 12;
+      suffix = 'PM'
+    } else if (hours === '00') {
+      hours = 12
+      suffix = 'AM'
     } else {
-      suffix = 'AM';
+      suffix = 'AM'
     }
+  
     var time = hours + ":" + minutes;
     document.getElementById("topTime").innerHTML = time;
 
