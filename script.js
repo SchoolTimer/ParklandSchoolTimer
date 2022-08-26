@@ -125,7 +125,8 @@ function closeUpdatePannel() {
   localStorage.removeItem('newMsg');
   localStorage.removeItem('febUpdate');
   localStorage.removeItem('downUpdate')
-  localStorage.setItem('keystoneUpdate', 'read');
+  localStorage.removeItem('keystoneUpdate');
+  // localStorage.setItem('keystoneUpdate', 'read');
   // localStorage.setItem('discordUpdate', 'read');
 }
 
