@@ -11,8 +11,8 @@ function closeStatsPanel() {
 }
 
 var deadlines = [
-                 new Date("June 9, 2022 14:30:00").getTime(),
-                 new Date("June 3, 2022 14:30:00").getTime(),
+                 new Date("June 9, 2023 14:30:00").getTime(),
+                 new Date("June 3, 2023 14:30:00").getTime(),
                 ];
 
 var statNames = [
@@ -22,7 +22,7 @@ var statNames = [
 
 const container = document.getElementById('statsDiv');
 
-var deadline = new Date("June 11, 2021 9:20:00").getTime();
+var deadline = new Date("June 11, 2022 9:20:00").getTime();
 
 
 for (var i = 0; i < deadlines.length; i++) {

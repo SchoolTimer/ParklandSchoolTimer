@@ -136,7 +136,7 @@
     
     </div> -->
 
-    <div class="popup" id="UpdatePanel">
+    <!-- <div class="popup" id="UpdatePanel">
       <div class="x" onclick="closeUpdatePannel()">&#215;</div>
       <h1 class="popupheader">Keystone Schedule Update</h1>
         <hr>
@@ -145,7 +145,7 @@
       Good luck to our test takers!<br>
       Sooraj
       </p>
-    </div>
+    </div> -->
 
     <!-- covid cases modal -->
     <div class="popup" id="covidPanel">
@@ -174,28 +174,26 @@
     <hr>
     <div id="statsDiv"></div>
     <div style="display: flex">
-      <!--<div style="margin-right: 10px;" class="requestButton shadows" onclick="openSoundPanel();">Sounds</div>-->
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="openSoundPanel();">Sounds</div>
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="bugReport();">Bug Report</div>
       <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div>
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="openCovidPanel(), closeStatsPanel()">Covid Cases</div>
     </div>
 
-    <!--
     <div style="display: flex">
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="window.open('https://github.com/lukelmg')">Github</div>
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: lukegutman14@gmail.com \n Instagram: @lg.gutman \n GitHub: @lukelmg')">Contact Luke</div>
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1 \n LinkedIn: www.linkedin.com/in/krushil-amrutiya/')">Contact Krushil</div>
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1')">Contact Krushil</div>
     </div>
-    -->
     
-    <br><br><br><br>
-     <div style="display: flex">
-     <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: luke@lukegutman.com \n GitHub: @lukelmg \n LinkedIn: linkedin.com/in/lukegutman')">Contact Luke</div>
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1 \n LinkedIn: www.linkedin.com/in/krushil-amrutiya/')">Contact Krushil</div>
-    <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia \n LinkedIn: www.linkedin.com/in/sooraj-tharumia-7380bb236/')">Contact Sooraj</div>
+    <!-- Covid Cases -> Color Picker -->
+    <div style="display: flex">
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia')">Contact Sooraj</div>
+      <div style="margin-right: 10px;" class="requestButton shadows" onclick="openColor(), closeStatsPanel()">Color Picker</div> 
     </div>
-        <h5>Developed by Luke Gutman, maintained by Krushil Amrutiya &amp Sooraj Tharumia</h5>
-       <h5 class="copy">
+    
+    
+    <h6>Developed by Luke Gutman, maintained by Krushil Amrutiya &amp Sooraj Tharumia</h6>
+    <h5 class="copy">
       Copyright &copy Luke Gutman, 2022
     </h5>
   </div>
@@ -304,7 +302,7 @@
           <button class="shadows" onclick="openMessagePanel();">New Fixes </button>
 
           <!-- Color Picker -> Covid Cases -->
-          <button class="rightButtons shadows" onclick="openColor();">Color Picker</button>
+          <button class="rightButtons shadows" onclick="openCovidPanel();">Covid Cases</button>
           
 
           <button class="shadows" onclick="openStatsPanel();">More Stuff</button>
