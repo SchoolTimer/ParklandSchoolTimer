@@ -46,19 +46,20 @@ var curMin;
     document.getElementById('currentDay').innerHTML = days[testDate.getDay()];
 })();
 
-(function foo() {
+(function progress() {
   
   var today = new Date();
-  var endSchool = new Date("2022-6-9");
-  var diffMs = (endSchool - today); // milliseconds between now & Christmas
+  var endSchool = new Date("2023-6-9");
+  var diffMs = (endSchool - today); // milliseconds between now & endSchool
 
-  var percent = (((diffMs / 24192000000 * 100)-100)*-1).toFixed(0);
+  var percent = (((diffMs / 24537600000) * 100 - 100)*-1).toFixed(0);
 
   var yearProgress = document.getElementById('summerInner');
   yearProgress.style.width = percent + '%';
 
   var yearNumber = document.getElementById('summerNumber');
   yearNumber.innerHTML = percent + '%';
+  
 
-  setTimeout(foo, 1000);
+  setTimeout(progress, 1000);
 })();

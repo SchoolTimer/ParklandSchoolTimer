@@ -125,7 +125,8 @@ function closeUpdatePannel() {
   localStorage.removeItem('newMsg');
   localStorage.removeItem('febUpdate');
   localStorage.removeItem('downUpdate')
-  localStorage.setItem('keystoneUpdate', 'read');
+  localStorage.removeItem('keystoneUpdate');
+  // localStorage.setItem('keystoneUpdate', 'read');
   // localStorage.setItem('discordUpdate', 'read');
 }
 
@@ -134,6 +135,10 @@ var currentScheduleSelected = 'A';
 var numberOfPeriods = 9;
 
 var scheduleArray = ['startTimesA', 'startTimesB', 'startTimesC', 'startTimesD']
+
+// // 3-Hr Delay Keystone Schedule timings
+// var startTimesA = ['' + '10:40', '11:08', '11:35', '12:02', '12:30', '12:58', '13:26', '13:54', '14:21'];
+// var endTimesA = ['' + '11:04', '11:31', '11:58', '12:26', '12:54', '13:22', '13:50', '14:17', '14:44'];
 
 // Current timing for A schedule for the countdown timer
 var startTimesA = ['' + '07:40', '08:32', '09:19', '10:06', '10:53', '11:40', '12:27', '13:14', '14:01', '14:45'];
