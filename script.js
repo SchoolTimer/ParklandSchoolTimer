@@ -72,20 +72,6 @@
 
 
 
-function openMessagePanel() {
-  document.getElementById('messagePanel').style.left = '50%';
-  document.getElementById('everythingElse').style.filter = 'blur(2px)';
-  uisound();
-}
-
-function closeMessagePanel() {
-  document.getElementById('messagePanel').style.left = '-50%';
-  document.getElementById('everythingElse').style.filter = 'blur(0px)';
-  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
-  uisound();
-}
-
-
 function openCovidPanel() {
   document.getElementById('covidPanel').style.left = '50%';
   document.getElementById('everythingElse').style.filter = 'blur(2px)';

@@ -105,7 +105,9 @@
      </p>
      <p><b>Menus:</b> Links to breakfast and lunch menus are available in the new tab.</p><br>
      <p><b>Mobile Version:</b> A lot of work has been done to the mobile version (i.e. on your phone). It's not perfect but much more usable than before. </p>
-       <br><br>
+     <a id="dataLink" href="https://cdn.glitch.global/36297f95-5deb-4791-aa18-9fa53485f7c0/data.png?v=1661781865728" style="fontSize=100px;">
+       Also, if you are interested in some data behind School Timer check out this cool graph
+     </a>
        <p>
          <b>All the best,</b> <br> Luke Gutman
      </p>
@@ -170,9 +172,11 @@
     <h1 class="popupheader">More Stuff</h1>
     <hr>
     <div id="statsDiv"></div>
+    <center>
     <div style="display: flex">
       <div style="margin-right: 10px;" class="requestButton shadows" onclick="bugReport();">Bug Report</div> <br>
       <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div> <br>
+      <div class="requestButton shadows" onclick="openMessagePanel();">Recent Fixes</div>
     </div>
 
     <div style="display: flex">
@@ -185,6 +189,7 @@
     <h4 class="copy">
       Copyright &copy Luke Gutman, 2022
     </h4>
+    </center>
   </div>
 
   <div class="popup" id="soundDiv">
@@ -288,7 +293,7 @@
       </div>
       <div class="sidebarSquare" id="settingsDiv">
         <center>
-          <button class="shadows" onclick="openMessagePanel();">New Fixes </button>
+          <button class="shadows" onclick="openColor();">Color Picker</button>
 
           <!-- Color Picker -> Covid Cases -->
           <button class="rightButtons shadows" onclick="openCovidPanel();">Menus</button>

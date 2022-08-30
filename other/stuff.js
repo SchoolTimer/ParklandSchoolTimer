@@ -10,6 +10,22 @@ function closeStuffPanel() {
   uisound();
 }
 
+function openMessagePanel() {
+  console.log('CLSOING STUFF PANEL')
+  closeStatsPanel();
+   console.log('CLOSED STUFF PANEL')
+  document.getElementById('messagePanel').style.left = '50%';
+  document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  uisound();
+}
+
+function closeMessagePanel() {
+  document.getElementById('messagePanel').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
+  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
+  uisound();
+}
+
 function requestFeature() {
   var feature;
   var type = prompt(

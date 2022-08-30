@@ -34,7 +34,7 @@ for (var i = 0; i < deadlines.length; i++) {
   label.style.margin = '0px;';
   label.style.marginLeft = '0vw';
   label.style.fontSize = '50px';
-  label.style.marginTop = '0';
+  label.style.marginBottom = '0';
 
   var output = document.createElement('h4');
   output.className = 'stat';

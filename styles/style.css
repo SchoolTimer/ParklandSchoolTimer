@@ -627,6 +627,16 @@ transform: translate(0px, -25px);
 
 .stat {
   font-size: 50px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#statsDiv {
+  margin-bottom: 300px;
+}
+
+#dataLink {
+  font-size: 30px;
 }
 
 hr {
