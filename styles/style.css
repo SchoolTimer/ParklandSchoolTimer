@@ -699,6 +699,29 @@ h5 {
   display:none;
 }
 
+@media only screen and (max-width: 1000px) {
+  #schoolOver {
+    font-size:10vh;
+  }/*
+  .sidebarSquare {
+    height: 20vh;
+    width: 20vh;
+  }
+  .sidebarRectangle {
+    height: 40vh;
+    width: 20vh;
+  } */
+  .sidebar {
+    transform: scale(0.85);
+  }
+  .right {
+    margin-left:0;
+  }
+  .left {
+    margin-right:0;
+  }
+}
+
 
 .cycleDivs{
   display:inline-block;
