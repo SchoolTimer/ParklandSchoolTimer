@@ -4,11 +4,11 @@ toggle.style.top = '0%';
 toggle.style.right = '0%';
 toggle.style.margin = '0';
 toggle.style.padding = '0';
-toggle.style.width = '6vw';
-toggle.style.height = '6vw';
+toggle.style.width = '6vh';
+toggle.style.height = '6vh';
 toggle.style.borderRadius = '0';
 toggle.style.borderBottomLeftRadius = '2vw';
-toggle.style.fontSize = '200%';
+toggle.style.fontSize = '500%';
 toggle.innerHTML = '&#171;';
 toggle.onclick = function() {moveSidebar();}
 

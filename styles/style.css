@@ -3,6 +3,12 @@
   --timerWidth: 55vw;
 }
 
+a, button, div, input
+{
+	-ms-touch-action: manipulation;	/* IE10  */
+	touch-action: manipulation;		/* IE11+ */
+}
+
 
 html, body {margin: 0; height: 100%; overflow: hidden}
 
@@ -712,13 +718,16 @@ h5 {
     width: 20vh;
   } */
   .sidebar {
-    transform: scale(0.85);
+    transform: scale(0.75);
   }
-  .right {
-    margin-left:0;
+  #fullSidebar {
+    padding:0;
   }
-  .left {
-    margin-right:0;
+  .sidebarSquare {
+    width: 21vh;
+  }
+  button {
+    width: 9.6vh;
   }
 }
 
