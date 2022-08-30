@@ -33,7 +33,7 @@ for (var i = 0; i < deadlines.length; i++) {
   label.style.marginRight = '10px';
   label.style.margin = '0px;';
   label.style.marginLeft = '0vw';
-  label.style.fontSize = '50px';
+  label.style.fontSize = '25px';
   label.style.marginBottom = '0';
 
   var output = document.createElement('h4');
