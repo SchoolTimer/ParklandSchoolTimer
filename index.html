@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@100&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&display=swap" rel="stylesheet">
   <audio id="septemba" src="sounds/september"></audio>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
   <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moqmar/weather.css/master/weather.min.css">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -37,7 +38,7 @@
   </script>
 </head>
 <!-- <body onload="openUpdatePanel()" class="weather rain"> -->
-<body onload="openMessagePanel();">
+<body onload="openUpdatePanel();">
   
   <!-- <div id="snow"></div> -->
   <div class="popup" id="colorDiv">
@@ -96,19 +97,16 @@
     </div>
   </div>
     
-    <!-- <div class="popup" id="UpdatePanel">
+    <div class="popup" id="UpdatePanel">
       <div class="x" onclick="closeUpdatePannel()">&#215;</div>
+      <h1>Big Update!</h1>
        <hr>
-       <p>Hi everyone,
-        <br><br>
-        Got 2 new updates! I redid the dashboard where Covid cases has been swapped in place of color picker and vice versa. 
-        <br><br>
-        <br><br>
-        Here's the link to join if interested: <b>---</b>
-      </p><br>
-      <p>Hope to see you there,</p><br>
-      <p style="margin-top: -20px;">Krushil</p>
-    </div> -->
+       <p>We have fixed major issues regarding day cycle! We have also integrated the breakfast and lunch menus right here on School Timer!</p> <br>
+       <p>More Stuff page has been cleaned up. Reset button has been added if anyone is having any difficulties and hopefully clicking it will resolve the issue!</p>
+
+       <br>
+       <p>Have a great rest of your day, <br> School Timer Dev Team</p>
+    </div>
   
 
 <!--     <div class="popup" id="UpdatePanel">
@@ -135,43 +133,83 @@
       </p>
     </div> -->
 
-    <!-- covid cases modal -->
-    <div class="popup" id="covidPanel">
-      <div class="x" onclick="closeCovidPanel()">&#215;</div>
-<!--       <h1 class="popupheader">Covid Cases for <a id="currentMonth"></a></h1> -->
-      <h1 class="popupheader">Menus (Updated Version Coming Soon!)</h1>
-      
+
+
+
+    <!-- Lunch/Breakfast menu modal -->
+    <div class="popup" id="menuPanel">
+      <div class="x" onclick="closeMenuPanel()">&#215;</div>
+      <h1 class="popupheader">Menus</h1>
       <hr>
-      <div class="section shadows">
-        <p class="weatherMainText"><a href="https://www.schoolnutritionandfitness.com/webmenus2/#/view?id=62dfcd3e7057ec649c288470&siteCode=5054" target="_blank" style="color:rgb(87, 87, 87);text-decoration: none;">Click Here for Breakfast Menu:</a></p><br>
+
+      <div>
+        <p class="menuTitle">Breakfast</p>
+        <div id="breakfastMenu" class="menuItems"></div>
       </div>
-      <div class="section shadows">
-        <p class="weatherMainText" ><a href="https://www.schoolnutritionandfitness.com/webmenus2/#/view?id=62e03d7f7057ec243e287ab2&siteCode=5054" target="_blank" style="color:rgb(87, 87, 87);text-decoration: none;">Click Here for Lunch Menu:</a></p><br>
+      <br>
+      <br>
+
+      <div>
+        <p class="menuTitle">Lunch</p>
+        <div id="lunchMenu" class="menuItems"></div>
       </div>
     </div>
+
+    <!-- Recent Fixed modal -->
+    <div class="popup" id="messagePanel">
+      <div class="x" onclick="closeMessagePanel();">&#215;</div>
+      <h1 class="popupheader">Recent Fixes / Updates</h1>
+      <hr>
+      <p>- Breakfast and Lunch menu now available on School Timer</p> <br>
+      <p>- Day Cycle patched</p> <br>
+      <p>- Reset button added inside More Stuff if anyone is having any problems</p><br>
+      <p>- Breakfast and Lunch menu now available on School Timer</p><br>
+      <p>- More stuff page organized</p>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="popup" id="moreStats">
     <div class="x" onclick="closeStatsPanel()">&#215;</div>
     <h1 class="popupheader">More Stuff</h1>
     <hr>
     <div id="statsDiv"></div>
-    <center>
-    <div style="display: flex">
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="bugReport();">Bug Report</div> <br>
-      <div class="requestButton shadows" onclick="requestFeature();">Feature Request</div> <br>
-      <div class="requestButton shadows" onclick="openMessagePanel();">Recent Fixes</div>
-    </div>
 
-    <div style="display: flex">
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: luke@schooltimer.net \n LinkedIn: @lukegutman \n GitHub: @lukelmg')">Contact Luke</div>
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1')">Contact Krushil</div>
-      <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia')">Contact Sooraj</div>
+    <div>
+      <div style="display: flex">
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="bugReport();">Bug Report</div> <br>
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="requestFeature();">Feature Request</div> <br>
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="openMessagePanel();">Recent Fixes</div>
+      </div>
+  
+      <div style="display: flex">
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: luke@schooltimer.net \n LinkedIn: @lukegutman \n GitHub: @lukelmg')">Contact Luke</div>
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1')">Contact Krushil</div>
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="alert(' Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia')">Contact Sooraj</div>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="margin-right: 10px;" class="requestButton shadows" onclick="reset()">Reset School Timer</div>
+      </div>
     </div>
+    
     <br><br>
-    <h6>Developed by Luke Gutman, maintained by Krushil Amrutiya &amp Sooraj Tharumia</h6>
-    <h4 class="copy">
+    <center>
+    <h9 class="devInfo">Developed by Luke Gutman, maintained by Krushil Amrutiya &amp Sooraj Tharumia</h9><br>
+    <h8 class="copy devInfoLuke devInfo">
       Copyright &copy Luke Gutman, 2022
-    </h4>
+    </h8>
     </center>
   </div>
 
@@ -279,7 +317,8 @@
           <button class="shadows" onclick="openColor();">Color Picker</button>
 
           <!-- Color Picker -> Covid Cases -->
-          <button class="rightButtons shadows" onclick="openCovidPanel();">Food Menus</button>
+          <button class="rightButtons shadows" onclick="openMenuPanel();">Food Menus</button>
+
           
 
           <button class="shadows" onclick="openStatsPanel();">More Stuff</button>
@@ -292,19 +331,18 @@
     <h1 id="schoolOver">School Is <br> Over</h1>
   </div>
   <audio id="playChristmasMusic" src="https://cdn.glitch.com/36297f95-5deb-4791-aa18-9fa53485f7c0%2FEarth%2C%20Wind%20%26%20Fire%20-%20September%20(Official%20HD%20Video).mp3?v=1632232815336" preload="auto"></audio>
+  <script src="other/color/colorValues.js"></script>
+  <script src="other/stats.js"></script>
+  <script src="other/soundPopup.js"></script>
+  <script src="other/otherTimers.js"></script>
+  <script src="other/sounds.js"></script>
+  <script src="other/color/color.js"></script>
+  <script src="other/size.js"></script>
+  <script src="other/color/customColors.js"></script>
+  <script src="other/readCycle.js"></script>
+  <script src="other/stuff.js"></script>
+  <script src="script.js"></script>
+  <script src="weather/script.js"></script>
+  <script src="FoodMenu/script.js"></script>
 </body>
 </html>
-<script src="other/color/colorValues.js"></script>
-<script src="other/stats.js"></script>
-<script src="other/soundPopup.js"></script>
-<script src="other/otherTimers.js"></script>
-<script src="other/sounds.js"></script>
-<script src="other/color/color.js"></script>
-<script src="other/size.js"></script>
-<script src="other/color/customColors.js"></script>
-<script src="other/readCycle.js"></script>
-<script src="other/stuff.js"></script>
-<script src="script.js"></script>
-<script src="weather/script.js"></script>
-<script src="covidCases/script.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
