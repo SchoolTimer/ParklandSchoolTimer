@@ -56,6 +56,26 @@ function setMainText() {
 
   document.getElementById('maintext').value = currentColors.maintext;
 
+  // var menuItems = document.getElementsByClassName('devInfo');
+  // for (var i = 0; i < menuItems.length; i++) {
+  //   menuItems[i].style.color = currentColors.maintext;
+  // }
+
+  var devInfo = document.getElementsByClassName('devInfo');
+  for (var i = 0; i < devInfo.length; i++) {
+    devInfo[i].style.color = currentColors.maintext;
+  }
+
+  var menuItems = document.getElementsByClassName('menuItems');
+  for (var i = 0; i < menuItems.length; i++) {
+    menuItems[i].style.color = currentColors.maintext;
+  }
+
+  var menuTitles = document.getElementsByClassName('menuTitle');
+  for (var i = 0; i < menuTitles.length; i++) {
+    menuTitles[i].style.color = currentColors.maintext;
+  }
+
   var mainTexts = document.getElementsByTagName('h6');
   for (var i = 0; i < mainTexts.length; i++) {
     mainTexts[i].style.color = currentColors.maintext;
