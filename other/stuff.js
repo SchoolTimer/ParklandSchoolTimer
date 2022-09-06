@@ -11,11 +11,9 @@ function closeStuffPanel() {
 }
 
 function openMessagePanel() {
-  console.log('CLSOING STUFF PANEL')
   closeStatsPanel();
-   console.log('CLOSED STUFF PANEL')
-  document.getElementById('messagePanel').style.left = '50%';
-  document.getElementById('everythingElse').style.filter = 'blur(2px)';
+  document.getElementById("messagePanel").style.left = "50%";
+  document.getElementById('everythingElse').style.filter = "blur(2px)";
   uisound();
 }
 
