@@ -11,6 +11,8 @@
                   "value": 60,
                   "density": {
                       "enable": true,
+
+                      
                       "value_area": 900
                   }
               },
@@ -72,13 +74,13 @@
 
 
 
-function openCovidPanel() {
-  document.getElementById('covidPanel').style.left = '50%';
+function openMenuPanel() {
+  document.getElementById('menuPanel').style.left = '50%';
   document.getElementById('everythingElse').style.filter = 'blur(2px)';
   uisound();
 }
-function closeCovidPanel() {
-  document.getElementById('covidPanel').style.left = '-50%';
+function closeMenuPanel() {
+  document.getElementById('menuPanel').style.left = '-50%';
   document.getElementById('everythingElse').style.filter = 'blur(0px)';
   //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
   uisound();
@@ -91,7 +93,7 @@ function openUpdatePanel() {
   localStorage.removeItem('downUpdate');
   localStorage.removeItem('newMsg');
   // const check = localStorage.getItem('discordUpdate');
-  const check = localStorage.getItem('keystoneUpdate');
+  const check = localStorage.getItem('bigupdate-sept6-2022');
   if (check == 'read') {
     document.getElementById('UpdatePanel').style.left = '-50%';
     document.getElementById('everythingElse').style.filter = 'blur(0px)';
@@ -112,7 +114,7 @@ function closeUpdatePannel() {
   localStorage.removeItem('febUpdate');
   localStorage.removeItem('downUpdate')
   localStorage.removeItem('keystoneUpdate');
-  // localStorage.setItem('keystoneUpdate', 'read');
+  localStorage.setItem('bigupdate-sept6-2022', 'read');
   // localStorage.setItem('discordUpdate', 'read');
 }
 
@@ -535,3 +537,17 @@ var playChristmasMusic = document.getElementById("playChristmasMusic"); //easter
 function togglePlay() {
   playChristmasMusic.play();
 };
+
+
+function reset() {
+  // closes the more stuff panel
+  document.getElementById('moreStats').style.left = '-50%';
+  document.getElementById('everythingElse').style.filter = 'blur(0px)';
+
+  localStorage.clear();
+  alert('School Timer has been reset!');
+
+  // Reloads the page
+  window.location.reload();
+
+}
