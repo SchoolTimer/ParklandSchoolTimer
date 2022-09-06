@@ -675,12 +675,14 @@ select:focus {
   padding: 3vh;
 }
 
+
 .requestButton {
   /* width: 30%; */
-  width: 30%;
+  width: 40%;
+  padding: 5px;
   text-align:center;
   border-radius:2vh;
-  font-size:4vh;
+  font-size:2vh;
   color:#575757;
   /* padding-top:1vh; */
   /* padding-bottom:1vh; */
@@ -848,6 +850,28 @@ p {
   color: #71CB78;
 }
 
+.devInfoLuke {
+  font-weight: 800;
+}
+
+/* More Stuff buttons */
 
 
-/* RAIN EFFECT */
+
+
+/* MENU STYLES */
+.menuTitle {
+  font-weight: 600;
+  margin: 10px;
+  font-size: 35px;
+  text-decoration: underline;
+  /* text-decoration-color: red; */
+}
+
+.menuItems {
+  margin: 10px;
+}
+
+#breakfastMenu, #lunchMenu {
+  font-size: 25px;
+}
