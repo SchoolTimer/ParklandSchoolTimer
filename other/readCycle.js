@@ -58,7 +58,7 @@ function readJsonData() {
       document.getElementById("cycleDayToday").innerHTML = data.today;
       document.getElementById("cycleDayTomorrow").innerHTML = data.tomorrow;
       document.getElementById("cycleDayNextDay").innerHTML = data.nextDay;
-      document.getElementById("currentMonth").innerHTML = data.month;
+      // document.getElementById("currentMonth").innerHTML = data.month;
       // document.getElementById("currentSchedule").innerHTML = data.currentSchedule;
     });
 
