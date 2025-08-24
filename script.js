@@ -373,6 +373,24 @@ function updatePeriodLabels() {
     for (var i = 1; i < timerHeaders.length; i++) {
       timerHeaders[i].innerHTML = suffix(i) + " Period";
     }
+    return;
+  }
+
+  // Special labeling for C schedule: periods 1,2,3,8,9
+  if (currentScheduleSelected === "C") {
+    var timerHeadersC = document.querySelectorAll(".timer h2");
+    if (!timerHeadersC || timerHeadersC.length === 0) {
+      return;
+    }
+    var cPeriodNumbers = [1, 2, 3, 8, 9];
+    for (
+      var j = 0;
+      j < timerHeadersC.length && j < cPeriodNumbers.length;
+      j++
+    ) {
+      timerHeadersC[j].innerHTML = suffix(cPeriodNumbers[j]) + " Period";
+    }
+    return;
   }
 }
 
