@@ -11,8 +11,8 @@ function closeStatsPanel() {
 }
 
 var deadlines = [
-                 new Date("June 9, 2023 14:30:00").getTime(),
-                 new Date("June 3, 2023 14:30:00").getTime(),
+                 new Date("June 9, 2026 14:30:00").getTime(),
+                 new Date("June 3, 2026 14:30:00").getTime(),
                 ];
 
 var statNames = [
