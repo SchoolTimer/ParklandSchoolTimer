@@ -45,26 +45,15 @@
 // }
 
 function readJsonData() {
-  //   Working url: https://schooltimer-api.vercel.app/api/data
-
-  fetch("https://schooltimer-api.vercel.app/api/data", {
-    cache: "reload",
-    mode: "cors",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      document.getElementById("cycleDayOutput").innerHTML = data.daycycle.today;
-      document.getElementById("cycleDayToday").innerHTML = data.daycycle.today;
+  // Use the shared combined API fetch to avoid multiple requests
+  window.SchoolTimerAPI.fetchCombinedData()
+    .then((combined) => {
+      var dc = combined.daycycle || {};
+      document.getElementById("cycleDayOutput").innerHTML = dc.today || "-";
+      document.getElementById("cycleDayToday").innerHTML = dc.today || "-";
       document.getElementById("cycleDayTomorrow").innerHTML =
-        data.daycycle.tomorrow;
-      document.getElementById("cycleDayNextDay").innerHTML =
-        data.daycycle.next_day;
-      // document.getElementById("currentMonth").innerHTML = data.month;
-      // document.getElementById("currentSchedule").innerHTML = data.currentSchedule;
+        dc.tomorrow || "-";
+      document.getElementById("cycleDayNextDay").innerHTML = dc.next_day || "-";
     })
     .catch((error) => {
       console.error("Error fetching daycycle data:", error);
