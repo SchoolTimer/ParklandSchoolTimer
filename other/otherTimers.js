@@ -49,7 +49,7 @@ var curMin;
 (function progress() {
   
   var today = new Date();
-  var endSchool = new Date("2023-6-9");
+  var endSchool = new Date("2026-06-09");
   var diffMs = (endSchool - today); // milliseconds between now & endSchool
 
   var percent = (((diffMs / 24537600000) * 100 - 100)*-1).toFixed(0);

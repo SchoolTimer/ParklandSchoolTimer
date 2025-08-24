@@ -26,25 +26,28 @@ async function readJsonDataFoodMenu() {
         }
       }
 
-
       // Lunch menu
       var LunchObjSize = data.lunch.length;
       var lunchDiv = document.getElementById("lunchMenu");
       lunchDiv.innerHTML = "";
       for (let i = 0; i < LunchObjSize; i++) {
         if (i == 0) {
-    
           let lunch = data.lunch[i].product.name;
           lunch = lunch.charAt(0).toUpperCase() + lunch.slice(1);
           lunchDiv.innerHTML += lunch;
         } else {
-        
           let lunch = data.lunch[i].product.name;
           lunchUpperCase = lunch.charAt(0).toUpperCase() + lunch.slice(1);
           lunchFormated = ", " + lunchUpperCase;
           lunchDiv.innerHTML += lunchFormated;
         }
       }
+    })
+    .catch((error) => {
+      console.error("Error fetching food menu data:", error);
+      // Display dash for food menu elements when API fails
+      document.getElementById("breakfastMenu").innerHTML = "-";
+      document.getElementById("lunchMenu").innerHTML = "-";
     });
 
   setTimeout(readJsonDataFoodMenu, 60 * 12 * 60 * 1000);
