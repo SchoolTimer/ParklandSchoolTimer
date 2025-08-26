@@ -62,9 +62,22 @@
     };
   }
 
-  function fetchJson(url) {
-    return fetch(url).then(function toJson(response) {
+  function fetchJson(url, init) {
+    return fetch(url, init).then(function toJson(response) {
       return response.json();
+    });
+  }
+
+  function withTimeout(promise, ms) {
+    var controller = new AbortController();
+    var timeout = setTimeout(function () {
+      try {
+        controller.abort();
+      } catch (e) {}
+    }, ms);
+    var wrapped = fetchJson(API_URL, { signal: controller.signal });
+    return wrapped.finally(function () {
+      clearTimeout(timeout);
     });
   }
 
@@ -74,11 +87,33 @@
       return inFlightPromise;
     }
 
-    // Avoid custom headers/mode on GET to prevent CORS preflight
-    inFlightPromise = fetchJson(API_URL)
-      .catch(function tryProxy(error) {
-        // Retry through CORS proxy (useful in local dev when API doesn't allow localhost origins)
-        return fetchJson(CORS_PROXY + encodeURIComponent(API_URL));
+    // Try direct fetch first with a short timeout
+    var isLocalDev = (function () {
+      var origin = (typeof location !== "undefined" && location.origin) || "";
+      return /localhost|127\.0\.0\.1/.test(origin);
+    })();
+
+    function tryDirect() {
+      return fetchJson(API_URL);
+    }
+
+    function tryProxiesSequentially() {
+      var idx = 0;
+      function next() {
+        if (idx >= CORS_PROXIES.length) {
+          return Promise.reject(new Error("All CORS proxies failed"));
+        }
+        var proxyUrl = CORS_PROXIES[idx++] + encodeURIComponent(API_URL);
+        return fetchJson(proxyUrl).catch(next);
+      }
+      return next();
+    }
+
+    inFlightPromise = tryDirect()
+      .catch(function onDirectFail() {
+        // Only attempt proxy fallbacks during local development
+        if (!isLocalDev) throw new Error("Direct fetch failed outside dev");
+        return tryProxiesSequentially();
       })
       .then(function handleRaw(raw) {
         cachedData = normalizeResponse(raw);
