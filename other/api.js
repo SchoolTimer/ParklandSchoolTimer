@@ -4,7 +4,7 @@
 /* global window */
 
 (function initSchoolTimerAPI(global) {
-  const API_URL = "https://schooltimer-api.vercel.app/api/data";
+  const API_URL = "https://api.schooltimer.net/api/data";
   const CORS_PROXY = "https://corsproxy.io/?"; // fallback for localhost/dev only
 
   /**
