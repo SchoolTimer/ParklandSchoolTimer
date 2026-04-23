@@ -3,6 +3,7 @@ import { PeriodCard } from "./PeriodCard";
 import type { ScheduleLetter, CycleDay } from "../../lib/schedule";
 import { getSchedule, computePeriodState } from "../../lib/timers";
 import { useScheduleStore } from "../../store/useScheduleStore";
+import { useBellTables } from "../../store/useBellStore";
 
 type Props = {
   now: Date;
@@ -11,7 +12,8 @@ type Props = {
 };
 
 export function PeriodGrid({ now, letter, cycleDay }: Props) {
-  const table = getSchedule(letter);
+  const bellTables = useBellTables();
+  const table = getSchedule(letter, bellTables);
   const userSchedule = useScheduleStore((s) => s.schedule);
 
   const periods = useMemo(

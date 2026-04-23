@@ -3,11 +3,13 @@ import { formatCountdown, parseHHMM } from "../../lib/time";
 import type { ScheduleLetter, CycleDay } from "../../lib/schedule";
 import { getSchedule, computePeriodState } from "../../lib/timers";
 import { useScheduleStore } from "../../store/useScheduleStore";
+import type { BellTables } from "../../store/useBellStore";
 
 type Props = {
   now: Date;
   letter: ScheduleLetter;
   cycleDay: CycleDay | null;
+  bellTables: BellTables;
 };
 
 function fmt(hhmm: string) {
@@ -16,8 +18,8 @@ function fmt(hhmm: string) {
   return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-export function HeroTimer({ now, letter, cycleDay }: Props) {
-  const table        = getSchedule(letter);
+export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
+  const table        = getSchedule(letter, bellTables);
   const userSchedule = useScheduleStore((s) => s.schedule);
   const homeroomRoom = useScheduleStore((s) => s.homeroomRoom);
 
@@ -53,7 +55,7 @@ export function HeroTimer({ now, letter, cycleDay }: Props) {
   /* ── SCHOOL OVER ─────────────────────────────────────────────────────── */
   if (allOver) {
     return (
-      <div className="flex-1 flex flex-col justify-center px-14 pb-10">
+      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
         <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-5">
           School Day
         </p>
@@ -72,7 +74,7 @@ export function HeroTimer({ now, letter, cycleDay }: Props) {
     const pct = Math.max(0, Math.min(100, ((totalMs - endsIn) / totalMs) * 100));
 
     return (
-      <div className="flex-1 flex flex-col justify-center px-14 pb-10">
+      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
         {/* Live badge */}
         <div className="flex items-center gap-2.5 mb-8">
           <span className="live-dot w-2 h-2 rounded-full bg-accent shrink-0" />
@@ -102,9 +104,9 @@ export function HeroTimer({ now, letter, cycleDay }: Props) {
         </p>
 
         {/* Progress track */}
-        <div className="rounded-full h-1.5 w-full max-w-xl overflow-hidden mb-8 bg-border">
+        <div className="h-1.5 w-full max-w-xl overflow-hidden mb-8 bg-border">
           <div
-            className="h-full rounded-full bg-accent transition-[width] duration-1000 ease-linear"
+            className="h-full bg-accent transition-[width] duration-1000 ease-linear"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -134,7 +136,7 @@ export function HeroTimer({ now, letter, cycleDay }: Props) {
     const startsIn = (next.state as { startsIn: number }).startsIn;
 
     return (
-      <div className="flex-1 flex flex-col justify-center px-14 pb-10">
+      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
         <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-7">
           Up Next
         </p>
@@ -179,7 +181,7 @@ export function HeroTimer({ now, letter, cycleDay }: Props) {
 
   /* ── BEFORE SCHOOL ───────────────────────────────────────────────────── */
   return (
-    <div className="flex-1 flex flex-col justify-center px-14 pb-10">
+    <div className="flex-1 flex flex-col justify-center px-10 pb-8">
       <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-5">
         Good Morning
       </p>

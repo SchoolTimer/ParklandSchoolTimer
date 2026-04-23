@@ -5,6 +5,10 @@ import { PaletteIcon, PencilIcon, UtensilsIcon, SettingsIcon, FlameIcon } from "
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useStreakStore } from "../../store/useStreakStore";
+import { useScheduleStore } from "../../store/useScheduleStore";
+import { useBellTables } from "../../store/useBellStore";
+import { getSchedule, computePeriodState } from "../../lib/timers";
+import { formatCountdown } from "../../lib/time";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAYS   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -49,10 +53,10 @@ export function RightRail({
   useEffect(() => { tick(); }, [tick]);
 
   return (
-    <div className="w-72 shrink-0 h-full flex flex-col gap-2.5 overflow-hidden">
+    <div className="w-64 shrink-0 h-full flex flex-col gap-2 overflow-y-auto overflow-x-hidden">
 
       {/* ── 1. Header ─────────────────────────────────────────────────── */}
-      <div className="card shrink-0 rounded-2xl px-5 py-4 relative overflow-hidden">
+      <div className="card shrink-0 rounded-2xl px-4 py-3 relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -65,20 +69,20 @@ export function RightRail({
             <p className="text-[11px] font-bold text-dim uppercase tracking-[0.2em] leading-none mb-2">
               {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
             </p>
-            <p className="tabular font-black text-text leading-none text-5xl">
+            <p className="tabular font-black text-text leading-none text-4xl">
               {h12}:{m}
             </p>
           </div>
-          <div className="flex flex-col items-end gap-1.5 pb-0.5">
-            <span className="text-3xl font-black text-dim tabular leading-none">{s}</span>
-            <span className="text-sm font-bold text-dim uppercase tracking-widest leading-none">{ampm}</span>
+          <div className="flex flex-col items-end gap-1 pb-0.5">
+            <span className="text-2xl font-black text-dim tabular leading-none">{s}</span>
+            <span className="text-xs font-bold text-dim uppercase tracking-widest leading-none">{ampm}</span>
           </div>
         </div>
       </div>
 
       {/* ── 2. Cycle Day ──────────────────────────────────────────────── */}
-      <div className="card shrink-0 px-4 py-4">
-        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-3">Cycle Day</p>
+      <div className="card shrink-0 px-4 py-3">
+        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-2">Cycle Day</p>
         <div className="grid grid-cols-3 gap-2">
           <CycleCell label="Today"    cycle={noSchool ? null : today} noSchool={noSchool} primary />
           <CycleCell label="Tomorrow" cycle={tomorrow} weekend={now.getDay() === 6} />
@@ -87,10 +91,9 @@ export function RightRail({
       </div>
 
       {/* ── 3. Progress ───────────────────────────────────────────────── */}
-      <div className="card px-4 py-3 shrink-0 flex flex-col gap-3">
+      <div className="card px-4 py-3 shrink-0 flex flex-col gap-2">
         <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em]">Progress</p>
-
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <ProgressRow label="School Day"  pct={dayPct}  sublabel={`${dayPct}% through today`} />
           <ProgressRow label="School Year" pct={yearPct} sublabel={`${daysLeft} days remaining`} />
         </div>
@@ -99,7 +102,10 @@ export function RightRail({
       {/* ── 4. Streak ─────────────────────────────────────────────────── */}
       <StreakWidget streak={streak} best={best} />
 
-      {/* ── 5. Schedule selector ──────────────────────────────────────── */}
+      {/* ── 5. Lunch ──────────────────────────────────────────────────── */}
+      <LunchWidget now={now} effectiveLetter={effectiveLetter} onEdit={() => onModal("schedule")} />
+
+      {/* ── 6. Schedule selector ──────────────────────────────────────── */}
       <div className="card shrink-0 p-1.5">
         <div className="flex gap-1">
           {LETTERS.map((l) => {
@@ -108,7 +114,7 @@ export function RightRail({
               <button
                 key={l}
                 onClick={() => onLetterChange(l)}
-                className={`flex-1 py-2 rounded-xl text-center transition-all duration-150 ${
+                className={`flex-1 py-2 rounded-xl text-center transition-colors duration-100 ${
                   active
                     ? "bg-accent text-white font-bold"
                     : "text-dim hover:text-text hover:bg-surface-2"
@@ -173,20 +179,20 @@ function CycleCell({
 
   return (
     <div
-      className={`rounded-xl p-3 flex flex-col gap-2.5 ${
+      className={`rounded-xl p-2.5 flex flex-col gap-1.5 ${
         primary ? "bg-accent-soft border border-accent/20" : "bg-surface-2"
       }`}
     >
       <p className={`text-[10px] font-semibold leading-none ${dimColor}`}>{label}</p>
       {noSchool || weekend ? (
-        <span className="text-lg font-bold text-dim-2 leading-none">—</span>
+        <span className="text-base font-bold text-dim-2 leading-none">—</span>
       ) : cycle ? (
         <div className="flex items-baseline gap-1">
-          <span className={`text-[2rem] font-bold tabular leading-none ${textColor}`}>{cycle.cycleDay}</span>
-          <span className={`text-sm font-bold leading-none ${dimColor}`}>{cycle.letter}</span>
+          <span className={`text-[1.6rem] font-bold tabular leading-none ${textColor}`}>{cycle.cycleDay}</span>
+          <span className={`text-xs font-bold leading-none ${dimColor}`}>{cycle.letter}</span>
         </div>
       ) : (
-        <span className="text-lg font-bold text-dim-2 leading-none">—</span>
+        <span className="text-base font-bold text-dim-2 leading-none">—</span>
       )}
     </div>
   );
@@ -200,8 +206,8 @@ function ProgressRow({
   pct: number;
   sublabel: string;
 }) {
-  const size   = 60;
-  const stroke = 6;
+  const size   = 48;
+  const stroke = 5;
   const r      = (size - stroke) / 2;
   const circ   = 2 * Math.PI * r;
   const offset = circ * (1 - Math.max(0, Math.min(100, pct)) / 100);
@@ -239,9 +245,9 @@ function ProgressRow({
           <span className="text-xs font-bold text-text">{label}</span>
           <span className="text-[11px] font-bold tabular text-accent">{pct}%</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-border-2 overflow-hidden">
+        <div className="h-1.5 w-full bg-border-2 overflow-hidden">
           <div
-            className="h-full rounded-full transition-[width] duration-700 ease-out"
+            className="h-full transition-[width] duration-700 ease-out"
             style={{ width: `${pct}%`, background: "var(--color-accent)" }}
           />
         </div>
@@ -255,9 +261,9 @@ function ProgressRow({
 function StreakWidget({ streak, best }: { streak: number; best: number }) {
   const flames = Math.min(streak, 7);
   return (
-    <div className="card shrink-0 px-4 py-3 flex items-center gap-3">
-      <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-accent-soft border border-accent/20 shrink-0">
-        <FlameIcon width={20} height={20} className="text-accent" />
+    <div className="card shrink-0 px-4 py-2.5 flex items-center gap-3">
+      <div className="flex flex-col items-center justify-center w-10 h-10 rounded-xl bg-accent-soft border border-accent/20 shrink-0">
+        <FlameIcon width={16} height={16} className="text-accent" />
         <span className="text-[10px] font-bold text-accent leading-none mt-0.5">{streak}</span>
       </div>
       <div className="flex-1 min-w-0">
@@ -268,7 +274,7 @@ function StreakWidget({ streak, best }: { streak: number; best: number }) {
           {Array.from({ length: 7 }).map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
+              className={`h-1.5 flex-1 transition-colors ${
                 i < flames ? "bg-accent" : "bg-border-2"
               }`}
             />
@@ -276,6 +282,53 @@ function StreakWidget({ streak, best }: { streak: number; best: number }) {
         </div>
         <p className="text-[10px] text-dim">Best: {best} {best === 1 ? "day" : "days"}</p>
       </div>
+    </div>
+  );
+}
+
+/* ── LunchWidget ──────────────────────────────────────────────────── */
+function LunchWidget({ now, effectiveLetter, onEdit }: { now: Date; effectiveLetter: ScheduleLetter; onEdit: () => void }) {
+  const lunchPeriod = useScheduleStore((s) => s.lunchPeriod);
+  const bellTables  = useBellTables();
+
+  if (!lunchPeriod) {
+    return (
+      <div className="card shrink-0 px-4 py-3">
+        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-2">Lunch</p>
+        <button onClick={onEdit} className="text-[10px] text-accent hover:underline">
+          Set your lunch period →
+        </button>
+      </div>
+    );
+  }
+
+  const table = getSchedule(effectiveLetter, bellTables);
+  const idx   = table.periodLabels.findIndex((l) => l === String(lunchPeriod));
+  const state = idx >= 0 ? computePeriodState(now, table.start[idx], table.end[idx]) : null;
+
+  const isActive = state?.status === "active";
+  const isOver   = state?.status === "over";
+  const startsIn = state?.status === "upcoming" ? (state as { startsIn: number }).startsIn : null;
+
+  return (
+    <div className="card shrink-0 px-4 py-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em]">Lunch</p>
+        <span className="text-[10px] text-dim">Period {lunchPeriod}</span>
+      </div>
+
+      {isActive ? (
+        <p className="text-sm font-bold text-accent">Lunch now!</p>
+      ) : isOver ? (
+        <p className="text-sm font-semibold text-dim-2">Lunch is over</p>
+      ) : startsIn !== null ? (
+        <div>
+          <p className="text-[10px] text-dim mb-1">Starts in</p>
+          <p className="text-xl font-black tabular text-text leading-none">{formatCountdown(startsIn)}</p>
+        </div>
+      ) : (
+        <p className="text-xs text-dim-2">—</p>
+      )}
     </div>
   );
 }
@@ -288,7 +341,7 @@ function ActionBtn({ icon, onClick, children }: { icon: ReactNode; onClick: () =
       className="flex items-center gap-2 px-3 h-9 rounded-xl text-[11px] font-semibold text-dim hover:text-text hover:bg-surface-2 transition-colors w-full"
     >
       <span className="shrink-0">{icon}</span>
-      {children}
+      <span className="whitespace-nowrap">{children}</span>
     </button>
   );
 }

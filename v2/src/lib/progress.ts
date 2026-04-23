@@ -1,5 +1,6 @@
 import { BELL_TABLES, type ScheduleLetter } from "./schedule";
 import { parseHHMM } from "./time";
+import type { BellTables } from "../store/useBellStore";
 
 export function schoolYearProgress(now: Date, start = "2025-08-15", end = "2026-06-09"): number {
   const a = new Date(start).getTime();
@@ -8,8 +9,8 @@ export function schoolYearProgress(now: Date, start = "2025-08-15", end = "2026-
   return Math.max(0, Math.min(100, Math.round(pct)));
 }
 
-export function schoolDayProgress(now: Date, letter: ScheduleLetter): number {
-  const t = BELL_TABLES[letter];
+export function schoolDayProgress(now: Date, letter: ScheduleLetter, tables?: BellTables): number {
+  const t = (tables ?? BELL_TABLES)[letter];
   // Use first period slot (skip HR on B schedule) through last slot
   const firstIdx = t.periodLabels.findIndex((l) => l !== "HR");
   const startMs  = parseHHMM(t.start[firstIdx >= 0 ? firstIdx : 0], now).getTime();

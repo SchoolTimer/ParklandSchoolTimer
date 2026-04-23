@@ -138,8 +138,8 @@ function Countdown({ label, date, ms, pct: p }: { label: string; date: string; m
         <span className="text-[10px] text-dim">{date}</span>
       </div>
       <p className="text-base font-bold tabular text-text leading-none mb-2">{fmt(ms)}</p>
-      <div className="h-1 w-full rounded-full bg-border overflow-hidden">
-        <div className="h-full rounded-full" style={{ width: `${p}%`, background: "var(--color-accent)" }} />
+      <div className="h-1 w-full bg-border overflow-hidden">
+        <div className="h-full" style={{ width: `${p}%`, background: "var(--color-accent)" }} />
       </div>
       <p className="text-[9px] text-dim mt-1">{p}% elapsed</p>
     </div>

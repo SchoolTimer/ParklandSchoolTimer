@@ -31,7 +31,9 @@ function emptySchedule(): UserSchedule {
 type ScheduleStore = {
   schedule: UserSchedule;
   homeroomRoom: string;
+  lunchPeriod: number | null;
   setHomeroomRoom: (room: string) => void;
+  setLunchPeriod: (period: number | null) => void;
   setPeriod: (day: CycleDay, period: number, patch: Partial<PeriodEntry>) => void;
   copyDay: (from: CycleDay, to: CycleDay) => void;
   resetDay: (day: CycleDay) => void;
@@ -46,7 +48,9 @@ export const useScheduleStore = create<ScheduleStore>()(
     (set, get) => ({
       schedule: emptySchedule(),
       homeroomRoom: "",
+      lunchPeriod: null,
       setHomeroomRoom: (room) => set({ homeroomRoom: room }),
+      setLunchPeriod: (period) => set({ lunchPeriod: period }),
 
       setPeriod: (day, period, patch) =>
         set((state) => ({

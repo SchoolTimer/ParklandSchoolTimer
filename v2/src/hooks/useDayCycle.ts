@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { fetchCombinedData, type SchoolTimerData } from "../lib/api";
 import { parseCycleString, isNoSchool, type ParsedCycle } from "../lib/schedule";
+import { useBellStore } from "../store/useBellStore";
 
-const REFRESH_MS = 12 * 60 * 1000; // 12 minutes
+function msUntilMidnight(): number {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  return midnight.getTime() - now.getTime();
+}
 
 export type DayCycleState = {
   data: SchoolTimerData | null;
@@ -18,16 +24,21 @@ export function useDayCycle(): DayCycleState {
   const [data, setData] = useState<SchoolTimerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
+  const setFromApi = useBellStore((s) => s.setFromApi);
 
   useEffect(() => {
     let cancelled = false;
+    let dayTimer: ReturnType<typeof setTimeout>;
+    let lastFetchedDate = new Date().toDateString();
 
     const load = () => {
-      fetchCombinedData()
+      lastFetchedDate = new Date().toDateString();
+      fetchCombinedData({ force: true })
         .then((d) => {
           if (cancelled) return;
           setData(d);
           setError(null);
+          if (d.schedules) setFromApi(d.schedules);
         })
         .catch((e) => {
           if (cancelled) return;
@@ -38,11 +49,29 @@ export function useDayCycle(): DayCycleState {
         });
     };
 
+    const scheduleNextDay = () => {
+      dayTimer = setTimeout(() => {
+        load();
+        scheduleNextDay();
+      }, msUntilMidnight());
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && new Date().toDateString() !== lastFetchedDate) {
+        load();
+        clearTimeout(dayTimer);
+        scheduleNextDay();
+      }
+    };
+
     load();
-    const id = setInterval(load, REFRESH_MS);
+    scheduleNextDay();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       cancelled = true;
-      clearInterval(id);
+      clearTimeout(dayTimer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

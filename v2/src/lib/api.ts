@@ -13,9 +13,24 @@ export type FoodMenu = {
   lunch: string[];
 };
 
+export type RawSlot = {
+  label: string;
+  start: string;
+  end: string;
+};
+
+export type RawScheduleEntry = {
+  name: string;
+  slots: RawSlot[];
+  last_updated?: string | null;
+};
+
+export type RawSchedules = Record<string, RawScheduleEntry>;
+
 export type SchoolTimerData = {
   daycycle: RawDaycycle;
   foodmenu: FoodMenu;
+  schedules: RawSchedules | null;
   timestamp: string | null;
   last_updated: {
     daycycle: string | null;
@@ -36,6 +51,27 @@ function normalizeMenu(items: unknown): string[] {
     .map((v) => v.charAt(0).toUpperCase() + v.slice(1));
 }
 
+function normalizeSchedules(raw: unknown): RawSchedules | null {
+  if (!raw || typeof raw !== "object") return null;
+  const entries = Object.entries(raw as Record<string, unknown>);
+  if (entries.length === 0) return null;
+  const result: RawSchedules = {};
+  for (const [letter, val] of entries) {
+    const entry = val as Record<string, unknown>;
+    const slots = Array.isArray(entry.slots)
+      ? (entry.slots as RawSlot[]).filter((s) => s.label && s.start && s.end)
+      : [];
+    if (slots.length > 0) {
+      result[letter] = {
+        name: (entry.name as string) ?? letter,
+        slots,
+        last_updated: (entry.last_updated as string | undefined) ?? null,
+      };
+    }
+  }
+  return Object.keys(result).length > 0 ? result : null;
+}
+
 function normalize(raw: unknown): SchoolTimerData {
   const r = (raw ?? {}) as Record<string, unknown>;
   const daycycle = (r.daycycle ?? {}) as RawDaycycle;
@@ -47,6 +83,7 @@ function normalize(raw: unknown): SchoolTimerData {
       breakfast: normalizeMenu(foodRaw.breakfast),
       lunch: normalizeMenu(foodRaw.lunch),
     },
+    schedules: normalizeSchedules(r.schedules),
     timestamp: (r.timestamp as string | undefined) ?? null,
     last_updated: {
       daycycle: daycycle?.last_updated ?? null,

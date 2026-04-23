@@ -1,5 +1,6 @@
-import { BELL_TABLES, type ScheduleLetter } from "./schedule";
+import { BELL_TABLES, type BellTable, type ScheduleLetter } from "./schedule";
 import { parseHHMM } from "./time";
+import type { BellTables } from "../store/useBellStore";
 
 export type TimerState =
   | { status: "upcoming"; startsIn: number; endsIn: number }
@@ -19,6 +20,6 @@ export function computePeriodState(
   return { status: "upcoming", startsIn: start - t, endsIn: end - t };
 }
 
-export function getSchedule(letter: ScheduleLetter) {
-  return BELL_TABLES[letter];
+export function getSchedule(letter: ScheduleLetter, tables?: BellTables): BellTable {
+  return (tables ?? BELL_TABLES)[letter];
 }

@@ -4,14 +4,15 @@ import { getSchedule, computePeriodState } from "../lib/timers";
 import { formatCountdown } from "../lib/time";
 import type { CycleDay } from "../lib/schedule";
 import { useScheduleStore } from "../store/useScheduleStore";
+import type { BellTables } from "../store/useBellStore";
 
-export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: CycleDay | null, noSchool: boolean) {
+export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: CycleDay | null, noSchool: boolean, bellTables: BellTables) {
   const userSchedule = useScheduleStore((s) => s.schedule);
 
   const title = useMemo(() => {
     if (noSchool) return "No School · School Timer";
 
-    const table = getSchedule(letter);
+    const table = getSchedule(letter, bellTables);
     const periods = table.start.map((s, i) => {
       const slotLabel = table.periodLabels[i];
       const periodNum = slotLabel === "HR" ? null : Number(slotLabel);
@@ -35,7 +36,7 @@ export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: Cy
     }
 
     return "School Is Over · School Timer";
-  }, [now, letter, cycleDay, noSchool, userSchedule]);
+  }, [now, letter, cycleDay, noSchool, userSchedule, bellTables]);
 
   useEffect(() => {
     document.title = title;

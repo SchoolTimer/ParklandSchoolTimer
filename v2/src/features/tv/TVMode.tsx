@@ -6,6 +6,7 @@ import { useScheduleStore } from "../../store/useScheduleStore";
 import { useApplyTheme } from "../../store/useThemeStore";
 import { useClickSound } from "../../hooks/useClickSound";
 import { getSchedule, computePeriodState } from "../../lib/timers";
+import { useBellTables } from "../../store/useBellStore";
 import { formatCountdown, parseHHMM } from "../../lib/time";
 import type { ScheduleLetter } from "../../lib/schedule";
 
@@ -23,7 +24,7 @@ export function TVMode() {
   useClickSound();
 
   const now          = useClock(1000);
-  const { today, noSchool } = useDayCycle();
+  const { data, today, tomorrow, nextDay, noSchool } = useDayCycle();
   const getEffectiveOverride = useSettingsStore((s) => s.getEffectiveOverride);
   const effectiveLetter: ScheduleLetter = getEffectiveOverride() ?? today?.letter ?? "A";
   const userSchedule = useScheduleStore((s) => s.schedule);
@@ -35,7 +36,8 @@ export function TVMode() {
   const ampm = h >= 12 ? "PM" : "AM";
   const h12  = h % 12 || 12;
 
-  const table = getSchedule(effectiveLetter);
+  const bellTables = useBellTables();
+  const table = getSchedule(effectiveLetter, bellTables);
 
   const periods = useMemo(() =>
     table.start.map((st, i) => {
@@ -61,12 +63,12 @@ export function TVMode() {
 
       {/* ── Top bar ── */}
       <div className="flex items-center justify-between px-16 pt-10">
-        <p className="text-[15px] font-bold text-dim uppercase tracking-[0.25em]">Parkland HS</p>
-        <p className="text-[15px] font-bold tabular text-dim">
+        <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">Parkland HS</p>
+        <p className="text-[32px] font-bold tabular text-dim">
           {h12}:{m}<span className="text-dim-2 ml-1">:{s}</span>
-          <span className="text-dim-2 ml-2 text-sm">{ampm}</span>
+          <span className="text-dim-2 ml-2 text-xl">{ampm}</span>
         </p>
-        <p className="text-[15px] font-bold text-dim uppercase tracking-[0.25em]">
+        <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">
           {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
         </p>
       </div>
@@ -75,13 +77,52 @@ export function TVMode() {
       <div className="flex-1 flex flex-col justify-center px-20 pb-12 gap-10">
 
         {noSchool || allOver ? (
-          <div className="flex flex-col items-center justify-center flex-1">
-            <p className="text-2xl font-bold text-dim uppercase tracking-[0.2em] mb-6">
-              {noSchool ? "No School Today" : "School Day Complete"}
-            </p>
-            <h1 className="text-[12rem] font-black text-text leading-none">
-              {noSchool ? "—" : "Done"}
-            </h1>
+          <div className="flex flex-col items-center justify-center flex-1 gap-16">
+            <div className="flex flex-col items-center">
+              <p className="text-2xl font-bold text-dim uppercase tracking-[0.2em] mb-6">
+                {noSchool ? "No School Today" : "School Day Complete"}
+              </p>
+              <h1 className="text-[12rem] font-black text-text leading-none">
+                {noSchool ? "—" : "Done"}
+              </h1>
+            </div>
+
+            {data && (
+              <div className="flex gap-10">
+                {(() => {
+                  const tomorrowNoSchool = !tomorrow && data.daycycle.tomorrow != null;
+                  return (
+                    <div className="flex flex-col items-center px-10 py-6 rounded-2xl bg-surface border border-border gap-2 min-w-40">
+                      <p className="text-sm font-bold text-dim uppercase tracking-[0.2em]">Tomorrow</p>
+                      {tomorrow ? (
+                        <div className="flex items-baseline gap-2 mt-1">
+                          <p className="text-[4rem] font-black text-accent tabular leading-none">{tomorrow.cycleDay}</p>
+                          <p className="text-2xl font-black text-dim leading-none">{tomorrow.letter}</p>
+                        </div>
+                      ) : (
+                        <p className="text-2xl font-black text-dim-2 mt-1">{tomorrowNoSchool ? "—" : "—"}</p>
+                      )}
+                    </div>
+                  );
+                })()}
+                {(() => {
+                  const nextNoSchool = !nextDay && data.daycycle.next_day != null;
+                  return (
+                    <div className="flex flex-col items-center px-10 py-6 rounded-2xl bg-surface border border-border gap-2 min-w-40">
+                      <p className="text-sm font-bold text-dim uppercase tracking-[0.2em]">Day After</p>
+                      {nextDay ? (
+                        <div className="flex items-baseline gap-2 mt-1">
+                          <p className="text-[4rem] font-black text-dim-2 tabular leading-none">{nextDay.cycleDay}</p>
+                          <p className="text-2xl font-black text-dim leading-none">{nextDay.letter}</p>
+                        </div>
+                      ) : (
+                        <p className="text-2xl font-black text-dim-2 mt-1">{nextNoSchool ? "—" : "—"}</p>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
           </div>
         ) : active ? (
           <>
@@ -122,8 +163,8 @@ export function TVMode() {
                 const totalMs = parseHHMM(active.end, now).getTime() - parseHHMM(active.start, now).getTime();
                 const pct = Math.max(0, Math.min(100, ((totalMs - endsIn) / totalMs) * 100));
                 return (
-                  <div className="w-full h-2 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-accent transition-[width] duration-1000 ease-linear" style={{ width: `${pct}%` }} />
+                  <div className="w-full h-2 bg-border overflow-hidden">
+                    <div className="h-full bg-accent transition-[width] duration-1000 ease-linear" style={{ width: `${pct}%` }} />
                   </div>
                 );
               })()}
@@ -157,7 +198,7 @@ export function TVMode() {
           <>
             <div className="flex items-end gap-8">
               <div className="flex-1 min-w-0">
-                <p className="text-lg font-bold text-dim uppercase tracking-[0.2em] mb-4">Up Next</p>
+                <p className="text-[22px] font-bold text-dim uppercase tracking-[0.2em] mb-4">Up Next</p>
                 <h1 className="text-[5.5rem] font-black text-text leading-none">
                   {next.name}
                 </h1>
@@ -174,11 +215,11 @@ export function TVMode() {
               )}
             </div>
             <div>
-              <p className="text-[11px] font-bold text-dim uppercase tracking-[0.2em] mb-3">Starts in</p>
+              <p className="text-[15px] font-bold text-dim uppercase tracking-[0.2em] mb-3">Starts in</p>
               <p className="text-[9rem] font-black tabular text-dim-2 leading-none mb-3">
                 {formatCountdown((next.state as { startsIn: number }).startsIn)}
               </p>
-              <p className="text-xl text-dim">{fmt(next.start)} – {fmt(next.end)}</p>
+              <p className="text-3xl text-dim">{fmt(next.start)} – {fmt(next.end)}</p>
             </div>
           </>
         ) : null}

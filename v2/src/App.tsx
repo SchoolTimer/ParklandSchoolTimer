@@ -8,6 +8,7 @@ import { useClickSound } from "./hooks/useClickSound";
 import { useDocumentTitle } from "./hooks/useDocumentTitle";
 import type { ScheduleLetter } from "./lib/schedule";
 import { schoolDayProgress, schoolWeekProgress, schoolYearProgress } from "./lib/progress";
+import { useBellTables } from "./store/useBellStore";
 
 import { HeroTimer } from "./features/timers/HeroTimer";
 import { RightRail } from "./features/sidebar/RightRail";
@@ -32,14 +33,15 @@ function App() {
   const getEffectiveOverride = useSettingsStore((s) => s.getEffectiveOverride);
   const setLetterOverride    = useSettingsStore((s) => s.setLetterOverride);
   const effectiveLetter: ScheduleLetter = getEffectiveOverride() ?? today?.letter ?? "A";
+  const bellTables = useBellTables();
 
   const [modal, setModal] = useState<ModalKey>(null);
 
-  const dayPct  = schoolDayProgress(now, effectiveLetter);
+  const dayPct  = schoolDayProgress(now, effectiveLetter, bellTables);
   const yearPct = schoolYearProgress(now);
   void schoolWeekProgress(now);
 
-  useDocumentTitle(now, effectiveLetter, today?.cycleDay ?? null, noSchool);
+  useDocumentTitle(now, effectiveLetter, today?.cycleDay ?? null, noSchool, bellTables);
 
   return (
     <div className="h-screen w-screen flex overflow-hidden bg-bg p-3 gap-3">
@@ -60,7 +62,7 @@ function App() {
             <p className="text-base text-dim">No school today — enjoy your day!</p>
           </div>
         ) : (
-          <HeroTimer now={now} letter={effectiveLetter} cycleDay={today?.cycleDay ?? null} />
+          <HeroTimer now={now} letter={effectiveLetter} cycleDay={today?.cycleDay ?? null} bellTables={bellTables} />
         )}
       </div>
 
