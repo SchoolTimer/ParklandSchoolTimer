@@ -82,40 +82,6 @@ function closeMenuPanel() {
   uisound();
 }
 
-// takes care of the quick update panel
-function openUpdatePanel() {
-  localStorage.removeItem("ReadMessage");
-  localStorage.removeItem("febUpdate");
-  localStorage.removeItem("downUpdate");
-  localStorage.removeItem("newMsg");
-  // Remove old localStorage item if it exists
-  localStorage.removeItem("bigupdate-sept6-2022");
-  // const check = localStorage.getItem('discordUpdate');
-  const check = localStorage.getItem("school-timer-2025-2026-update");
-  if (check == "read") {
-    document.getElementById("UpdatePanel").style.left = "-50%";
-    document.getElementById("everythingElse").style.filter = "blur(0px)";
-  } else {
-    document.getElementById("UpdatePanel").style.left = "50%";
-    document.getElementById("everythingElse").style.filter = "blur(2px)";
-    // uisound();
-  }
-}
-
-function closeUpdatePannel() {
-  document.getElementById("UpdatePanel").style.left = "-50%";
-  document.getElementById("everythingElse").style.filter = "blur(0px)";
-  //$('#septemba').html('<audio autoplay><source src="sounds/september.mp3"></audio>');
-  uisound();
-  localStorage.removeItem("ReadMessage");
-  localStorage.removeItem("newMsg");
-  localStorage.removeItem("febUpdate");
-  localStorage.removeItem("downUpdate");
-  localStorage.removeItem("keystoneUpdate");
-  localStorage.setItem("school-timer-2025-2026-update", "read");
-  // localStorage.setItem('discordUpdate', 'read');
-}
-
 var currentScheduleSelected = "A";
 // var currentScheduleSelected = currentDay;
 var numberOfPeriods = 9; // Default number of periods
