@@ -63,6 +63,21 @@ textarea:focus {
   border-radius: 18px;
 }
 
+/* TV mode forces dark theme regardless of user theme setting */
+[data-tv] {
+  --color-bg:          #0e0e10;
+  --color-surface:     #1a1a1f;
+  --color-surface-2:   #141418;
+  --color-border:      #2a2a32;
+  --color-border-2:    #38383f;
+  --color-text:        #f0f0f4;
+  --color-dim:         #6a6a78;
+  --color-dim-2:       #3a3a44;
+  --color-accent:      #f0314f;
+  --color-accent-soft: rgba(240, 49, 79, 0.10);
+  --color-accent-dim:  rgba(240, 49, 79, 0.22);
+}
+
 @keyframes live-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.35; transform: scale(0.65); }

@@ -47,13 +47,16 @@ export function useDayCycle(): DayCycleState {
   }, []);
 
   const todayRaw = data?.daycycle.today ?? null;
+  // Only treat as no-school when API responded and explicitly said so.
+  // When data is null (loading or error) we don't know, so noSchool = false.
+  const noSchool = data !== null && isNoSchool(todayRaw);
 
   return {
     data,
     today: parseCycleString(todayRaw),
     tomorrow: parseCycleString(data?.daycycle.tomorrow),
     nextDay: parseCycleString(data?.daycycle.next_day),
-    noSchool: isNoSchool(todayRaw),
+    noSchool,
     error,
     loading,
   };
