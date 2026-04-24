@@ -29,9 +29,9 @@ function App() {
   const { today, tomorrow, nextDay, noSchool, data } = useDayCycle();
   const { weather } = useWeather();
 
-  const letterOverride    = useSettingsStore((s) => s.letterOverride);
-  const setLetterOverride = useSettingsStore((s) => s.setLetterOverride);
-  const effectiveLetter: ScheduleLetter = letterOverride ?? today?.letter ?? "A";
+  const getEffectiveOverride = useSettingsStore((s) => s.getEffectiveOverride);
+  const setLetterOverride    = useSettingsStore((s) => s.setLetterOverride);
+  const effectiveLetter: ScheduleLetter = getEffectiveOverride() ?? today?.letter ?? "A";
 
   const [modal, setModal] = useState<ModalKey>(null);
 

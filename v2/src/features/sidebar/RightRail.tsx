@@ -52,31 +52,26 @@ export function RightRail({
     <div className="w-72 shrink-0 h-full flex flex-col gap-2.5 overflow-hidden">
 
       {/* ── 1. Header ─────────────────────────────────────────────────── */}
-      <div
-        className="shrink-0 rounded-2xl px-5 py-4 relative overflow-hidden"
-        style={{
-          background: "linear-gradient(160deg, color-mix(in srgb, var(--color-accent) 85%, transparent) 0%, color-mix(in srgb, var(--color-accent) 30%, var(--color-surface)) 100%)",
-        }}
-      >
+      <div className="card shrink-0 rounded-2xl px-5 py-4 relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(128,128,128,0.15) 1px, transparent 1px)",
             backgroundSize: "16px 16px",
           }}
         />
         <div className="relative flex items-end justify-between">
           <div>
-            <p className="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] leading-none mb-2">
+            <p className="text-[11px] font-bold text-dim uppercase tracking-[0.2em] leading-none mb-2">
               {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
             </p>
-            <p className="tabular font-black text-white leading-none text-5xl">
+            <p className="tabular font-black text-text leading-none text-5xl">
               {h12}:{m}
             </p>
           </div>
           <div className="flex flex-col items-end gap-1.5 pb-0.5">
-            <span className="text-3xl font-black text-white/40 tabular leading-none">{s}</span>
-            <span className="text-sm font-bold text-white/60 uppercase tracking-widest leading-none">{ampm}</span>
+            <span className="text-3xl font-black text-dim tabular leading-none">{s}</span>
+            <span className="text-sm font-bold text-dim uppercase tracking-widest leading-none">{ampm}</span>
           </div>
         </div>
       </div>
