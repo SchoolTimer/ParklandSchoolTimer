@@ -6,8 +6,9 @@ import { DayCycleSection } from './pages/DayCyclePage'
 import { FoodMenuSection } from './pages/FoodMenuPage'
 import { SchoolDatesSection } from './pages/SchoolDatesPage'
 import { BellScheduleSection } from './pages/BellSchedulePage'
+import { CustomScheduleSection } from './pages/CustomSchedulePage'
 
-type Page = 'daycycle' | 'foodmenu' | 'dates' | 'bells'
+type Page = 'daycycle' | 'foodmenu' | 'dates' | 'bells' | 'custom'
 
 const NAV: { id: Page; label: string; icon: React.ReactNode }[] = [
   {
@@ -26,6 +27,10 @@ const NAV: { id: Page; label: string; icon: React.ReactNode }[] = [
     id: 'bells', label: 'Bell Schedules',
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
   },
+  {
+    id: 'custom', label: 'Custom Schedule',
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+  },
 ]
 
 const PAGE_TITLES: Record<Page, { title: string; subtitle: string }> = {
@@ -33,6 +38,7 @@ const PAGE_TITLES: Record<Page, { title: string; subtitle: string }> = {
   foodmenu: { title: 'Food Menu',       subtitle: "Manage today's breakfast and lunch items" },
   dates:    { title: 'School Dates',    subtitle: 'Configure key dates for the school year' },
   bells:    { title: 'Bell Schedules',  subtitle: 'Edit period times for each schedule type' },
+  custom:   { title: 'Custom Schedule', subtitle: 'Create and enable custom modified schedules' },
 }
 
 function AdminShell() {
@@ -136,6 +142,7 @@ function AdminShell() {
           {page === 'foodmenu' && <FoodMenuSection />}
           {page === 'dates'    && <SchoolDatesSection />}
           {page === 'bells'    && <BellScheduleSection />}
+          {page === 'custom'   && <CustomScheduleSection />}
         </main>
       </div>
 

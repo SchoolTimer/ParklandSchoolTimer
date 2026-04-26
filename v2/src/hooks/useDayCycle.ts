@@ -24,7 +24,8 @@ export function useDayCycle(): DayCycleState {
   const [data, setData] = useState<SchoolTimerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
-  const setFromApi = useBellStore((s) => s.setFromApi);
+  const setFromApi        = useBellStore((s) => s.setFromApi);
+  const setCustomSchedule = useBellStore((s) => s.setCustomSchedule);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +40,7 @@ export function useDayCycle(): DayCycleState {
           setData(d);
           setError(null);
           if (d.schedules) setFromApi(d.schedules);
+          setCustomSchedule(d.customSchedule);
         })
         .catch((e) => {
           if (cancelled) return;
