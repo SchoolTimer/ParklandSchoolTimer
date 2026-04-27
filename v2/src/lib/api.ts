@@ -27,10 +27,18 @@ export type RawScheduleEntry = {
 
 export type RawSchedules = Record<string, RawScheduleEntry>;
 
+export type CustomSchedule = {
+  id: string;
+  name: string;
+  slots: RawSlot[];
+  last_updated: string | null;
+};
+
 export type SchoolTimerData = {
   daycycle: RawDaycycle;
   foodmenu: FoodMenu;
   schedules: RawSchedules | null;
+  customSchedule: CustomSchedule | null;
   timestamp: string | null;
   last_updated: {
     daycycle: string | null;
@@ -72,6 +80,21 @@ function normalizeSchedules(raw: unknown): RawSchedules | null {
   return Object.keys(result).length > 0 ? result : null;
 }
 
+function normalizeCustomSchedule(raw: unknown): CustomSchedule | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const slots = Array.isArray(r.slots)
+    ? (r.slots as RawSlot[]).filter((s) => s.label && s.start && s.end)
+    : [];
+  if (slots.length === 0) return null;
+  return {
+    id: (r.id as string) ?? "",
+    name: (r.name as string) ?? "Custom",
+    slots,
+    last_updated: (r.last_updated as string | undefined) ?? null,
+  };
+}
+
 function normalize(raw: unknown): SchoolTimerData {
   const r = (raw ?? {}) as Record<string, unknown>;
   const daycycle = (r.daycycle ?? {}) as RawDaycycle;
@@ -84,6 +107,7 @@ function normalize(raw: unknown): SchoolTimerData {
       lunch: normalizeMenu(foodRaw.lunch),
     },
     schedules: normalizeSchedules(r.schedules),
+    customSchedule: normalizeCustomSchedule(r.custom_schedule),
     timestamp: (r.timestamp as string | undefined) ?? null,
     last_updated: {
       daycycle: daycycle?.last_updated ?? null,

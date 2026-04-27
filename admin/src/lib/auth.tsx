@@ -16,16 +16,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null)
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error || !data.session) {
+        setUser(null)
+      } else {
+        setUser(data.session.user)
+      }
       setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Fires for SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, USER_UPDATED, INITIAL_SESSION.
+      // If a refresh fails, the SDK signs the user out and emits SIGNED_OUT with session=null.
       setUser(session?.user ?? null)
     })
 
-    return () => subscription.unsubscribe()
+    // When the tab regains focus, verify the session is still valid.
+    // Catches the case where the session expired while the laptop was asleep.
+    const verifySession = async () => {
+      const { data, error } = await supabase.auth.getUser()
+      if (error || !data.user) {
+        await supabase.auth.signOut()
+      }
+    }
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') verifySession()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('focus', verifySession)
+
+    return () => {
+      subscription.unsubscribe()
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('focus', verifySession)
+    }
   }, [])
 
   const login = async (email: string, password: string): Promise<string | null> => {

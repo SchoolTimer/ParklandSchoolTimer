@@ -44,6 +44,21 @@ create table if not exists bell_schedules (
   unique (letter)
 );
 
+-- Custom Schedules table
+-- Stores admin-defined modified schedules with a name and slot list.
+-- Only one schedule may be enabled at a time (enforced by partial unique index).
+-- When enabled = true, the API will surface this schedule in its response.
+create table if not exists custom_schedules (
+  id           uuid primary key default gen_random_uuid(),
+  name         text not null,
+  slots        jsonb not null default '[]',
+  enabled      boolean not null default false,
+  last_updated timestamptz default now()
+);
+
+create unique index if not exists custom_schedules_one_enabled
+  on custom_schedules ((enabled)) where enabled = true;
+
 -- ============================================================
 -- Row Level Security (RLS)
 -- Enable RLS and allow all operations via anon key (the admin
@@ -51,17 +66,19 @@ create table if not exists bell_schedules (
 -- For stronger security, replace with a server-side check.
 -- ============================================================
 
-alter table daycycle      enable row level security;
-alter table foodmenu      enable row level security;
-alter table school_dates  enable row level security;
-alter table bell_schedules enable row level security;
+alter table daycycle         enable row level security;
+alter table foodmenu         enable row level security;
+alter table school_dates     enable row level security;
+alter table bell_schedules   enable row level security;
+alter table custom_schedules enable row level security;
 
 -- Allow all operations (read + write) for anon users.
 -- The admin password gate in the React app is the access control.
-create policy "anon_all" on daycycle      for all using (true) with check (true);
-create policy "anon_all" on foodmenu      for all using (true) with check (true);
-create policy "anon_all" on school_dates  for all using (true) with check (true);
-create policy "anon_all" on bell_schedules for all using (true) with check (true);
+create policy "anon_all" on daycycle         for all using (true) with check (true);
+create policy "anon_all" on foodmenu         for all using (true) with check (true);
+create policy "anon_all" on school_dates     for all using (true) with check (true);
+create policy "anon_all" on bell_schedules   for all using (true) with check (true);
+create policy "anon_all" on custom_schedules for all using (true) with check (true);
 
 -- ============================================================
 -- Optional: seed initial data

@@ -33,6 +33,7 @@ export function MoreModal({ open, onClose }: Props) {
   const now      = useClock(1000);
   const resetAll = useScheduleStore((s) => s.resetAll);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   const msLast    = Math.max(0, LAST_DAY.getTime()    - now.getTime());
   const msSeniors = Math.max(0, SENIORS_END.getTime() - now.getTime());
@@ -49,19 +50,25 @@ export function MoreModal({ open, onClose }: Props) {
       </div>
 
       {/* ── Actions ────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="grid grid-cols-3 gap-2 mb-4">
         <a
-          href="https://github.com/SchoolTimer/schooltimer/issues/new?template=bug_report.md"
+          href="https://github.com/SchoolTimer/ParklandSchoolTimer/issues/new?template=bug_report.md"
           target="_blank" rel="noreferrer"
           className="text-center px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:border-border-2 transition-colors"
         >
           Bug Report
         </a>
         <button
+          onClick={() => setPrivacyOpen(true)}
+          className="px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:border-border-2 transition-colors"
+        >
+          Privacy Policy
+        </button>
+        <button
           onClick={() => setConfirmOpen(true)}
           className="px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-danger hover:border-border-2 transition-colors"
         >
-          Reset Schedule Data
+          Reset Data
         </button>
       </div>
 
@@ -85,6 +92,102 @@ export function MoreModal({ open, onClose }: Props) {
         ))}
       </div>
 
+    </Modal>
+
+    {/* ── Privacy Policy ─────────────────────────────────────────── */}
+    <Modal open={privacyOpen} onClose={() => setPrivacyOpen(false)} title="Privacy Policy" widthClass="max-w-lg">
+      <div className="flex flex-col gap-4 text-xs text-text leading-relaxed">
+        <p className="text-[10px] text-dim">Last updated: April 26, 2026</p>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">What We Collect</h4>
+          <p>
+            SchoolTimer does <span className="font-semibold text-text">not</span> require an account
+            and does not collect personally identifying information such as your name, email, or location.
+            We do, however, use anonymous analytics tools to understand aggregate usage — see &ldquo;Analytics&rdquo; below.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Local Storage</h4>
+          <p>
+            Your preferences — color theme, class schedule, room numbers, lunch period, and daily streak —
+            are stored only in your browser&apos;s local storage on your device. They never leave your device
+            and are not transmitted to us or any server.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">External Data</h4>
+          <p className="mb-1.5">The app fetches the following public data over the network:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Day cycle, food menu, and bell schedules from our SchoolTimer API.</li>
+            <li>Local weather from a public weather API.</li>
+            <li>Calendar data scraped from the school&apos;s publicly available calendar page.</li>
+          </ul>
+          <p className="mt-1.5">No identifying request data (such as your IP) is logged or retained beyond standard hosting provider defaults.</p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Analytics</h4>
+          <p className="mb-1.5">SchoolTimer uses two anonymous analytics services:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>
+              <span className="font-semibold text-text">Google Analytics 4</span> — aggregate page-view
+              and session counts. We do not share data with other Google products and IP anonymization
+              is enabled by default in GA4.
+            </li>
+            <li>
+              <span className="font-semibold text-text">Microsoft Clarity</span> — anonymized session
+              recordings and heatmaps used to identify UI bugs. Recordings are masked by default and
+              do not capture text input.
+            </li>
+          </ul>
+          <p className="mt-1.5">
+            Both services may set first-party cookies. You can block them with any standard ad-blocker
+            (uBlock Origin, Brave Shields, etc.) without affecting the app&apos;s functionality.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Advertising</h4>
+          <p>
+            SchoolTimer does not display ads and does not use advertising or remarketing tracking.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Children&apos;s Privacy</h4>
+          <p>
+            SchoolTimer is intended for students. Because no personally identifying information is collected,
+            it is consistent with COPPA and FERPA expectations for school-context tools. Analytics data is
+            aggregate and anonymous.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Open Source</h4>
+          <p>
+            The full source code is available at{" "}
+            <a
+              href="https://github.com/SchoolTimer/ParklandSchoolTimer"
+              target="_blank" rel="noreferrer"
+              className="text-accent hover:underline"
+            >
+              https://github.com/SchoolTimer/ParklandSchoolTimer
+            </a>{" "}
+            for anyone to audit.
+          </p>
+        </section>
+
+        <section>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Contact</h4>
+          <p>
+            Questions or concerns? Reach out to a maintainer listed in the Contributors section,
+            or open an issue on GitHub.
+          </p>
+        </section>
+      </div>
     </Modal>
 
     {/* ── Reset confirm ──────────────────────────────────────────── */}

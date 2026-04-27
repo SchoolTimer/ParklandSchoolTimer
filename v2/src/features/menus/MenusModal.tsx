@@ -22,7 +22,11 @@ export function MenusModal({ open, onClose, menu }: Props) {
   );
 }
 
-function MenuSection({ label, items }: { label: string; items: string[] }) {
+const isEmptySentinel = (items: string[]) =>
+  items.length === 1 && /^nothing on the menu!?$/i.test(items[0].trim());
+
+function MenuSection({ label, items: rawItems }: { label: string; items: string[] }) {
+  const items = isEmptySentinel(rawItems) ? [] : rawItems;
   return (
     <div
       className="rounded-2xl overflow-hidden border border-border"

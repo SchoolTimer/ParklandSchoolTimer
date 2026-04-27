@@ -6,7 +6,7 @@ import { useScheduleStore } from "../../store/useScheduleStore";
 import { useApplyTheme } from "../../store/useThemeStore";
 import { useClickSound } from "../../hooks/useClickSound";
 import { getSchedule, computePeriodState } from "../../lib/timers";
-import { useBellTables } from "../../store/useBellStore";
+import { useBellTables, useActiveCustomSchedule } from "../../store/useBellStore";
 import { formatCountdown, parseHHMM } from "../../lib/time";
 import type { ScheduleLetter } from "../../lib/schedule";
 
@@ -36,7 +36,11 @@ export function TVMode() {
   const ampm = h >= 12 ? "PM" : "AM";
   const h12  = h % 12 || 12;
 
-  const bellTables = useBellTables();
+  const baseBellTables = useBellTables();
+  const customSchedule = useActiveCustomSchedule();
+  const bellTables = customSchedule
+    ? { ...baseBellTables, [effectiveLetter]: customSchedule.table }
+    : baseBellTables;
   const table = getSchedule(effectiveLetter, bellTables);
 
   const periods = useMemo(() =>
@@ -62,15 +66,31 @@ export function TVMode() {
     <div data-tv className="h-screen w-screen bg-bg flex flex-col overflow-hidden">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center justify-between px-16 pt-10">
-        <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">Parkland HS</p>
-        <p className="text-[32px] font-bold tabular text-dim">
-          {h12}:{m}<span className="text-dim-2 ml-1">:{s}</span>
-          <span className="text-dim-2 ml-2 text-xl">{ampm}</span>
-        </p>
-        <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">
-          {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
-        </p>
+      <div className="px-16 pt-10">
+        <div className="flex items-center justify-between">
+          <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">SchoolTimer</p>
+          <p className="text-[32px] font-bold tabular text-dim">
+            {h12}:{m}<span className="text-dim-2 ml-1">:{s}</span>
+            <span className="text-dim-2 ml-2 text-xl">{ampm}</span>
+          </p>
+          <p className="text-[32px] font-bold text-dim uppercase tracking-[0.25em]">
+            {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
+          </p>
+        </div>
+        {customSchedule && !noSchool && (
+          <div className="mt-3 flex items-center gap-3 px-5 py-2.5 rounded-full bg-accent/15 border border-accent/40 self-start w-fit">
+            <span className="relative flex shrink-0">
+              <span className="absolute inline-flex h-3 w-3 rounded-full bg-accent opacity-75 animate-ping" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-accent" />
+            </span>
+            <span className="text-base font-bold text-accent uppercase tracking-[0.18em]">
+              {customSchedule.name}
+            </span>
+            <span className="text-base font-bold text-accent/70 uppercase tracking-[0.18em] border-l border-accent/30 pl-3">
+              Active
+            </span>
+          </div>
+        )}
       </div>
 
       {/* ── Main content ── */}
