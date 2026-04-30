@@ -1,8 +1,10 @@
 import type { ScheduleLetter, ParsedCycle } from "../../lib/schedule";
 import type { Weather } from "../../hooks/useWeather";
 import { WeatherIcon } from "../header/WeatherIcon";
-import { PaletteIcon, PencilIcon, UtensilsIcon, SettingsIcon } from "../../components/Icons";
+import { PaletteIcon, PencilIcon, UtensilsIcon, SettingsIcon, FlameIcon } from "../../components/Icons";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { useStreakStore } from "../../store/useStreakStore";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAYS   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -41,6 +43,11 @@ export function RightRail({
   const h12  = h % 12 || 12;
   const daysLeft = schoolYearDaysLeft(now);
 
+  const tick   = useStreakStore((s) => s.tick);
+  const streak = useStreakStore((s) => s.streak);
+  const best   = useStreakStore((s) => s.best);
+  useEffect(() => { tick(); }, [tick]);
+
   return (
     <div className="w-72 shrink-0 h-full flex flex-col gap-2.5 overflow-hidden">
 
@@ -48,32 +55,28 @@ export function RightRail({
       <div
         className="shrink-0 rounded-2xl px-5 py-4 relative overflow-hidden"
         style={{
-          background: "linear-gradient(150deg, var(--color-accent) 0%, color-mix(in srgb, var(--color-accent) 60%, #000) 100%)",
+          background: "linear-gradient(160deg, color-mix(in srgb, var(--color-accent) 85%, transparent) 0%, color-mix(in srgb, var(--color-accent) 30%, var(--color-surface)) 100%)",
         }}
       >
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.11) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)",
             backgroundSize: "16px 16px",
           }}
         />
-        <div className="relative flex items-center justify-between">
+        <div className="relative flex items-end justify-between">
           <div>
-            <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] leading-none mb-0.5">
-              Parkland HS
-            </p>
-            <p className="text-sm font-bold text-white leading-none">School Timer</p>
-          </div>
-          <div className="text-right">
-            <p className="tabular font-bold text-white leading-none">
-              <span className="text-2xl">{h12}:{m}</span>
-              <span className="text-sm text-white/50 ml-0.5">:{s}</span>
-              <span className="text-xs text-white/40 ml-1">{ampm}</span>
-            </p>
-            <p className="text-[11px] text-white/50 mt-0.5">
+            <p className="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] leading-none mb-2">
               {DAYS[now.getDay()]}, {MONTHS[now.getMonth()]} {now.getDate()}
             </p>
+            <p className="tabular font-black text-white leading-none text-5xl">
+              {h12}:{m}
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-1.5 pb-0.5">
+            <span className="text-3xl font-black text-white/40 tabular leading-none">{s}</span>
+            <span className="text-sm font-bold text-white/60 uppercase tracking-widest leading-none">{ampm}</span>
           </div>
         </div>
       </div>
@@ -89,24 +92,19 @@ export function RightRail({
       </div>
 
       {/* ── 3. Progress ───────────────────────────────────────────────── */}
-      <div className="card px-5 py-4 flex-1 min-h-0 flex flex-col gap-4">
-        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] shrink-0">Progress</p>
+      <div className="card px-4 py-3 shrink-0 flex flex-col gap-3">
+        <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em]">Progress</p>
 
-        <div className="flex-1 min-h-0 flex flex-col justify-around gap-3">
-          <ProgressRow
-            label="School Day"
-            pct={dayPct}
-            sublabel={`${dayPct}% through today`}
-          />
-          <ProgressRow
-            label="School Year"
-            pct={yearPct}
-            sublabel={`${daysLeft} days remaining`}
-          />
+        <div className="flex flex-col gap-3">
+          <ProgressRow label="School Day"  pct={dayPct}  sublabel={`${dayPct}% through today`} />
+          <ProgressRow label="School Year" pct={yearPct} sublabel={`${daysLeft} days remaining`} />
         </div>
       </div>
 
-      {/* ── 4. Schedule selector ──────────────────────────────────────── */}
+      {/* ── 4. Streak ─────────────────────────────────────────────────── */}
+      <StreakWidget streak={streak} best={best} />
+
+      {/* ── 5. Schedule selector ──────────────────────────────────────── */}
       <div className="card shrink-0 p-1.5">
         <div className="flex gap-1">
           {LETTERS.map((l) => {
@@ -131,7 +129,7 @@ export function RightRail({
         </div>
       </div>
 
-      {/* ── 5. Actions ────────────────────────────────────────────────── */}
+      {/* ── 6. Actions ────────────────────────────────────────────────── */}
       <div className="card shrink-0 p-2">
         <div className="grid grid-cols-2 gap-1">
           <ActionBtn icon={<PaletteIcon width={14} height={14} />} onClick={() => onModal("colors")}>
@@ -185,10 +183,8 @@ function CycleCell({
       }`}
     >
       <p className={`text-[10px] font-semibold leading-none ${dimColor}`}>{label}</p>
-      {noSchool ? (
-        <span className="text-xs font-bold text-warn leading-none">No School</span>
-      ) : weekend ? (
-        <span className="text-xs font-bold text-dim-2 leading-none">Weekend</span>
+      {noSchool || weekend ? (
+        <span className="text-lg font-bold text-dim-2 leading-none">—</span>
       ) : cycle ? (
         <div className="flex items-baseline gap-1">
           <span className={`text-[2rem] font-bold tabular leading-none ${textColor}`}>{cycle.cycleDay}</span>
@@ -209,14 +205,14 @@ function ProgressRow({
   pct: number;
   sublabel: string;
 }) {
-  const size   = 80;
-  const stroke = 8;
+  const size   = 60;
+  const stroke = 6;
   const r      = (size - stroke) / 2;
   const circ   = 2 * Math.PI * r;
   const offset = circ * (1 - Math.max(0, Math.min(100, pct)) / 100);
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-3">
       {/* Ring */}
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
@@ -238,25 +234,52 @@ function ProgressRow({
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-base font-bold tabular text-text leading-none">{pct}%</span>
+          <span className="text-[11px] font-bold tabular text-text leading-none">{pct}%</span>
         </div>
       </div>
 
       {/* Text + bar */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-baseline justify-between mb-2">
-          <span className="text-sm font-bold text-text">{label}</span>
-          <span className="text-xs font-bold tabular text-accent">
-            {pct}%
-          </span>
+        <div className="flex items-baseline justify-between mb-1.5">
+          <span className="text-xs font-bold text-text">{label}</span>
+          <span className="text-[11px] font-bold tabular text-accent">{pct}%</span>
         </div>
-        <div className="h-2 w-full rounded-full bg-border-2 overflow-hidden">
+        <div className="h-1.5 w-full rounded-full bg-border-2 overflow-hidden">
           <div
             className="h-full rounded-full transition-[width] duration-700 ease-out"
             style={{ width: `${pct}%`, background: "var(--color-accent)" }}
           />
         </div>
-        <p className="text-[10px] text-dim mt-1.5">{sublabel}</p>
+        <p className="text-[10px] text-dim mt-1">{sublabel}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ── StreakWidget ─────────────────────────────────────────────────── */
+function StreakWidget({ streak, best }: { streak: number; best: number }) {
+  const flames = Math.min(streak, 7);
+  return (
+    <div className="card shrink-0 px-4 py-3 flex items-center gap-3">
+      <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-accent-soft border border-accent/20 shrink-0">
+        <FlameIcon width={20} height={20} className="text-accent" />
+        <span className="text-[10px] font-bold text-accent leading-none mt-0.5">{streak}</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-bold text-text leading-none mb-1">
+          {streak === 0 ? "Start your streak!" : streak === 1 ? "1 day streak" : `${streak} day streak`}
+        </p>
+        <div className="flex gap-0.5 mb-1">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 flex-1 rounded-full transition-colors ${
+                i < flames ? "bg-accent" : "bg-border-2"
+              }`}
+            />
+          ))}
+        </div>
+        <p className="text-[10px] text-dim">Best: {best} {best === 1 ? "day" : "days"}</p>
       </div>
     </div>
   );

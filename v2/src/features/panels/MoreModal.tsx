@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useClock } from "../../hooks/useClock";
 import { Modal } from "../../components/Modal";
 import { useScheduleStore } from "../../store/useScheduleStore";
@@ -31,11 +32,13 @@ function pct(now: Date, start: Date, end: Date) {
 export function MoreModal({ open, onClose }: Props) {
   const now      = useClock(1000);
   const resetAll = useScheduleStore((s) => s.resetAll);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const msLast    = Math.max(0, LAST_DAY.getTime()    - now.getTime());
   const msSeniors = Math.max(0, SENIORS_END.getTime() - now.getTime());
 
   return (
+    <>
     <Modal open={open} onClose={onClose} title="More" widthClass="max-w-lg">
 
       {/* ── Countdowns ─────────────────────────────────────────── */}
@@ -55,7 +58,7 @@ export function MoreModal({ open, onClose }: Props) {
           Bug Report
         </a>
         <button
-          onClick={() => { if (confirm("Erase every cycle day? This can't be undone.")) resetAll(); }}
+          onClick={() => setConfirmOpen(true)}
           className="px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-danger hover:border-border-2 transition-colors"
         >
           Reset Schedule Data
@@ -83,6 +86,47 @@ export function MoreModal({ open, onClose }: Props) {
       </div>
 
     </Modal>
+
+    {/* ── Reset confirm ──────────────────────────────────────────── */}
+    {confirmOpen && (
+      <div
+        className="fixed inset-0 z-60 flex items-center justify-center p-6"
+        style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)" }}
+        onClick={() => setConfirmOpen(false)}
+      >
+        <div
+          className="card w-full max-w-sm p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className="text-base font-bold text-text mb-1">Reset all data?</h3>
+          <p className="text-xs text-dim mb-4">This will permanently erase:</p>
+          <ul className="flex flex-col gap-2 mb-6">
+            {["Color theme", "Class schedule & room numbers", "Daily streak"].map((item) => (
+              <li key={item} className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-surface-2 border border-border">
+                <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
+                <span className="text-xs font-medium text-text">{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[11px] text-dim mb-4">This action cannot be undone.</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setConfirmOpen(false)}
+              className="flex-1 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:bg-border transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={resetAll}
+              className="flex-1 py-2 rounded-xl bg-danger text-xs font-bold text-white hover:opacity-90 transition-opacity"
+            >
+              Erase Everything
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
