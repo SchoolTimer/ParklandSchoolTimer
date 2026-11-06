@@ -47,6 +47,7 @@ function App() {
     : baseBellTables;
 
   const [modal, setModal] = useState<ModalKey>(null);
+  const [highlightLunch, setHighlightLunch] = useState(false);
 
   const schoolDates = data?.schoolDates ?? null;
   const dayPct  = schoolDayProgress(now, effectiveLetter, bellTables);
@@ -121,11 +122,16 @@ function App() {
         dayPct={dayPct}
         yearPct={yearPct}
         daysLeft={daysLeft}
-        onModal={(key) => setModal(key)}
+        onModal={(key) => { setHighlightLunch(false); setModal(key); }}
+        onSetLunch={() => { setHighlightLunch(true); setModal("schedule"); }}
       />
 
       {/* ── MODALS ───────────────────────────────────────────────────── */}
-      <ScheduleEditorModal open={modal === "schedule"} onClose={() => setModal(null)} />
+      <ScheduleEditorModal
+        open={modal === "schedule"}
+        highlightLunch={highlightLunch}
+        onClose={() => { setHighlightLunch(false); setModal(null); }}
+      />
       <ColorsModal        open={modal === "colors"}   onClose={() => setModal(null)} />
       <WeatherModal       open={modal === "weather"}  onClose={() => setModal(null)} weather={weather} />
       <MenusModal         open={modal === "menus"}    onClose={() => setModal(null)} menu={data?.foodmenu ?? null} />
