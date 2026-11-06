@@ -1,12 +1,21 @@
 import { BELL_TABLES, type ScheduleLetter } from "./schedule";
-import { parseHHMM } from "./time";
+import { endOfLocalDay, parseHHMM, parseLocalDate } from "./time";
 import type { BellTables } from "../store/useBellStore";
 
-export function schoolYearProgress(now: Date, start = "2025-08-15", end = "2026-06-09"): number {
-  const a = new Date(start).getTime();
-  const b = new Date(end).getTime();
+export function schoolYearProgress(now: Date, start: string, end: string): number {
+  const a = parseLocalDate(start).getTime();
+  const b = endOfLocalDay(end).getTime();
+  if (b <= a) return 0;
   const pct = ((now.getTime() - a) / (b - a)) * 100;
   return Math.max(0, Math.min(100, Math.round(pct)));
+}
+
+/** Whole calendar days from today until `end` (`YYYY-MM-DD`). Zero on that day. */
+export function daysUntil(now: Date, end: string): number {
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const target = parseLocalDate(end);
+  return Math.max(0, Math.round((target.getTime() - today.getTime()) / 86_400_000));
 }
 
 export function schoolDayProgress(now: Date, letter: ScheduleLetter, tables?: BellTables): number {

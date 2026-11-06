@@ -7,27 +7,40 @@ function todayDateKey() {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
+export type PeriodView = "all" | "focus";
+
 type SettingsStore = {
   letterOverride: ScheduleLetter | null;
   letterOverrideDate: string | null;
+  periodView: PeriodView;
   setLetterOverride: (letter: ScheduleLetter | null) => void;
+  setPeriodView: (view: PeriodView) => void;
   getEffectiveOverride: () => ScheduleLetter | null;
 };
+
+export function effectiveLetterOverride(
+  letter: ScheduleLetter | null,
+  date: string | null,
+): ScheduleLetter | null {
+  if (!letter || date !== todayDateKey()) return null;
+  return letter;
+}
 
 export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set, get) => ({
       letterOverride: null,
       letterOverrideDate: null,
+      periodView: "all",
       setLetterOverride: (letter) => set({
         letterOverride: letter,
         letterOverrideDate: letter !== null ? todayDateKey() : null,
       }),
+      setPeriodView: (periodView) => set({ periodView }),
       // Returns override only if it was set today, otherwise null
       getEffectiveOverride: () => {
         const { letterOverride, letterOverrideDate } = get();
-        if (!letterOverride || letterOverrideDate !== todayDateKey()) return null;
-        return letterOverride;
+        return effectiveLetterOverride(letterOverride, letterOverrideDate);
       },
     }),
     { name: "schooltimer.v2.settings" },

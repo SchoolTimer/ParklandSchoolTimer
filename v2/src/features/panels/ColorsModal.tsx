@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "../../components/Modal";
 import {
   useThemeStore,
@@ -12,86 +12,80 @@ type Props = { open: boolean; onClose: () => void };
 
 const PRESET_NAMES = (Object.keys(THEME_PRESETS) as ThemeName[]).filter((n) => n !== "custom");
 
+function sameColors(a: CustomColors, b: CustomColors) {
+  return a.accent === b.accent && a.bg === b.bg && a.surface === b.surface;
+}
+
 export function ColorsModal({ open, onClose }: Props) {
-  const theme         = useThemeStore((s) => s.theme);
-  const setTheme      = useThemeStore((s) => s.setTheme);
-  const customColors  = useThemeStore((s) => s.customColors);
+  const theme           = useThemeStore((s) => s.theme);
+  const setTheme        = useThemeStore((s) => s.setTheme);
+  const customColors    = useThemeStore((s) => s.customColors);
   const setCustomColors = useThemeStore((s) => s.setCustomColors);
 
   const [draft, setDraft] = useState<CustomColors>(customColors);
 
-  function applyCustom() {
-    setCustomColors(draft);
-  }
+  useEffect(() => {
+    if (open) setDraft(customColors);
+  }, [open, customColors]);
+
+  const draftIsLive = theme === "custom" && sameColors(draft, customColors);
 
   return (
-    <Modal open={open} onClose={onClose} title="Color Scheme">
-      {/* ── Presets ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
+    <Modal open={open} onClose={onClose} title="Colors" widthClass="max-w-lg">
+      <p className="text-xs text-dim mb-4">
+        A preset applies as soon as you tap it. Your own colors apply only when you press Use these colors.
+      </p>
+
+      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-dim mb-2">Presets</p>
+      <div className="grid grid-cols-2 gap-2 mb-6">
         {PRESET_NAMES.map((name) => {
-          const p      = THEME_PRESETS[name];
+          const p = THEME_PRESETS[name];
           const active = theme === name;
           return (
             <button
               key={name}
+              type="button"
               onClick={() => setTheme(name)}
-              className={`flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-150 border ${
-                active
-                  ? "border-accent bg-accent-soft"
-                  : "border-border bg-surface-2 hover:border-border-2"
+              aria-pressed={active}
+              className={`flex items-center gap-3 p-3 rounded-xl text-left border ${
+                active ? "border-accent bg-accent-soft" : "border-border bg-surface hover:border-border-2"
               }`}
             >
-              <div
-                className="w-7 h-7 rounded-full shrink-0 border-2 border-white shadow-sm"
+              <span
+                className="w-6 h-6 rounded-full shrink-0 border border-black/10"
                 style={{ background: p.accent }}
               />
-              <div className="min-w-0">
-                <p className={`text-sm font-semibold capitalize ${active ? "text-accent" : "text-text"}`}>
+              <span className="min-w-0">
+                <span className={`block text-sm font-semibold capitalize ${active ? "text-accent" : "text-text"}`}>
                   {name}
-                </p>
-                <p className="text-[11px] text-dim mt-0.5">{THEME_DESCRIPTIONS[name]}</p>
-              </div>
-              {active && <span className="ml-auto text-accent text-base shrink-0">✓</span>}
+                </span>
+                <span className="block text-[11px] text-dim mt-0.5">{THEME_DESCRIPTIONS[name]}</span>
+              </span>
             </button>
           );
         })}
       </div>
 
-      {/* ── Custom ──────────────────────────────────────────────── */}
-      <div className={`rounded-2xl border p-5 transition-all duration-150 ${
-        theme === "custom" ? "border-accent bg-accent-soft" : "border-border bg-surface-2"
-      }`}>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-sm font-semibold text-text">Custom</p>
-            <p className="text-[11px] text-dim mt-0.5">Pick your own colors</p>
-          </div>
-          {theme === "custom" && <span className="text-accent text-base">✓</span>}
-        </div>
+      <div className={`rounded-xl border p-4 ${draftIsLive ? "border-accent bg-accent-soft" : "border-border"}`}>
+        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-dim">Your colors</p>
+        <p className="text-xs text-dim mt-1 mb-4">
+          {draftIsLive ? "These colors are on now." : "Nothing here changes the app until you use them."}
+        </p>
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <ColorSwatch
-            label="Accent"
-            value={draft.accent}
-            onChange={(v) => setDraft((d) => ({ ...d, accent: v }))}
-          />
-          <ColorSwatch
-            label="Background"
-            value={draft.bg}
-            onChange={(v) => setDraft((d) => ({ ...d, bg: v }))}
-          />
-          <ColorSwatch
-            label="Surface"
-            value={draft.surface}
-            onChange={(v) => setDraft((d) => ({ ...d, surface: v }))}
-          />
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <ColorSwatch label="Accent" value={draft.accent} onChange={(accent) => setDraft((d) => ({ ...d, accent }))} />
+          <ColorSwatch label="Background" value={draft.bg} onChange={(bg) => setDraft((d) => ({ ...d, bg }))} />
+          <ColorSwatch label="Cards" value={draft.surface} onChange={(surface) => setDraft((d) => ({ ...d, surface }))} />
         </div>
 
         <button
-          onClick={applyCustom}
-          className="w-full h-9 rounded-xl bg-accent text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          type="button"
+          onClick={() => setCustomColors(draft)}
+          disabled={draftIsLive}
+          data-selected
+          className="w-full min-h-11 rounded-xl bg-accent text-sm font-semibold disabled:opacity-60"
         >
-          Apply Custom Theme
+          {draftIsLive ? "Using these colors" : "Use these colors"}
         </button>
       </div>
     </Modal>
@@ -106,10 +100,10 @@ function ColorSwatch({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <label className="relative cursor-pointer">
-        <div
-          className="w-12 h-12 rounded-xl border-2 border-white shadow-md transition-transform hover:scale-105"
+    <label className="flex flex-col items-center gap-1.5 cursor-pointer">
+      <span className="relative">
+        <span
+          className="block w-12 h-12 rounded-xl border border-black/10"
           style={{ background: value }}
         />
         <input
@@ -117,9 +111,10 @@ function ColorSwatch({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+          aria-label={label}
         />
-      </label>
-      <p className="text-[10px] font-semibold text-dim uppercase tracking-wide">{label}</p>
-    </div>
+      </span>
+      <span className="text-[10px] font-semibold text-dim uppercase tracking-wide">{label}</span>
+    </label>
   );
 }

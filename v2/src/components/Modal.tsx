@@ -20,12 +20,12 @@ export function Modal({ open, onClose, title, children, widthClass = "max-w-2xl"
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-6"
       style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
-        className={`card w-full ${widthClass} max-h-[88vh] overflow-auto`}
+        className={`card w-full ${widthClass} max-h-[92dvh] overflow-auto rounded-b-none sm:rounded-b-[18px]`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
@@ -38,7 +38,7 @@ export function Modal({ open, onClose, title, children, widthClass = "max-w-2xl"
             ×
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );
