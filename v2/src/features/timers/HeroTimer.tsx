@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { formatCountdown, parseHHMM } from "../../lib/time";
 import type { ScheduleLetter, CycleDay } from "../../lib/schedule";
-import { getSchedule, computePeriodState } from "../../lib/timers";
+import { daySlots } from "../../lib/timers";
 import { useScheduleStore } from "../../store/useScheduleStore";
 import type { BellTables } from "../../store/useBellStore";
 
@@ -19,27 +19,19 @@ function fmt(hhmm: string) {
 }
 
 export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
-  const table        = getSchedule(letter, bellTables);
   const userSchedule = useScheduleStore((s) => s.schedule);
   const homeroomRoom = useScheduleStore((s) => s.homeroomRoom);
 
   const periods = useMemo(
     () =>
-      table.start.map((s, i) => {
-        const slotLabel = table.periodLabels[i];
-        const periodNum = slotLabel === "HR" ? null : Number(slotLabel);
-        return {
-          slotLabel,
-          periodNum,
-          start: s,
-          end: table.end[i],
-          state: computePeriodState(now, s, table.end[i]),
-          entry: (cycleDay && periodNum !== null)
-            ? userSchedule[cycleDay].find((p) => p.period === periodNum)
+      daySlots(now, letter, bellTables).map((slot) => ({
+        ...slot,
+        entry:
+          cycleDay && slot.periodNum !== null
+            ? userSchedule[cycleDay].find((p) => p.period === slot.periodNum)
             : undefined,
-        };
-      }),
-    [now, table, userSchedule, cycleDay],
+      })),
+    [now, letter, bellTables, userSchedule, cycleDay],
   );
 
   const active   = periods.find((p) => p.state.status === "active");
@@ -55,12 +47,12 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
   /* ── SCHOOL OVER ─────────────────────────────────────────────────────── */
   if (allOver) {
     return (
-      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
+      <div className="flex flex-col justify-center px-4 py-6 sm:px-8 lg:px-10 lg:py-8 lg:min-h-full">
         <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-5">
           School Day
         </p>
-        <h1 className="text-[5.5rem] font-bold text-text leading-[0.95] mb-1">School Is</h1>
-        <h1 className="text-[5.5rem] font-bold text-dim-2 leading-[0.95] mb-10">Over</h1>
+        <h1 className="text-5xl sm:text-7xl lg:text-[5.5rem] font-bold text-text leading-[0.95] mb-1">School Is</h1>
+        <h1 className="text-5xl sm:text-7xl lg:text-[5.5rem] font-bold text-dim-2 leading-[0.95] mb-8">Over</h1>
         <p className="text-base text-dim">See you tomorrow!</p>
       </div>
     );
@@ -74,7 +66,7 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
     const pct = Math.max(0, Math.min(100, ((totalMs - endsIn) / totalMs) * 100));
 
     return (
-      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
+      <div className="flex flex-col justify-center px-4 py-6 sm:px-8 lg:px-10 lg:py-8 lg:min-h-full">
         {/* Live badge */}
         <div className="flex items-center gap-2.5 mb-8">
           <span className="live-dot w-2 h-2 rounded-full bg-accent shrink-0" />
@@ -84,7 +76,7 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
         </div>
 
         {/* Class name */}
-        <h1 className="text-[4.5rem] font-bold text-text leading-none mb-1.5 max-w-2xl">
+        <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-bold text-text leading-none mb-1.5">
           {label(active)}
         </h1>
 
@@ -99,7 +91,7 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
         </p>
 
         {/* Big countdown */}
-        <p className="countdown text-[5.5rem] font-bold text-accent leading-none mb-7">
+        <p className="countdown text-5xl sm:text-7xl lg:text-[5.5rem] font-bold text-accent leading-none mb-6">
           {formatCountdown(endsIn)}
         </p>
 
@@ -113,9 +105,9 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
 
         {/* Upcoming strip */}
         {upcoming.length > 0 && (
-          <div className="flex gap-2.5 flex-wrap">
+          <div className="scroll-x flex gap-2 pb-1">
             {upcoming.map((p) => (
-              <div key={p.slotLabel} className="card px-4 py-3 min-w-30">
+              <div key={p.slotLabel} className="card px-3.5 py-2.5 shrink-0 min-w-32">
                 <p className="text-[10px] text-dim uppercase tracking-wider mb-1">
                   {p.slotLabel === "HR" ? "Homeroom" : `Period ${p.slotLabel}`}
                 </p>
@@ -136,12 +128,12 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
     const startsIn = (next.state as { startsIn: number }).startsIn;
 
     return (
-      <div className="flex-1 flex flex-col justify-center px-10 pb-8">
+      <div className="flex flex-col justify-center px-4 py-6 sm:px-8 lg:px-10 lg:py-8 lg:min-h-full">
         <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-7">
           Up Next
         </p>
 
-        <h1 className="text-[4.5rem] font-bold text-text leading-none mb-1.5 max-w-2xl">
+        <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-bold text-text leading-none mb-1.5">
           {label(next)}
         </h1>
         <p className="text-base text-dim mb-8">
@@ -152,17 +144,17 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
         <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-2">
           Starts in
         </p>
-        <p className="countdown text-[5.5rem] font-bold text-dim-2 leading-none mb-10">
+        <p className="countdown text-5xl sm:text-7xl lg:text-[5.5rem] font-bold text-dim-2 leading-none mb-8">
           {formatCountdown(startsIn)}
         </p>
 
         {/* Later periods strip */}
         {upcoming.length > 1 && (
-          <div className="flex gap-2.5 flex-wrap">
+          <div className="scroll-x flex gap-2 pb-1">
             {upcoming.slice(1).map((p) => (
               <div
                 key={p.slotLabel}
-                className="card px-4 py-3 min-w-30"
+                className="card px-3.5 py-2.5 shrink-0 min-w-32"
               >
                 <p className="text-[10px] text-dim uppercase tracking-wider mb-1">
                   {p.slotLabel === "HR" ? "Homeroom" : `Period ${p.slotLabel}`}
@@ -185,7 +177,7 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
       <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-5">
         Good Morning
       </p>
-      <h1 className="text-[5.5rem] font-bold text-text leading-[0.95] mb-10">
+      <h1 className="text-5xl sm:text-7xl lg:text-[5.5rem] font-bold text-text leading-[0.95] mb-8">
         School Starts
         <br />
         <span className="text-dim-2">Soon</span>
@@ -195,7 +187,7 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
           <p className="text-[11px] font-semibold text-dim uppercase tracking-[0.18em] mb-2">
             First period in
           </p>
-          <p className="countdown text-[4rem] font-bold text-dim-2 leading-none mb-5">
+          <p className="countdown text-4xl sm:text-6xl font-bold text-dim-2 leading-none mb-5">
             {formatCountdown((next.state as { startsIn: number }).startsIn)}
           </p>
           <p className="text-base text-dim">

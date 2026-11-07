@@ -23,3 +23,25 @@ export function computePeriodState(
 export function getSchedule(letter: ScheduleLetter, tables?: BellTables): BellTable {
   return (tables ?? BELL_TABLES)[letter];
 }
+
+export type DaySlot = {
+  slotLabel: string;
+  periodNum: number | null;
+  start: string;
+  end: string;
+  state: TimerState;
+};
+
+export function daySlots(now: Date, letter: ScheduleLetter, tables?: BellTables): DaySlot[] {
+  const table = getSchedule(letter, tables);
+  return table.start.map((start, i) => {
+    const slotLabel = table.periodLabels[i];
+    return {
+      slotLabel,
+      periodNum: slotLabel === "HR" ? null : Number(slotLabel),
+      start,
+      end: table.end[i],
+      state: computePeriodState(now, start, table.end[i]),
+    };
+  });
+}

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useClock } from "../../hooks/useClock";
 import { useDayCycle } from "../../hooks/useDayCycle";
-import { useSettingsStore } from "../../store/useSettingsStore";
+import { effectiveLetterOverride, useSettingsStore } from "../../store/useSettingsStore";
 import { useScheduleStore } from "../../store/useScheduleStore";
 import { useApplyTheme } from "../../store/useThemeStore";
 import { useClickSound } from "../../hooks/useClickSound";
@@ -25,8 +25,10 @@ export function TVMode() {
 
   const now          = useClock(1000);
   const { data, today, tomorrow, nextDay, noSchool } = useDayCycle();
-  const getEffectiveOverride = useSettingsStore((s) => s.getEffectiveOverride);
-  const effectiveLetter: ScheduleLetter = getEffectiveOverride() ?? today?.letter ?? "A";
+  const letterOverride     = useSettingsStore((s) => s.letterOverride);
+  const letterOverrideDate = useSettingsStore((s) => s.letterOverrideDate);
+  const effectiveLetter: ScheduleLetter =
+    effectiveLetterOverride(letterOverride, letterOverrideDate) ?? today?.letter ?? "A";
   const userSchedule = useScheduleStore((s) => s.schedule);
   const homeroomRoom = useScheduleStore((s) => s.homeroomRoom);
 

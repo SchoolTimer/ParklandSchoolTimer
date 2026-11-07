@@ -1,38 +1,136 @@
-import { useMemo } from "react";
-import { PeriodCard } from "./PeriodCard";
+import { useEffect, useMemo, useRef } from "react";
+import { formatCountdown, parseHHMM } from "../../lib/time";
 import type { ScheduleLetter, CycleDay } from "../../lib/schedule";
-import { getSchedule, computePeriodState } from "../../lib/timers";
-import { useScheduleStore } from "../../store/useScheduleStore";
-import { useBellTables } from "../../store/useBellStore";
+import { daySlots, type DaySlot } from "../../lib/timers";
+import { useScheduleStore, type PeriodEntry } from "../../store/useScheduleStore";
+import type { BellTables } from "../../store/useBellStore";
 
 type Props = {
   now: Date;
   letter: ScheduleLetter;
   cycleDay: CycleDay | null;
+  bellTables: BellTables;
 };
 
-export function PeriodGrid({ now, letter, cycleDay }: Props) {
-  const bellTables = useBellTables();
-  const table = getSchedule(letter, bellTables);
-  const userSchedule = useScheduleStore((s) => s.schedule);
+type Row = DaySlot & { entry?: PeriodEntry };
 
-  const periods = useMemo(
+function fmt(hhmm: string) {
+  const [h, m] = hhmm.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+function rowLabel(row: Row) {
+  if (row.slotLabel === "HR") return "Homeroom";
+  return row.entry?.className?.trim() || `Period ${row.slotLabel}`;
+}
+
+export function PeriodGrid({ now, letter, cycleDay, bellTables }: Props) {
+  const userSchedule = useScheduleStore((s) => s.schedule);
+  const homeroomRoom = useScheduleStore((s) => s.homeroomRoom);
+  const activeRef = useRef<HTMLLIElement>(null);
+
+  const rows: Row[] = useMemo(
     () =>
-      table.start.map((s, i) => ({
-        period: i + 1,
-        state: computePeriodState(now, s, table.end[i]),
-        entry: cycleDay
-          ? userSchedule[cycleDay].find((p) => p.period === i + 1)
-          : undefined,
+      daySlots(now, letter, bellTables).map((slot) => ({
+        ...slot,
+        entry:
+          cycleDay && slot.periodNum !== null
+            ? userSchedule[cycleDay].find((p) => p.period === slot.periodNum)
+            : undefined,
       })),
-    [now, table, userSchedule, cycleDay],
+    [now, letter, bellTables, userSchedule, cycleDay],
   );
 
+  const active = rows.find((p) => p.state.status === "active");
+  const next = rows.find((p) => p.state.status === "upcoming");
+  const focusKey = active?.slotLabel ?? next?.slotLabel ?? "none";
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ block: "nearest" });
+  }, [focusKey]);
+
   return (
-    <div className="grid gap-3 p-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4 auto-rows-fr content-start">
-      {periods.map((p) => (
-        <PeriodCard key={p.period} period={p.period} state={p.state} entry={p.entry} />
-      ))}
-    </div>
+    <ul className="flex flex-col gap-2 px-3 py-3 sm:px-5 sm:py-4">
+      {rows.map((row) => {
+        const isOver = row.state.status === "over";
+        const isNext = !active && next?.slotLabel === row.slotLabel;
+        const room = row.slotLabel === "HR" ? homeroomRoom : row.entry?.room;
+        const name = rowLabel(row);
+
+        if (row.state.status === "active") {
+          const endsIn = row.state.endsIn;
+          const total = parseHHMM(row.end, now).getTime() - parseHHMM(row.start, now).getTime();
+          const pct = total > 0 ? Math.max(0, Math.min(100, ((total - endsIn) / total) * 100)) : 0;
+
+          return (
+            <li
+              key={row.slotLabel}
+              ref={activeRef}
+              className="rounded-2xl border border-accent bg-accent-soft px-3.5 py-3.5 sm:px-4"
+            >
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-accent uppercase tracking-[0.14em]">
+                  <span className="live-dot w-1.5 h-1.5 rounded-full bg-accent" />
+                  Now · {row.slotLabel === "HR" ? "Homeroom" : `Period ${row.slotLabel}`}
+                </span>
+                <span className="text-[11px] font-semibold text-dim tabular">
+                  {fmt(row.start)} – {fmt(row.end)}
+                </span>
+              </div>
+              <div className="flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-2xl sm:text-3xl font-bold text-text leading-tight truncate">{name}</p>
+                  {room ? <p className="text-sm text-dim mt-0.5 truncate">{room}</p> : null}
+                </div>
+                <p className="countdown text-3xl sm:text-4xl font-bold text-accent leading-none shrink-0">
+                  {formatCountdown(endsIn)}
+                </p>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden mt-3 bg-border">
+                <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
+              </div>
+            </li>
+          );
+        }
+
+        return (
+          <li
+            key={row.slotLabel}
+            ref={isNext ? activeRef : undefined}
+            className={`rounded-2xl border px-3 py-2.5 sm:px-3.5 flex items-center gap-3 ${
+              isNext
+                ? "border-accent/40 bg-surface"
+                : isOver
+                  ? "border-transparent bg-surface-2"
+                  : "border-border bg-surface"
+            }`}
+          >
+            <span
+              className={`w-9 shrink-0 text-center text-sm font-bold tabular ${
+                isOver ? "text-dim-2" : isNext ? "text-accent" : "text-dim"
+              }`}
+            >
+              {row.slotLabel}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className={`text-sm font-semibold leading-tight truncate ${isOver ? "text-dim" : "text-text"}`}>
+                {name}
+              </p>
+              <p className="text-[11px] text-dim mt-0.5 truncate">
+                {fmt(row.start)} – {fmt(row.end)}
+                {room ? ` · ${room}` : ""}
+                {isNext ? " · Up next" : ""}
+              </p>
+            </div>
+            <span className={`shrink-0 text-xs font-semibold tabular ${isOver ? "text-dim-2" : "text-dim"}`}>
+              {isOver
+                ? "Done"
+                : formatCountdown(row.state.status === "upcoming" ? row.state.startsIn : 0)}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

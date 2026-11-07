@@ -14,6 +14,25 @@ export function formatCountdown(ms: number): string {
   return [h, m, s].map((n) => String(n).padStart(2, "0")).join(":");
 }
 
+/** Calendar date from `YYYY-MM-DD`, in the local timezone. */
+export function parseLocalDate(iso: string): Date {
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
+export function endOfLocalDay(iso: string): Date {
+  const d = parseLocalDate(iso);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+export function formatMonthDay(iso: string): string {
+  const d = parseLocalDate(iso);
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
+}
+
 export function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;

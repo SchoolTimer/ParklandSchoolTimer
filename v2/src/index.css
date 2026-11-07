@@ -18,10 +18,23 @@
   --color-danger:      #ef4444;
 }
 
+html {
+  /* manipulation: pan and pinch stay, double-tap zoom does not.
+     That double-tap wait is the ~300ms delay before a tap registers. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 html, body, #root {
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
   margin: 0;
+}
+
+@media (min-width: 1024px) {
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
 }
 
 body {
@@ -33,7 +46,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-input, textarea, select, button { font: inherit; color: inherit; }
+/* In the base layer so utilities like text-white still win.
+   Unlayered `color: inherit` was painting black text on accent buttons. */
+@layer base {
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+  }
+  button, a, select, label {
+    touch-action: manipulation;
+  }
+  button[data-selected="true"] {
+    color: #ffffff;
+  }
+}
 input[type="text"]::placeholder { color: var(--color-dim); }
 
 input[type="text"]:focus,
@@ -49,6 +75,12 @@ textarea:focus {
 ::-webkit-scrollbar-thumb:hover { background: var(--color-dim); }
 
 .tabular { font-variant-numeric: tabular-nums; }
+
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
 
 .countdown {
   font-variant-numeric: tabular-nums;

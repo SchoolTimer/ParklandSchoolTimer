@@ -34,11 +34,18 @@ export type CustomSchedule = {
   last_updated: string | null;
 };
 
+export type SchoolDates = {
+  schoolYearStart: string;
+  schoolYearEnd: string;
+  seniorsLastDay: string;
+};
+
 export type SchoolTimerData = {
   daycycle: RawDaycycle;
   foodmenu: FoodMenu;
   schedules: RawSchedules | null;
   customSchedule: CustomSchedule | null;
+  schoolDates: SchoolDates | null;
   timestamp: string | null;
   last_updated: {
     daycycle: string | null;
@@ -95,6 +102,22 @@ function normalizeCustomSchedule(raw: unknown): CustomSchedule | null {
   };
 }
 
+function dateField(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const day = value.slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : null;
+}
+
+function normalizeSchoolDates(raw: unknown): SchoolDates | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const schoolYearStart = dateField(r.school_year_start);
+  const schoolYearEnd = dateField(r.school_year_end);
+  const seniorsLastDay = dateField(r.seniors_last_day);
+  if (!schoolYearStart || !schoolYearEnd || !seniorsLastDay) return null;
+  return { schoolYearStart, schoolYearEnd, seniorsLastDay };
+}
+
 function normalize(raw: unknown): SchoolTimerData {
   const r = (raw ?? {}) as Record<string, unknown>;
   const daycycle = (r.daycycle ?? {}) as RawDaycycle;
@@ -108,6 +131,7 @@ function normalize(raw: unknown): SchoolTimerData {
     },
     schedules: normalizeSchedules(r.schedules),
     customSchedule: normalizeCustomSchedule(r.custom_schedule),
+    schoolDates: normalizeSchoolDates(r.school_dates),
     timestamp: (r.timestamp as string | undefined) ?? null,
     last_updated: {
       daycycle: daycycle?.last_updated ?? null,
