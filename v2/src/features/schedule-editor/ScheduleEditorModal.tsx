@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "../../components/Modal";
 import { CYCLE_DAYS, type CycleDay } from "../../lib/schedule";
 import { useScheduleStore } from "../../store/useScheduleStore";
 
-type Props = { open: boolean; onClose: () => void };
+type Props = { open: boolean; onClose: () => void; highlightLunch?: boolean };
 
 const inputClass =
   "w-full min-w-0 bg-surface border border-border rounded-lg px-2.5 h-9 text-sm focus:outline-none focus:border-accent";
 
-export function ScheduleEditorModal({ open, onClose }: Props) {
+export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: Props) {
   const schedule        = useScheduleStore((s) => s.schedule);
   const setPeriod       = useScheduleStore((s) => s.setPeriod);
   const copyDay         = useScheduleStore((s) => s.copyDay);
@@ -21,6 +21,11 @@ export function ScheduleEditorModal({ open, onClose }: Props) {
   const [activeDay, setActiveDay] = useState<CycleDay>(1);
   const [copyTo, setCopyTo]       = useState<CycleDay>(2);
   const [copied, setCopied]       = useState(false);
+  const lunchRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    if (open && highlightLunch) lunchRef.current?.focus();
+  }, [open, highlightLunch]);
 
   const entries = schedule[activeDay];
   const otherDays = CYCLE_DAYS.filter((d) => d !== activeDay);
@@ -69,13 +74,14 @@ export function ScheduleEditorModal({ open, onClose }: Props) {
           />
         </label>
 
-        <label className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-semibold text-text shrink-0">Lunch</span>
+        <label className={`flex items-center gap-2 min-w-0 rounded-lg ${highlightLunch ? "lunch-blink px-2 py-1" : ""}`}>
+          <span className={`text-xs font-semibold shrink-0 ${highlightLunch ? "text-accent" : "text-text"}`}>Lunch</span>
           <select
+            ref={lunchRef}
             value={lunchPeriod ?? ""}
             title="Used for the lunch countdown"
             onChange={(e) => setLunchPeriod(e.target.value ? Number(e.target.value) : null)}
-            className={`${inputClass} w-36`}
+            className={`${inputClass} w-36 ${highlightLunch ? "border-accent" : ""}`}
           >
             <option value="">None</option>
             {[4, 5, 6, 7].map((p) => (

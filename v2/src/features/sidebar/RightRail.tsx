@@ -26,6 +26,7 @@ type Props = {
   yearPct: number | null;
   daysLeft: number | null;
   onModal: (key: ModalKey) => void;
+  onSetLunch: () => void;
 };
 
 const LETTERS: ScheduleLetter[] = ["A", "B", "C", "D"];
@@ -66,7 +67,7 @@ export function LetterPicker({
 
 export function RightRail({
   now, today, tomorrow, nextDay, noSchool, weather, effectiveLetter, onLetterChange,
-  dayPct, yearPct, daysLeft, onModal,
+  dayPct, yearPct, daysLeft, onModal, onSetLunch,
 }: Props) {
   const h    = now.getHours();
   const m    = String(now.getMinutes()).padStart(2, "0");
@@ -120,7 +121,7 @@ export function RightRail({
       </div>
 
       {/* ── 4. Lunch ──────────────────────────────────────────────────── */}
-      <LunchWidget now={now} effectiveLetter={effectiveLetter} onEdit={() => onModal("schedule")} />
+      <LunchWidget now={now} effectiveLetter={effectiveLetter} onEdit={onSetLunch} />
 
       {/* ── 6. Schedule selector ──────────────────────────────────────── */}
       <div className="card shrink-0 p-1.5 hidden lg:block">

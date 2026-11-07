@@ -115,3 +115,18 @@ textarea:focus {
   50%       { opacity: 0.35; transform: scale(0.65); }
 }
 .live-dot { animation: live-pulse 1.8s ease-in-out infinite; }
+
+@keyframes lunch-blink {
+  0%, 100% {
+    box-shadow: 0 0 0 2px var(--color-accent);
+    background-color: var(--color-accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 2px transparent;
+    background-color: transparent;
+  }
+}
+.lunch-blink { animation: lunch-blink 0.85s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .lunch-blink { animation: none; }
+}
