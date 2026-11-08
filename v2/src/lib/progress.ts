@@ -26,7 +26,7 @@ export function schoolDayProgress(now: Date, letter: ScheduleLetter, tables?: Be
   const endMs    = parseHHMM(t.end[t.end.length - 1], now).getTime();
   if (now.getTime() < startMs) return 0;
   if (now.getTime() > endMs) return 100;
-  return Math.round(((now.getTime() - startMs) / (endMs - startMs)) * 100);
+  return Math.round(((now.getTime() - startMs) / (endMs - startMs)) * 1000) / 10;
 }
 
 export function schoolWeekProgress(now: Date): number {

@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-time: "Lato", "Open Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Open Sans", sans-serif;
 
   --color-bg:          #ededed;
   --color-surface:     #ededed;
@@ -10,156 +9,517 @@
   --color-border:      #dcdcdc;
   --color-border-2:    #cfcfcf;
   --color-text:        #575757;
-  --color-dim:         #8c8c8c;
+  --color-dim:         #7f7f7f;
   --color-dim-2:       #bfbfbf;
   --color-accent:      #ff2b40;
-  --color-accent-soft: rgba(255, 43, 64, 0.07);
+  --color-accent-soft: rgba(255, 43, 64, 0.08);
   --color-accent-dim:  rgba(255, 43, 64, 0.20);
   --color-warn:        #f59e0b;
   --color-danger:      #ef4444;
 }
 
-html {
-  /* manipulation: pan and pinch stay, double-tap zoom does not.
-     That double-tap wait is the ~300ms delay before a tap registers. */
+/* Theme variables (set per theme by useApplyTheme; defaults = V1 default) */
+:root {
+  --bg: #ededed;
+  --text: #575757;
+  --accent: #ff2b40;
+  --inactive: #bfbfbf;
+  --light-dim: -6px -6px 10px;
+  --dark-dim: 6px 6px 10px;
+  --shadow-light: rgba(255, 255, 255, 0.8);
+  --shadow-dark: rgba(0, 0, 0, 0.2);
+  --timerWidth: 55vw;
+  --thatHeight: 22.71vh;
+  --radio: 6vh;
+}
+
+a, button, div, input {
   touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 
 html, body, #root {
-  min-height: 100%;
   margin: 0;
-}
-
-@media (min-width: 1024px) {
-  html, body, #root {
-    height: 100%;
-    overflow: hidden;
-  }
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* In the base layer so utilities like text-white still win.
-   Unlayered `color: inherit` was painting black text on accent buttons. */
-@layer base {
-  input, textarea, select, button {
-    font: inherit;
-    color: inherit;
-  }
-  button, a, select, label {
-    touch-action: manipulation;
-  }
-  button[data-selected="true"] {
-    color: #ffffff;
-  }
+/* The V1 raised look */
+.shadows {
+  box-shadow: var(--light-dim) var(--shadow-light), var(--dark-dim) var(--shadow-dark);
 }
-input[type="text"]::placeholder { color: var(--color-dim); }
 
-/* Fields are pressed into the surface, like V1's inputs. */
-input[type="text"], select, textarea {
-  background-color: var(--color-bg);
+/* ═════════════════ V1 PAGE ═════════════════ */
+.v1-root {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  color: var(--text);
+  transition: filter 0.4s ease;
+}
+.v1-root.blurred { filter: blur(2px); }
+
+.v1-h6 {
+  margin: 0;
+  text-align: center;
+  color: var(--text);
+  font-size: 3vh;
+  font-weight: 100;
+  padding: 5%;
+  padding-bottom: 0;
+}
+
+.v1-sidebars {
+  float: right;
+  display: flex;
+  flex-direction: row-reverse;
+  height: 100%;
+}
+.v1-sidebar {
+  padding: 0.85vw;
+  padding-left: 0.5vw;
+  background: transparent;
+}
+
+.v1-square {
+  box-sizing: border-box;
+  height: var(--thatHeight);
+  width: var(--thatHeight);
+  margin-bottom: 2vh;
+  border-radius: 10%;
+  background: transparent;
+  position: relative;
+}
+.v1-rect {
+  box-sizing: border-box;
+  height: calc(var(--thatHeight) * 2 + 2vh);
+  width: var(--thatHeight);
+  margin-bottom: 2vh;
+  border-radius: 10% / 5%;
+  background: transparent;
+  position: relative;
+}
+
+.v1-bar-outer {
+  background: transparent;
+  margin-top: 1vh;
+  width: 70%;
+  height: 30%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, 0);
+  z-index: 10;
+}
+.v1-bar-inner {
+  background-color: var(--accent);
+  height: 100%;
+  transition: 0.25s;
+}
+.v1-bar-label {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  white-space: nowrap;
+}
+
+.v1-time-top { font-size: 6vh; font-weight: bold; margin-top: 0.5vh; margin-bottom: 0; padding-bottom: 0; }
+.v1-time-bottom { padding-top: 0; margin-top: 0; font-size: 5vh; font-weight: bold; }
+.v1-time-label { font-weight: 100; font-size: 3.25vh; padding-top: 2vh; }
+.v1-day { font-weight: 100; font-size: 3.2vh; }
+.v1-date { font-weight: bold; font-size: 6vh; }
+
+.v1-radio-label {
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--text);
+  font-size: 4vh;
+  margin: 0 2vh 0 0;
+  padding: 0;
+  font-weight: 400;
+}
+.v1-radio-row {
+  margin-top: 2.5vh;
+  margin-bottom: 3.5vh;
+  position: relative;
+  text-align: center;
+}
+.v1-radio-outer {
+  height: var(--radio);
+  width: var(--radio);
+  background: transparent;
   border: none;
-  box-shadow: inset -3px -3px 6px var(--shadow-light), inset 3px 3px 6px var(--shadow-dark);
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
 }
-input[type="text"]:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+.v1-radio-outer:hover { transform: scale(1.05); }
+.v1-radio-inner {
+  height: calc(var(--radio) / 2);
+  width: calc(var(--radio) / 2);
+  background-color: var(--text);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.v1-cycle-output {
+  color: var(--text);
+  text-align: center;
+  font-size: 11vh;
+  margin: 2vh 0 0;
+  padding: 0;
+  font-weight: 400;
+}
+.v1-last-updated {
+  color: var(--text);
+  text-align: center;
+  margin: 1vh 0 0;
+  font-weight: 400;
+  font-size: 1.5vh;
+}
+
+.v1-btn {
+  padding: 9.75%;
+  cursor: pointer;
+  outline: none;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  border-radius: 12px;
+  width: calc(var(--thatHeight) / 2.22);
+  height: calc(var(--thatHeight) / 2.22);
+  margin: 0 1.35vh calc(1.35vh * 1.5) 0;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 2vh;
+  font-family: inherit;
+  line-height: normal;
+}
+.v1-btn.right { margin-right: 0; }
+.v1-btn:hover { transform: scale(1.03); }
+
+/* Timers */
+.v1-timers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  height: 100%;
+}
+.v1-timer {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  width: var(--timerWidth);
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+  border: 0.5vh solid transparent;
+  transition: 0.75s;
+  flex: none;
+}
+.v1-timer.live { border-color: var(--accent); }
+.v1-timer-text {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  font-size: 2.5vw;
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+}
+.v1-timer-title { font-weight: 600; left: 5%; }
+.v1-timer-start-label { font-weight: 500; left: 32%; }
+.v1-timer-start { font-family: 'Lato', sans-serif; font-weight: normal; left: 43%; }
+.v1-timer-end-label { font-weight: 500; right: 24%; padding-left: 5vw; }
+.v1-timer-end { font-family: 'Lato', sans-serif; font-weight: normal; right: 5.5%; }
+
+.v1-over {
+  font-size: 20vh;
+  font-weight: bold;
+  margin: 0;
+  padding-top: 25vh;
+  padding-left: 5vh;
+  color: var(--text);
+  line-height: 1.15;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.v1-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  width: 6vh;
+  height: 6vh;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 500%;
+  line-height: 0.6;
+  border-radius: 0 0 0 2vw;
+  cursor: pointer;
+  z-index: 20;
+}
+.v1-toggle.left { left: 0; right: auto; border-radius: 0 0 2vw 0; }
+
+/* V1 narrow layout: aspect <= 1.15 */
+@media (max-aspect-ratio: 23/20) {
+  :root { --timerWidth: 90vw; }
+  .v1-timer-text { font-size: 3.5vw; }
+}
+
+@media only screen and (max-width: 1000px) {
+  .v1-sidebar { transform: scale(0.75); }
+  .v1-square { width: 21vh; }
+}
+
+/* ═════════════════ POPUPS (V1) ═════════════════ */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: -50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  box-sizing: content-box;
+  height: 70vh;
+  width: 60vw;
+  max-width: calc(100vw - 6vh);
+  background-color: var(--bg);
+  padding: 3vh;
+  text-align: left;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  transition: left 550ms ease;
+  overflow: auto;
+  color: var(--text);
+}
+.popup:not(.open) { visibility: hidden; transition: left 550ms ease, visibility 0s linear 550ms; }
+.popup.open { left: 50%; }
+.popup.short { height: 45vh; }
+.popup.wide { width: 80vw; max-width: 1100px; }
+@media (max-width: 800px) {
+  .popup { width: 88vw; height: 78vh; }
+  .popup.short { height: auto; max-height: 78vh; }
+}
+
+.popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: transparent;
+}
+
+.popupheader {
+  margin: 0;
+  padding: 0;
+  font-size: 6vh;
+  font-weight: 400;
+  display: inline-block;
+  color: var(--text);
+}
+.popup-rule {
+  width: 10%;
+  min-width: 48px;
+  margin: 2vh 0 5vh 0;
+  border: 0;
+  border-top: 5px solid var(--accent);
+  border-radius: 5px;
+}
+.popup-x {
+  float: right;
+  border: none;
+  outline: none;
+  height: 5vh;
+  width: 5vh;
+  text-align: center;
+  font-size: 5vh;
+  line-height: 5vh;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+}
+.popuplabel {
+  margin: 7vh 0 1vh;
+  color: var(--text);
+  font-size: 3vh;
+  font-weight: 100;
+}
+.popuplabel.first { margin-top: 0; }
+
+.v1-request {
+  width: 40%;
+  padding: 5px;
+  text-align: center;
+  border-radius: 2vh;
+  font-size: 2vh;
+  color: var(--text);
+  margin: 0 10px 1.5vh 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.v1-request-row { display: flex; }
+.v1-request-row.center { justify-content: center; align-items: center; }
+.v1-request:hover { transform: scale(1.03); }
+
+.v1-select {
+  display: inline-block;
+  margin: 1vh 0 0;
+  height: 8vh;
+  vertical-align: middle;
+  color: var(--text);
+  font-size: 2vh;
+  font-weight: 100;
+  padding: 1.5vh;
+  background-color: transparent;
+  border: 1px solid var(--text);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.v1-select:focus { outline: none; }
+.v1-select option { background: var(--bg); color: var(--text); }
+
+.v1-color-el {
+  display: inline-block;
+  padding: 20px;
+  margin: 1vh 1vh 0 0;
+  text-align: center;
+  border-radius: 8px;
+}
+.v1-color-el input[type="color"] {
+  display: inline-block;
+  width: 8.5vh;
+  height: 8.5vh;
+  vertical-align: middle;
+  margin: 0;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.v1-color-el p {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 0 20px;
+  font-size: 3vh;
+  font-weight: 100;
+  color: var(--text);
+}
+
+.v1-cycle-box {
+  display: inline-block;
+  margin: 3vh;
+  text-align: center;
+  box-sizing: border-box;
+  height: var(--thatHeight);
+  width: var(--thatHeight);
+  border-radius: 10%;
+}
+.v1-cycle-out {
+  color: var(--text);
+  text-align: center;
+  font-size: 11vh;
+  margin: 2.5vh 0 0;
+  font-weight: 400;
+}
+
+.v1-menu-title {
+  font-weight: 600;
+  margin: 10px;
+  font-size: 35px;
+  text-decoration: underline;
+  color: var(--text);
+}
+.v1-menu-items { margin: 10px; font-size: 25px; color: var(--text); }
+
+.v1-stat-row { font-size: 30px; margin: 0; color: var(--text); }
+.v1-stat-row b { font-weight: 600; }
+
+.v1-weather-line {
+  display: block;
+  margin: 0 0 1.5vh;
+  padding: 1.2vh 2vh;
+  border-radius: 2vh;
+  width: max-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  color: var(--text);
+  font-size: 3vh;
+  font-weight: 100;
+}
+.v1-weather-line b { font-weight: 600; margin-right: 1vh; }
+
+.v1-dev { font-size: 14px; color: var(--text); text-align: center; margin: 4vh 0 0; }
+
+/* ═════════════ Tailwind-styled content (schedule editor, TV mode) ═════════════ */
+button { font: inherit; }
+input[type="text"], select, textarea {
+  font: inherit;
+  color: var(--text);
+  background-color: transparent;
+  border: 1px solid color-mix(in srgb, var(--text) 35%, transparent);
+  border-radius: 6px;
+}
+input[type="text"]:focus, select:focus, textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
   outline-offset: 1px;
 }
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border-2); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-dim); }
-
-.tabular { font-variant-numeric: tabular-nums; }
-
-.scroll-x {
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.scroll-x::-webkit-scrollbar { display: none; }
-
-.countdown {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-}
-
-/* Neumorphic depth: every surface is the page background, shaped by a light
-   and a dark shadow (set per theme as --shadow-light / --shadow-dark). */
-:root {
-  --shadow-light: rgba(255, 255, 255, 0.8);
-  --shadow-dark:  rgba(0, 0, 0, 0.2);
-}
-
-.card {
-  background: var(--color-bg);
-  border: none;
-  box-shadow: -6px -6px 10px var(--shadow-light), 6px 6px 10px var(--shadow-dark);
-  border-radius: 22px;
-}
-
-.neu-raised {
-  background: var(--color-bg);
-  box-shadow: -6px -6px 10px var(--shadow-light), 6px 6px 10px var(--shadow-dark);
-}
-.neu-raised-sm {
-  background: var(--color-bg);
-  box-shadow: -3px -3px 6px var(--shadow-light), 3px 3px 6px var(--shadow-dark);
-}
-.neu-inset {
-  background: var(--color-bg);
-  box-shadow: inset -3px -3px 6px var(--shadow-light), inset 3px 3px 6px var(--shadow-dark);
-}
-
-/* Existing flat utilities, mapped onto the neumorphic language so every
-   component picks it up without per-file changes. */
 .bg-surface-2 {
-  background-color: var(--color-bg);
+  background-color: transparent;
   box-shadow: inset -2px -2px 5px var(--shadow-light), inset 2px 2px 5px var(--shadow-dark);
 }
-.bg-surface:not(.card) {
-  background-color: var(--color-bg);
-}
-.border-border,
-.border-border-2 {
-  border-color: transparent;
-}
-.bg-border,
-.bg-border-2 {
-  background-color: transparent;
-  border-radius: 999px;
-  box-shadow: inset -2px -2px 4px var(--shadow-light), inset 2px 2px 4px var(--shadow-dark);
-}
-.bg-accent {
-  box-shadow: -3px -3px 6px var(--shadow-light), 3px 3px 6px var(--shadow-dark);
-}
-.bg-accent-soft {
-  box-shadow: inset -3px -3px 6px var(--shadow-light), inset 3px 3px 6px var(--shadow-dark);
+.border-border, .border-border-2 { border-color: color-mix(in srgb, var(--text) 18%, transparent); }
+.bg-accent { color: #fff; }
+.neu-raised-sm {
+  background: transparent;
+  box-shadow: var(--light-dim) var(--shadow-light), var(--dark-dim) var(--shadow-dark);
 }
 
-/* V1 button feel: lift slightly on hover, sink when pressed. */
-button:not(:disabled) {
-  transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+@keyframes lunch-blink {
+  0%, 100% { box-shadow: 0 0 0 2px var(--color-accent); background-color: var(--color-accent-soft); }
+  50%      { box-shadow: 0 0 0 2px transparent; background-color: transparent; }
 }
-button:not(:disabled):hover { transform: scale(1.03); }
-button:not(:disabled):active {
-  transform: scale(0.98);
-  box-shadow: inset -3px -3px 6px var(--shadow-light), inset 3px 3px 6px var(--shadow-dark);
+.lunch-blink { animation: lunch-blink 0.85s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .lunch-blink { animation: none; }
+  .popup { transition: none; }
 }
 
-.time-font { font-family: var(--font-time); }
+.tabular { font-variant-numeric: tabular-nums; }
+.scroll-x { overflow-x: auto; scrollbar-width: none; }
+.scroll-x::-webkit-scrollbar { display: none; }
+.countdown { font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.live-dot { animation: live-pulse 1.8s ease-in-out infinite; }
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.65); }
+}
 
-/* TV mode forces dark theme regardless of user theme setting */
+/* TV mode forces a dark theme regardless of user theme (unchanged from V2). */
 [data-tv] {
   --color-bg:          #0e0e10;
   --color-surface:     #1a1a1f;
@@ -172,48 +532,9 @@ button:not(:disabled):active {
   --color-accent:      #f0314f;
   --color-accent-soft: rgba(240, 49, 79, 0.10);
   --color-accent-dim:  rgba(240, 49, 79, 0.22);
-  --shadow-light:      rgba(255, 255, 255, 0.04);
-  --shadow-dark:       rgba(0, 0, 0, 0.5);
 }
-
-@keyframes live-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.35; transform: scale(0.65); }
-}
-.live-dot { animation: live-pulse 1.8s ease-in-out infinite; }
-
-@keyframes lunch-blink {
-  0%, 100% {
-    box-shadow: 0 0 0 2px var(--color-accent);
-    background-color: var(--color-accent-soft);
-  }
-  50% {
-    box-shadow: 0 0 0 2px transparent;
-    background-color: transparent;
-  }
-}
-.lunch-blink { animation: lunch-blink 0.85s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .lunch-blink { animation: none; }
-}
-
-/* Modal: V1's popup slides in from the side while the page blurs behind it. */
-.modal-backdrop {
-  background: color-mix(in srgb, var(--color-bg) 55%, transparent);
-  backdrop-filter: blur(3px);
-  animation: modal-fade 0.25s ease both;
-}
-.modal-panel { animation: modal-slide 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-@keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modal-slide {
-  from { opacity: 0; transform: translateX(-12vw); }
-  to   { opacity: 1; transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .modal-backdrop, .modal-panel { animation: none; }
-}
-
-/* Keep hairline dividers (list rows, section rules) faintly visible. */
-.border-t.border-border, .border-b.border-border {
-  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
 }

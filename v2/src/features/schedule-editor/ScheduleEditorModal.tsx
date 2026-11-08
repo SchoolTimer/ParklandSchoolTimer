@@ -40,7 +40,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="My Schedule" widthClass="max-w-5xl">
+    <Modal open={open} onClose={onClose} title="My Schedule" size="wide">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3">
         <div className="flex items-center gap-1.5" role="tablist" aria-label="Cycle day">
           <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-dim mr-1">Day</span>

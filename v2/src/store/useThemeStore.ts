@@ -4,16 +4,14 @@ import { persist } from "zustand/middleware";
 
 export type ThemeName = "default" | "dark" | "beach" | "stealth" | "eww" | "hacker" | "custom";
 
+// Mirrors V1's theme objects (other/color/colorValues.js) value for value.
 type ThemeVars = {
   bg: string;
-  surface: string;
-  surface2: string;
-  border: string;
-  border2: string;
   text: string;
-  dim: string;
-  dim2: string;
   accent: string;
+  inactive: string;       // V1 timertextdeactive
+  lightDim: string;       // V1 lightshadowdim (offset + blur)
+  darkDim: string;
   shadowLight: string;
   shadowDark: string;
 };
@@ -24,7 +22,7 @@ export type CustomColors = {
   text: string;
 };
 
-// Same lighten/darken as V1: shift every channel by percent of 255, clamped.
+// V1's LightenColor: shift every channel by percent of 255, clamped.
 function shade(color: string, percent: number): string {
   const num = parseInt(color.replace("#", ""), 16);
   const amt = Math.round(2.55 * percent);
@@ -35,37 +33,16 @@ function shade(color: string, percent: number): string {
   return "#" + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
 }
 
-function mix(a: string, b: string, pctOfA: number) {
-  return `color-mix(in srgb, ${a} ${pctOfA}%, ${b})`;
-}
-
-// Neumorphic themes: surfaces are the background itself; depth comes from the
-// light/dark shadow pair. Supporting tones are derived from bg + text.
-function build(
-  bg: string,
-  text: string,
-  accent: string,
-  dimText: string,
-  shadowLight: string,
-  shadowDark: string,
-): ThemeVars {
-  return {
-    bg,
-    surface: bg,
-    surface2: bg,
-    border: mix(text, bg, 12),
-    border2: mix(text, bg, 22),
-    text,
-    dim: dimText,
-    dim2: mix(text, bg, 35),
-    accent,
-    shadowLight,
-    shadowDark,
-  };
-}
+const NORMAL_LIGHT = "-6px -6px 10px";
+const SOFT_LIGHT   = "-3px -6px 7px";
+const DARK_OFFSET  = "6px 6px 10px";
 
 function buildCustomVars(c: CustomColors): ThemeVars {
-  return build(c.bg, c.text, c.accent, mix(c.text, c.bg, 70), shade(c.bg, 5), shade(c.bg, -6));
+  return {
+    bg: c.bg, text: c.text, accent: c.accent, inactive: "#bfbfbf",
+    lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade(c.bg, 3), shadowDark: shade(c.bg, -1),
+  };
 }
 
 export const DEFAULT_CUSTOM_COLORS: CustomColors = {
@@ -75,26 +52,33 @@ export const DEFAULT_CUSTOM_COLORS: CustomColors = {
 };
 
 export const THEME_PRESETS: Record<ThemeName, ThemeVars> = {
-  default: build("#ededed", "#575757", "#ff2b40", "#8c8c8c", "rgba(255, 255, 255, 0.8)", "rgba(0, 0, 0, 0.2)"),
-  dark:    build("#222226", "#d4d4d4", "#d11f3a", "#8a8a8f", shade("#222226", 3), shade("#222226", -2)),
-  beach:   build("#fff7eb", "#575757", "#55dde0", "#8c8c8c", shade("#fff7eb", 2), shade("#fff7eb", -5)),
-  stealth: build("#000000", "#1c1c1c", "#1c1c1c", "#1c1c1c", shade("#000000", 3), shade("#000000", -2)),
-  eww:     build("#050064", "#ff2afc", "#feff33", "#c020bd", shade("#050064", 6), shade("#050064", -6)),
-  hacker:  build("#000000", "#00ff33", "#00ff33", "#00b824", shade("#000000", 6), shade("#000000", -6)),
+  default: { bg: "#ededed", text: "#575757", accent: "#ff2b40", inactive: "#bfbfbf",
+    lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: "rgba(255, 255, 255, 0.8)", shadowDark: "rgba(0, 0, 0, 0.2)" },
+  dark:    { bg: "#222226", text: "#d4d4d4", accent: "#d11f3a", inactive: "#575757",
+    lightDim: SOFT_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade("#222226", 3), shadowDark: shade("#222226", -2) },
+  beach:   { bg: "#fff7eb", text: "#575757", accent: "#55dde0", inactive: "#bfbfbf",
+    lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade("#fff7eb", 2), shadowDark: shade("#fff7eb", -5) },
+  stealth: { bg: "#000000", text: "#1c1c1c", accent: "#1c1c1c", inactive: "#575757",
+    lightDim: SOFT_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade("#000000", 3), shadowDark: shade("#000000", -2) },
+  eww:     { bg: "#050064", text: "#ff2afc", accent: "#feff33", inactive: "#575757",
+    lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade("#050064", 6), shadowDark: shade("#050064", -6) },
+  hacker:  { bg: "#000000", text: "#00ff33", accent: "#00ff33", inactive: "#00ff33",
+    lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
+    shadowLight: shade("#000000", 6), shadowDark: shade("#000000", -6) },
   custom:  buildCustomVars(DEFAULT_CUSTOM_COLORS),
 };
 
-const THEME_DESCRIPTIONS: Record<ThemeName, string> = {
-  default: "Classic · Red",
-  dark:    "Dark · Red",
-  beach:   "Sand · Aqua",
-  stealth: "Blackout",
-  eww:     "Navy · Yellow",
-  hacker:  "Terminal · Green",
-  custom:  "Your colors",
+const THEME_LABELS: Record<ThemeName, string> = {
+  default: "Default", dark: "Dark", beach: "Beach", stealth: "Stealth",
+  eww: "Eww", hacker: "Hacker", custom: "Custom",
 };
 
-export { THEME_DESCRIPTIONS };
+export { THEME_LABELS };
 
 type ThemeStore = {
   theme: ThemeName;
@@ -141,18 +125,26 @@ export function useApplyTheme() {
       ? buildCustomVars(customColors)
       : THEME_PRESETS[theme] ?? THEME_PRESETS["default"];
     const root = document.documentElement;
-    root.style.setProperty("--color-bg",          p.bg);
-    root.style.setProperty("--color-surface",     p.surface);
-    root.style.setProperty("--color-surface-2",   p.surface2);
-    root.style.setProperty("--color-border",      p.border);
-    root.style.setProperty("--color-border-2",    p.border2);
-    root.style.setProperty("--color-text",        p.text);
-    root.style.setProperty("--color-dim",         p.dim);
-    root.style.setProperty("--color-dim-2",       p.dim2);
-    root.style.setProperty("--color-accent",      p.accent);
-    root.style.setProperty("--color-accent-soft", `${p.accent}12`);
-    root.style.setProperty("--color-accent-dim",  `${p.accent}38`);
-    root.style.setProperty("--shadow-light",      p.shadowLight);
-    root.style.setProperty("--shadow-dark",       p.shadowDark);
+    const set = (k: string, v: string) => root.style.setProperty(k, v);
+    set("--bg", p.bg);
+    set("--text", p.text);
+    set("--accent", p.accent);
+    set("--inactive", p.inactive);
+    set("--light-dim", p.lightDim);
+    set("--dark-dim", p.darkDim);
+    set("--shadow-light", p.shadowLight);
+    set("--shadow-dark", p.shadowDark);
+    // Tokens used by the Tailwind-styled editor modal.
+    set("--color-bg", p.bg);
+    set("--color-surface", p.bg);
+    set("--color-surface-2", p.bg);
+    set("--color-text", p.text);
+    set("--color-dim", `color-mix(in srgb, ${p.text} 75%, ${p.bg})`);
+    set("--color-dim-2", `color-mix(in srgb, ${p.text} 40%, ${p.bg})`);
+    set("--color-border", `color-mix(in srgb, ${p.text} 12%, ${p.bg})`);
+    set("--color-border-2", `color-mix(in srgb, ${p.text} 22%, ${p.bg})`);
+    set("--color-accent", p.accent);
+    set("--color-accent-soft", `color-mix(in srgb, ${p.accent} 8%, transparent)`);
+    set("--color-accent-dim", `color-mix(in srgb, ${p.accent} 22%, transparent)`);
   }, [theme, customColors]);
 }
