@@ -54,7 +54,7 @@ export const DEFAULT_CUSTOM_COLORS: CustomColors = {
 export const THEME_PRESETS: Record<ThemeName, ThemeVars> = {
   default: { bg: "#ededed", text: "#575757", accent: "#ff2b40", inactive: "#bfbfbf",
     lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
-    shadowLight: "rgba(255, 255, 255, 0.8)", shadowDark: "rgba(0, 0, 0, 0.2)" },
+    shadowLight: shade("#ededed", 5), shadowDark: shade("#ededed", -6) },
   dark:    { bg: "#222226", text: "#d4d4d4", accent: "#d11f3a", inactive: "#575757",
     lightDim: SOFT_LIGHT, darkDim: DARK_OFFSET,
     shadowLight: shade("#222226", 3), shadowDark: shade("#222226", -2) },

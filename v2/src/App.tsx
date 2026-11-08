@@ -91,15 +91,16 @@ function App() {
         {narrow ? (
           <>
             <button
-              className="v1-toggle shadows"
+              className={`v1-toggle shadows${showSidebar ? " left" : ""}`}
               onClick={() => setShowSidebar((v) => !v)}
-              aria-label={showSidebar ? "Show timers" : "Show sidebar"}
-              style={showSidebar ? { left: 0, right: "auto", borderRadius: "0 0 2vw 0" } : undefined}
+              aria-label={showSidebar ? "Back to timers" : "Show sidebar"}
             >
-              {showSidebar ? "\u00BB" : "\u00AB"}
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                {showSidebar ? <path d="M9 6l6 6-6 6" /> : <path d="M15 6l-6 6 6 6" />}
+              </svg>
             </button>
             {showSidebar ? (
-              <div style={{ display: "flex", justifyContent: "center", height: "100%", overflow: "auto" }}>{sidebar}</div>
+              <div className="v1-narrow-sidebar">{sidebar}</div>
             ) : (
               <Timers
                 now={now} letter={effectiveLetter} cycleDay={today?.cycleDay ?? null}

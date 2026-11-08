@@ -57,8 +57,15 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
 
   const n = visible.length;
   const H = viewport.h;
+  const narrow = viewport.w / viewport.h <= 1.15;
   let height: number, radius: number, margin: number;
-  if (n <= 4) {
+  if (narrow) {
+    // Phones: true stadium pills with an even gap, centred in the column.
+    const gap = H * 0.022;
+    height = Math.min(H * 0.13, (H * 0.84 - gap * (n - 1)) / n);
+    radius = height / 2;
+    margin = 0;
+  } else if (n <= 4) {
     height = H / 4 - (H / 4) * 0.25;
     radius = H / 4;
     margin = (H - height * n) / (n + 1);
@@ -69,7 +76,7 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
   }
 
   return (
-    <div className="v1-timers">
+    <div className={`v1-timers${narrow ? " narrow" : ""}`}>
       {visible.map((r) => {
         const live = r.state.status === "active";
         const startsIn = r.state.status === "upcoming" ? r.state.startsIn : null;
@@ -85,13 +92,17 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
               {r.room ? <span style={{ fontWeight: 300, fontSize: "60%" }}> · {r.room}</span> : null}
               {r.lunch ? <span style={{ fontWeight: 300, fontSize: "60%" }}> · Lunch</span> : null}
             </h2>
-            <span className="v1-timer-text v1-timer-start-label">Start:</span>
-            <span className="v1-timer-text v1-timer-start">
-              {startsIn !== null && startsIn < TEN_HOURS ? formatCountdown(startsIn) : DASHES}
+            <span className="v1-pair">
+              <span className="v1-timer-text v1-timer-start-label">Start:</span>
+              <span className="v1-timer-text v1-timer-start">
+                {startsIn !== null && startsIn < TEN_HOURS ? formatCountdown(startsIn) : DASHES}
+              </span>
             </span>
-            <span className="v1-timer-text v1-timer-end-label">End:</span>
-            <span className="v1-timer-text v1-timer-end">
-              {endsIn !== null ? formatCountdown(endsIn) : DASHES}
+            <span className="v1-pair">
+              <span className="v1-timer-text v1-timer-end-label">End:</span>
+              <span className="v1-timer-text v1-timer-end">
+                {endsIn !== null ? formatCountdown(endsIn) : DASHES}
+              </span>
             </span>
           </div>
         );

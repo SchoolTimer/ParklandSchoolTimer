@@ -26,8 +26,8 @@
   --inactive: #bfbfbf;
   --light-dim: -6px -6px 10px;
   --dark-dim: 6px 6px 10px;
-  --shadow-light: rgba(255, 255, 255, 0.8);
-  --shadow-dark: rgba(0, 0, 0, 0.2);
+  --shadow-light: #fafafa;
+  --shadow-dark: #dedede;
   --timerWidth: 55vw;
   --thatHeight: 22.71vh;
   --radio: 6vh;
@@ -262,34 +262,82 @@ body {
   align-self: flex-start;
 }
 
+.v1-pair { display: contents; }
+
 .v1-toggle {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 2vh;
+  right: 4vw;
   margin: 0;
   padding: 0;
-  width: 6vh;
-  height: 6vh;
+  width: 46px;
+  height: 46px;
   border: none;
+  border-radius: 50%;
   background: transparent;
   color: var(--text);
-  font-size: 500%;
-  line-height: 0.6;
-  border-radius: 0 0 0 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   z-index: 20;
 }
-.v1-toggle.left { left: 0; right: auto; border-radius: 0 0 2vw 0; }
-
-/* V1 narrow layout: aspect <= 1.15 */
-@media (max-aspect-ratio: 23/20) {
-  :root { --timerWidth: 90vw; }
-  .v1-timer-text { font-size: 3.5vw; }
+.v1-toggle.left { left: 4vw; right: auto; }
+.v1-narrow-sidebar {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 8vh;
+  box-sizing: border-box;
 }
 
-@media only screen and (max-width: 1000px) {
-  .v1-sidebar { transform: scale(0.75); }
-  .v1-square { width: 21vh; }
+/* V1 narrow layout (aspect <= 1.15), polished for phones */
+@media (max-aspect-ratio: 23/20) {
+  :root {
+    --timerWidth: 90vw;
+    --thatHeight: min(21vh, 41vw);
+  }
+  /* gentler shadows: the desktop offsets read as heavy on a small screen */
+  .shadows { box-shadow: -4px -4px 8px var(--shadow-light), 4px 4px 8px var(--shadow-dark); }
+  .v1-timers.narrow { justify-content: center; gap: 2.2vh; }
+  .v1-timer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    column-gap: 4vw;
+    row-gap: 0.4vh;
+    padding: 0 5vw;
+  }
+  .v1-timer-text {
+    position: static;
+    transform: none;
+    font-size: 3.6vw;
+    line-height: 1.25;
+  }
+  .v1-timer-title { flex-basis: 100%; font-size: 5.2vw; text-align: center; }
+  .v1-timer-start-label, .v1-timer-end-label { padding-left: 0; margin-right: 1vw; }
+  .v1-pair { display: inline-flex; align-items: baseline; }
+  .v1-sidebar { transform: none; }
+  /* Sidebar type and spacing scale with the tile size (u = V1's 1vh at tile size). */
+  .v1-sidebars { --u: calc(var(--thatHeight) / 22.71); --radio: calc(6 * var(--u)); }
+  .v1-square, .v1-rect { margin-bottom: calc(2 * var(--u)); }
+  .v1-rect { height: calc(var(--thatHeight) * 2 + 2 * var(--u)); }
+  .v1-sidebars .v1-h6 { font-size: calc(3 * var(--u)); }
+  .v1-sidebars .v1-time-label { font-size: calc(3.25 * var(--u)); padding-top: calc(2 * var(--u)); }
+  .v1-sidebars .v1-time-top { font-size: calc(6 * var(--u)); margin-top: calc(0.5 * var(--u)); }
+  .v1-sidebars .v1-time-bottom { font-size: calc(5 * var(--u)); }
+  .v1-sidebars .v1-day { font-size: calc(3.2 * var(--u)); }
+  .v1-sidebars .v1-date { font-size: calc(6 * var(--u)); }
+  .v1-sidebars .v1-cycle-output { font-size: calc(11 * var(--u)); margin-top: calc(2 * var(--u)); }
+  .v1-sidebars .v1-radio-label { font-size: calc(4 * var(--u)); margin-right: calc(2 * var(--u)); }
+  .v1-radio-row { margin-top: calc(2.5 * var(--u)); margin-bottom: calc(3.5 * var(--u)); }
+  .v1-bar-outer { margin-top: calc(1 * var(--u)); }
+  .v1-square { width: var(--thatHeight); }
+  .v1-btn { width: calc(var(--thatHeight) / 2.22); height: calc(var(--thatHeight) / 2.22); font-size: calc(1.9 * var(--u)); margin: 0 calc(1.35 * var(--u)) calc(2 * var(--u)) 0; }
+  .v1-btn.right { margin-right: 0; }
 }
 
 /* ═════════════════ POPUPS (V1) ═════════════════ */
