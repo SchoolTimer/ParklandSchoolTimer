@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useClock } from "../../hooks/useClock";
 import { Modal } from "../../components/Modal";
 import { useScheduleStore } from "../../store/useScheduleStore";
+import { useSettingsStore } from "../../store/useSettingsStore";
 import type { SchoolDates } from "../../lib/api";
 import { endOfLocalDay } from "../../lib/time";
 import { schoolYearProgress } from "../../lib/progress";
@@ -16,9 +17,9 @@ type Props = {
 const REPO = "https://github.com/SchoolTimer/ParklandSchoolTimer";
 
 const CONTACTS = [
-  { name: "Luke", info: " Email: luke@schooltimer.net \n LinkedIn: @lukegutman \n GitHub: @lukelmg" },
-  { name: "Krushil", info: " Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1" },
-  { name: "Sooraj", info: " Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia" },
+  { name: "Luke Gutman", role: "Developer", info: " Email: luke@schooltimer.net \n LinkedIn: @lukegutman \n GitHub: @lukelmg" },
+  { name: "Krushil Amrutiya", role: "Maintainer", info: " Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1" },
+  { name: "Sooraj Tharumia", role: "Maintainer", info: " Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia" },
 ];
 
 function parts(ms: number) {
@@ -29,6 +30,8 @@ function parts(ms: number) {
 export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props) {
   const now      = useClock(1000);
   const resetAll = useScheduleStore((s) => s.resetAll);
+  const soundsOn = useSettingsStore((s) => s.soundsOn);
+  const setSoundsOn = useSettingsStore((s) => s.setSoundsOn);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
@@ -69,32 +72,58 @@ export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props)
       </div>
 
       <div className="pp-section">
-        <p className="pp-label">My schedule</p>
-        <button className="pp-btn primary block" onClick={() => { onClose(); onOpenSchedule(); }}>
-          Edit my classes, rooms and lunch
-        </button>
-      </div>
-
-      <div className="pp-section">
-        <p className="pp-label">Feedback</p>
-        <div className="pp-grid c3">
-          <a className="pp-btn" href={`${REPO}/issues/new?template=bug_report.md`} target="_blank" rel="noreferrer">Bug report</a>
-          <a className="pp-btn" href={`${REPO}/issues/new`} target="_blank" rel="noreferrer">Feature request</a>
-          <button className="pp-btn" onClick={() => setPrivacyOpen(true)}>Privacy policy</button>
+        <p className="pp-label">Preferences</p>
+        <div className="pp-list">
+          <button className="pp-row" onClick={() => { onClose(); onOpenSchedule(); }}>
+            <span>My schedule<small>Class names, rooms and lunch period</small></span>
+            <span className="chev">&#8250;</span>
+          </button>
+          <div className="pp-row static">
+            <span id="snd-l">Button click sounds</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={soundsOn}
+              aria-labelledby="snd-l"
+              className="pp-switch"
+              onClick={() => setSoundsOn(!soundsOn)}
+            />
+          </div>
         </div>
       </div>
 
       <div className="pp-section">
-        <p className="pp-label">Contact</p>
-        <div className="pp-grid c3">
+        <p className="pp-label">Help &amp; feedback</p>
+        <div className="pp-list">
+          <a className="pp-row" href={`${REPO}/issues/new?template=bug_report.md`} target="_blank" rel="noreferrer">
+            <span>Report a bug</span><span className="chev">&#8250;</span>
+          </a>
+          <a className="pp-row" href={`${REPO}/issues/new`} target="_blank" rel="noreferrer">
+            <span>Request a feature</span><span className="chev">&#8250;</span>
+          </a>
+          <button className="pp-row" onClick={() => setPrivacyOpen(true)}>
+            <span>Privacy policy</span><span className="chev">&#8250;</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="pp-section">
+        <p className="pp-label">Contact the team</p>
+        <div className="pp-list">
           {CONTACTS.map((c) => (
-            <button key={c.name} className="pp-btn" onClick={() => alert(c.info)}>{c.name}</button>
+            <button key={c.name} className="pp-row" onClick={() => alert(c.info)}>
+              <span>{c.name}<small>{c.role}</small></span><span className="chev">&#8250;</span>
+            </button>
           ))}
         </div>
       </div>
 
       <div className="pp-section">
-        <button className="pp-btn danger block" onClick={() => setConfirmOpen(true)}>Reset School Timer</button>
+        <div className="pp-list">
+          <button className="pp-row danger" onClick={() => setConfirmOpen(true)}>
+            <span>Reset School Timer</span>
+          </button>
+        </div>
       </div>
 
       <p className="pp-foot">

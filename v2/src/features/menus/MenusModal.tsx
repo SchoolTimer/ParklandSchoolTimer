@@ -17,7 +17,7 @@ export function MenusModal({ open, onClose, menu }: Props) {
 function MenuCard({ title, items }: { title: string; items?: string[] }) {
   return (
     <div className="pp-card">
-      <h2 className="pp-menu-title"><i />{title}</h2>
+      <h2 className="pp-menu-title"><i />{title}{items && items.length ? <span className="pp-badge" style={{ fontSize: 12, fontWeight: 600 }}>{items.length} items</span> : null}</h2>
       {items && items.length ? (
         <ul className="pp-menu-list">
           {items.map((it, i) => <li key={i}>{it}</li>)}

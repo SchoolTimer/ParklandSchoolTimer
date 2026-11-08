@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Modal } from "../../components/Modal";
 import { CYCLE_DAYS, type CycleDay } from "../../lib/schedule";
 import { useScheduleStore } from "../../store/useScheduleStore";
@@ -18,13 +18,9 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
   const [activeDay, setActiveDay] = useState<CycleDay>(1);
   const [copyTo, setCopyTo]       = useState<CycleDay>(2);
   const [copied, setCopied]       = useState(false);
-  const lunchRef = useRef<HTMLSelectElement>(null);
-
-  useEffect(() => {
-    if (open && highlightLunch) lunchRef.current?.focus();
-  }, [open, highlightLunch]);
 
   const entries = schedule[activeDay];
+  const filled = entries.filter((e) => e.className.trim()).length;
   const otherDays = CYCLE_DAYS.filter((d) => d !== activeDay);
   const targetDay = otherDays.includes(copyTo) ? copyTo : otherDays[0];
 
@@ -40,22 +36,12 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
     <Modal open={open} onClose={onClose} title="My Schedule" size="wide">
       <div className="pp-section">
         <p className="pp-label">Cycle day</p>
-        <div className="pp-days" role="tablist" aria-label="Cycle day">
-          {CYCLE_DAYS.map((d) => {
-            const on = activeDay === d;
-            return (
-              <button
-                key={d}
-                type="button"
-                role="tab"
-                aria-selected={on}
-                className={`pp-day${on ? " on" : ""}`}
-                onClick={() => chooseDay(d)}
-              >
-                {d}
-              </button>
-            );
-          })}
+        <div className="pp-seg fill" role="tablist" aria-label="Cycle day">
+          {CYCLE_DAYS.map((d) => (
+            <button key={d} type="button" role="tab" aria-selected={activeDay === d} onClick={() => chooseDay(d)}>
+              Day {d}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -66,30 +52,31 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
             type="text"
             className="pp-input"
             value={homeroomRoom}
-            placeholder="Room"
+            placeholder="e.g. 204"
             title="Shown on homeroom (B) days"
             onChange={(e) => setHomeroomRoom(e.target.value)}
           />
         </label>
-        <label className={`pp-field${highlightLunch ? " lunch-blink" : ""}`} style={highlightLunch ? { padding: 8, margin: -8 } : undefined}>
+        <div className={`pp-field${highlightLunch ? " lunch-blink" : ""}`} style={highlightLunch ? { padding: 8, margin: -8 } : undefined}>
           <span>Lunch period</span>
-          <select
-            ref={lunchRef}
-            className="pp-input"
-            value={lunchPeriod ?? ""}
-            title="Used for the lunch countdown"
-            onChange={(e) => setLunchPeriod(e.target.value ? Number(e.target.value) : null)}
-          >
-            <option value="">None</option>
-            {[4, 5, 6, 7].map((p) => (
-              <option key={p} value={p}>Period {p}</option>
+          <div className="pp-seg fill" role="radiogroup" aria-label="Lunch period">
+            {[null, 4, 5, 6, 7].map((p) => (
+              <button
+                key={p ?? "none"}
+                type="button"
+                role="radio"
+                aria-checked={lunchPeriod === p}
+                onClick={() => setLunchPeriod(p)}
+              >
+                {p ?? "None"}
+              </button>
             ))}
-          </select>
-        </label>
+          </div>
+        </div>
       </div>
 
       <div className="pp-section">
-        <p className="pp-label">Day {activeDay} classes <span className="pp-saved">· saves as you type</span></p>
+        <p className="pp-label">Day {activeDay} classes<span className="pp-badge">{filled} of {entries.length} filled</span><span className="pp-saved"> · saves as you type</span></p>
         <ul className="pp-periods">
           {entries.map((p) => (
             <li key={p.period} className="pp-card sm pp-period">

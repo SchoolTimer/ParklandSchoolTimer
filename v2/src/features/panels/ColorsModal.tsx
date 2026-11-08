@@ -64,6 +64,11 @@ export function ColorsModal({ open, onClose }: Props) {
           <Swatch label="Text" value={draft.text} onChange={(v) => change("text", v)} />
         </div>
       </div>
+
+      <div className="pp-foot-actions">
+        <button type="button" className="pp-link" onClick={() => pick("default")}>Reset to default</button>
+        <button type="button" className="pp-btn solid" onClick={onClose}>Done</button>
+      </div>
     </Modal>
   );
 }
@@ -73,6 +78,7 @@ function Swatch({ label, value, onChange }: { label: string; value: string; onCh
     <label className="pp-card pp-swatch" style={{ cursor: "pointer" }}>
       <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={label} />
       <span>{label}</span>
+      <span className="pp-hex">{value.toUpperCase()}</span>
     </label>
   );
 }
