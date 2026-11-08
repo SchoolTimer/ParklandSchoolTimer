@@ -6,11 +6,9 @@ type Props = {
   title: string;
   children: ReactNode;
   size?: "default" | "short" | "wide";
-  /** Accepted for older call sites; sizing is handled by `size`. */
-  widthClass?: string;
 };
 
-/** V1's popup: slides in from the left, red rule under a thin title, × top right. */
+/** Slide-in popup: thin title, red rule, round close button, content below. */
 export function Modal({ open, onClose, title, children, size = "default" }: Props) {
   useEffect(() => {
     if (!open) return;
@@ -27,12 +25,16 @@ export function Modal({ open, onClose, title, children, size = "default" }: Prop
     <>
       {open && <div className="popup-backdrop" onClick={onClose} />}
       <div className={cls} role="dialog" aria-modal={open} aria-label={title} aria-hidden={!open}>
-        <button className="popup-x" onClick={onClose} aria-label="Close" tabIndex={open ? 0 : -1}>
-          &#215;
-        </button>
-        <h1 className="popupheader">{title}</h1>
-        <hr className="popup-rule" />
-        {children}
+        <div className="pp-head">
+          <div>
+            <h1 className="popupheader">{title}</h1>
+            <hr className="popup-rule" />
+          </div>
+          <button className="popup-x" onClick={onClose} aria-label="Close" tabIndex={open ? 0 : -1}>
+            &#215;
+          </button>
+        </div>
+        <div className="pp-body">{children}</div>
       </div>
     </>
   );

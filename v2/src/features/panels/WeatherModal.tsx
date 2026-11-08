@@ -5,28 +5,35 @@ import { WeatherIcon } from "../header/WeatherIcon";
 type Props = { open: boolean; onClose: () => void; weather: Weather | null };
 
 export function WeatherModal({ open, onClose, weather }: Props) {
-  const rows: [string, string][] = [
-    ["Condition:", weather ? weather.description : "-"],
-    ["Current Temp:", weather ? `${weather.temp} °F` : "-"],
-    ["Real Feel:", weather ? `${weather.feelsLike} °F` : "-"],
-    ["Wind Speed:", weather ? `${weather.windSpeed} mph` : "-"],
-    ["Humidity:", weather ? `${weather.humidity}%` : "-"],
-  ];
   return (
-    <Modal open={open} onClose={onClose} title="Weather at School">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "3vh" }}>
-        <div>
-          {rows.map(([k, v]) => (
-            <div key={k} className="v1-weather-line shadows">
-              <b>{k}</b>
-              <span>{v}</span>
+    <Modal open={open} onClose={onClose} title="Weather at School" size="short">
+      {weather ? (
+        <>
+          <div className="pp-card pp-weather-hero" style={{ marginBottom: 16 }}>
+            <div>
+              <div className="pp-temp">{weather.temp}°</div>
+              <div className="pp-cond">{weather.description}</div>
             </div>
-          ))}
-        </div>
-        <div style={{ color: "var(--text)", width: "20vw", maxWidth: "30%" }}>
-          <WeatherIcon condition={weather?.condition} className="w-full h-auto" />
-        </div>
-      </div>
+            <WeatherIcon condition={weather.condition} className="pp-weather-icon" />
+          </div>
+          <div className="pp-grid c3">
+            <Stat n={`${weather.feelsLike}°`} l="Real feel" />
+            <Stat n={`${weather.windSpeed} mph`} l="Wind" />
+            <Stat n={`${weather.humidity}%`} l="Humidity" />
+          </div>
+        </>
+      ) : (
+        <p className="pp-empty">Weather is unavailable right now.</p>
+      )}
     </Modal>
+  );
+}
+
+function Stat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="pp-card sm" style={{ textAlign: "center" }}>
+      <div className="pp-stat-n">{n}</div>
+      <div className="pp-stat-l">{l}</div>
+    </div>
   );
 }

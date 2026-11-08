@@ -24,6 +24,12 @@ export function ColorsModal({ open, onClose }: Props) {
     if (open) setDraft(customColors);
   }, [open, customColors]);
 
+  function pick(name: ThemeName) {
+    const p = THEME_PRESETS[name];
+    setDraft({ accent: p.accent, bg: p.bg, text: p.text });
+    setTheme(name);
+  }
+
   function change(key: keyof CustomColors, value: string) {
     const next = { ...draft, [key]: value };
     setDraft(next);
@@ -32,36 +38,41 @@ export function ColorsModal({ open, onClose }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} title="Color Picker">
-      <h1 className="popuplabel first">Preset Themes</h1>
-      <select
-        className="v1-select shadows"
-        value={theme}
-        onChange={(e) => {
-          const name = e.target.value as ThemeName;
-          const p = THEME_PRESETS[name];
-          setDraft({ accent: p.accent, bg: p.bg, text: p.text });
-          setTheme(name);
-        }}
-      >
-        <option value="custom" disabled>Select</option>
-        {PRESET_NAMES.map((n) => (
-          <option key={n} value={n}>{THEME_LABELS[n]}</option>
-        ))}
-      </select>
+      <div className="pp-section">
+        <p className="pp-label">Preset themes</p>
+        <div className="pp-grid c3 presets">
+          {PRESET_NAMES.map((n) => {
+            const p = THEME_PRESETS[n];
+            const on = theme === n;
+            return (
+              <button key={n} type="button" className={`pp-theme${on ? " on" : ""}`} aria-pressed={on} onClick={() => pick(n)}>
+                <span className="pp-theme-dot" style={{ background: p.bg }}>
+                  <i style={{ background: p.accent }} />
+                </span>
+                <span className="pp-theme-name">{THEME_LABELS[n]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-      <h1 className="popuplabel">Custom Colors</h1>
-      <Swatch label="Accent" value={draft.accent} onChange={(v) => change("accent", v)} />
-      <Swatch label="Background" value={draft.bg} onChange={(v) => change("bg", v)} />
-      <Swatch label="Text" value={draft.text} onChange={(v) => change("text", v)} />
+      <div className="pp-section">
+        <p className="pp-label">Custom colors{theme === "custom" ? " · in use" : ""}</p>
+        <div className="pp-grid c3">
+          <Swatch label="Accent" value={draft.accent} onChange={(v) => change("accent", v)} />
+          <Swatch label="Background" value={draft.bg} onChange={(v) => change("bg", v)} />
+          <Swatch label="Text" value={draft.text} onChange={(v) => change("text", v)} />
+        </div>
+      </div>
     </Modal>
   );
 }
 
 function Swatch({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div className="v1-color-el shadows">
+    <label className="pp-card pp-swatch" style={{ cursor: "pointer" }}>
       <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={label} />
-      <p>{label}</p>
-    </div>
+      <span>{label}</span>
+    </label>
   );
 }
