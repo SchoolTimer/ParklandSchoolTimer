@@ -51,7 +51,7 @@ export function PeriodGrid({ now, letter, cycleDay, bellTables }: Props) {
   }, [focusKey]);
 
   return (
-    <ul className="flex flex-col gap-2 px-3 py-3 sm:px-5 sm:py-4">
+    <ul className="flex flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
       {rows.map((row) => {
         const isOver = row.state.status === "over";
         const isNext = !active && next?.slotLabel === row.slotLabel;
@@ -67,7 +67,7 @@ export function PeriodGrid({ now, letter, cycleDay, bellTables }: Props) {
             <li
               key={row.slotLabel}
               ref={activeRef}
-              className="rounded-2xl border border-accent bg-accent-soft px-3.5 py-3.5 sm:px-4"
+              className="neu-raised rounded-[22px] ring-2 ring-accent/60 px-4 py-4 sm:px-5"
             >
               <div className="flex items-center justify-between gap-3 mb-2">
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-accent uppercase tracking-[0.14em]">
@@ -87,8 +87,8 @@ export function PeriodGrid({ now, letter, cycleDay, bellTables }: Props) {
                   {formatCountdown(endsIn)}
                 </p>
               </div>
-              <div className="h-1.5 w-full overflow-hidden mt-3 bg-border">
-                <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
+              <div className="h-2 w-full overflow-hidden mt-3 bg-border">
+                <div className="h-full rounded-full bg-accent" style={{ width: `${pct}%` }} />
               </div>
             </li>
           );
@@ -98,12 +98,8 @@ export function PeriodGrid({ now, letter, cycleDay, bellTables }: Props) {
           <li
             key={row.slotLabel}
             ref={isNext ? activeRef : undefined}
-            className={`rounded-2xl border px-3 py-2.5 sm:px-3.5 flex items-center gap-3 ${
-              isNext
-                ? "border-accent/40 bg-surface"
-                : isOver
-                  ? "border-transparent bg-surface-2"
-                  : "border-border bg-surface"
+            className={`rounded-[22px] px-4 py-3 sm:px-5 flex items-center gap-3 ${
+              isNext ? "neu-raised ring-1 ring-accent/40" : isOver ? "bg-surface-2" : "neu-raised-sm"
             }`}
           >
             <span

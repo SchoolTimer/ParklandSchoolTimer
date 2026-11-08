@@ -147,7 +147,7 @@ function ViewToggle({ value, onChange }: { value: PeriodView; onChange: (view: P
     { id: "focus", label: "One period" },
   ];
   return (
-    <div className="shrink-0 flex p-0.5 rounded-xl bg-surface-2" role="group" aria-label="Period view">
+    <div className="shrink-0 flex p-1 gap-1 rounded-xl bg-surface-2" role="group" aria-label="Period view">
       {options.map((opt) => {
         const on = value === opt.id;
         return (
@@ -157,7 +157,7 @@ function ViewToggle({ value, onChange }: { value: PeriodView; onChange: (view: P
             aria-pressed={on}
             onClick={() => onChange(opt.id)}
             className={`min-h-9 px-2.5 sm:px-3 rounded-[10px] text-[11px] sm:text-xs font-bold ${
-              on ? "bg-surface text-text shadow-sm" : "text-dim"
+              on ? "neu-raised-sm text-accent" : "text-dim"
             }`}
           >
             {opt.label}

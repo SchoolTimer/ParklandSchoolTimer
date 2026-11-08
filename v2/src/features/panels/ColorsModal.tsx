@@ -13,7 +13,7 @@ type Props = { open: boolean; onClose: () => void };
 const PRESET_NAMES = (Object.keys(THEME_PRESETS) as ThemeName[]).filter((n) => n !== "custom");
 
 function sameColors(a: CustomColors, b: CustomColors) {
-  return a.accent === b.accent && a.bg === b.bg && a.surface === b.surface;
+  return a.accent === b.accent && a.bg === b.bg && a.text === b.text;
 }
 
 export function ColorsModal({ open, onClose }: Props) {
@@ -47,13 +47,13 @@ export function ColorsModal({ open, onClose }: Props) {
               type="button"
               onClick={() => setTheme(name)}
               aria-pressed={active}
-              className={`flex items-center gap-3 p-3 rounded-xl text-left border ${
-                active ? "border-accent bg-accent-soft" : "border-border bg-surface hover:border-border-2"
+              className={`flex items-center gap-3 p-3 rounded-2xl text-left ${
+                active ? "bg-accent-soft" : "neu-raised-sm"
               }`}
             >
               <span
-                className="w-6 h-6 rounded-full shrink-0 border border-black/10"
-                style={{ background: p.accent }}
+                className="w-7 h-7 rounded-full shrink-0 neu-raised-sm"
+                style={{ background: p.accent, boxShadow: `inset 0 0 0 4px ${p.bg}` }}
               />
               <span className="min-w-0">
                 <span className={`block text-sm font-semibold capitalize ${active ? "text-accent" : "text-text"}`}>
@@ -66,7 +66,7 @@ export function ColorsModal({ open, onClose }: Props) {
         })}
       </div>
 
-      <div className={`rounded-xl border p-4 ${draftIsLive ? "border-accent bg-accent-soft" : "border-border"}`}>
+      <div className={`rounded-2xl p-4 ${draftIsLive ? "bg-accent-soft" : "neu-raised-sm"}`}>
         <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-dim">Your colors</p>
         <p className="text-xs text-dim mt-1 mb-4">
           {draftIsLive ? "These colors are on now." : "Nothing here changes the app until you use them."}
@@ -75,7 +75,7 @@ export function ColorsModal({ open, onClose }: Props) {
         <div className="grid grid-cols-3 gap-3 mb-4">
           <ColorSwatch label="Accent" value={draft.accent} onChange={(accent) => setDraft((d) => ({ ...d, accent }))} />
           <ColorSwatch label="Background" value={draft.bg} onChange={(bg) => setDraft((d) => ({ ...d, bg }))} />
-          <ColorSwatch label="Cards" value={draft.surface} onChange={(surface) => setDraft((d) => ({ ...d, surface }))} />
+          <ColorSwatch label="Text" value={draft.text} onChange={(text) => setDraft((d) => ({ ...d, text }))} />
         </div>
 
         <button
@@ -103,7 +103,7 @@ function ColorSwatch({
     <label className="flex flex-col items-center gap-1.5 cursor-pointer">
       <span className="relative">
         <span
-          className="block w-12 h-12 rounded-xl border border-black/10"
+          className="block w-14 h-14 rounded-2xl neu-raised-sm"
           style={{ background: value }}
         />
         <input

@@ -30,6 +30,7 @@ type Props = {
 };
 
 const LETTERS: ScheduleLetter[] = ["A", "B", "C", "D"];
+const SCHEDULE_NAMES: Record<ScheduleLetter, string> = { A: "Regular", B: "Homeroom", C: "Early", D: "Delay" };
 
 export function LetterPicker({
   value,
@@ -39,24 +40,29 @@ export function LetterPicker({
   onChange: (letter: ScheduleLetter) => void;
 }) {
   return (
-    <div className="flex gap-1">
+    <div className="flex justify-around gap-1" role="radiogroup" aria-label="Schedule">
       {LETTERS.map((l) => {
         const active = l === value;
         return (
           <button
             key={l}
             type="button"
-            data-selected={active || undefined}
+            role="radio"
+            aria-checked={active}
+            aria-label={`${l} schedule, ${SCHEDULE_NAMES[l]}`}
+            title={`${SCHEDULE_NAMES[l]} schedule`}
             onClick={() => onChange(l)}
-            className={`flex-1 min-h-11 py-2 rounded-xl text-center ${
-              active
-                ? "bg-accent text-white font-bold"
-                : "text-dim active:bg-surface-2 hover:text-text hover:bg-surface-2"
-            }`}
+            className="flex flex-col items-center gap-1 min-h-11 py-1 px-0.5 bg-transparent"
           >
-            <span className="block text-sm font-bold leading-none">{l}</span>
-            <span className={`block text-[8px] font-semibold mt-0.5 leading-none tracking-wide ${active ? "text-white/70" : "opacity-50"}`}>
-              {l === "A" ? "REG" : l === "B" ? "HR" : l === "C" ? "EARLY" : "DELAY"}
+            <span
+              className={`relative flex items-center justify-center w-11 h-11 rounded-full text-base font-semibold ${
+                active ? "neu-inset text-accent" : "neu-raised-sm text-dim"
+              }`}
+            >
+              {l}
+            </span>
+            <span className={`text-[9px] font-semibold tracking-wide ${active ? "text-accent" : "text-dim"}`}>
+              {SCHEDULE_NAMES[l]}
             </span>
           </button>
         );
@@ -124,13 +130,13 @@ export function RightRail({
       <LunchWidget now={now} effectiveLetter={effectiveLetter} onEdit={onSetLunch} />
 
       {/* ── 6. Schedule selector ──────────────────────────────────────── */}
-      <div className="card shrink-0 p-1.5 hidden lg:block">
+      <div className="card shrink-0 px-2 py-3 hidden lg:block">
         <LetterPicker value={effectiveLetter} onChange={onLetterChange} />
       </div>
 
       {/* ── 6. Actions ────────────────────────────────────────────────── */}
-      <div className="card shrink-0 p-2">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-1">
+      <div className="card shrink-0 p-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3">
           <ActionBtn icon={<PaletteIcon width={14} height={14} />} onClick={() => onModal("colors")}>
             Colors
           </ActionBtn>
@@ -147,10 +153,10 @@ export function RightRail({
             {weather ? `${weather.temp}°F` : "Weather"}
           </ActionBtn>
         </div>
-        <div className="mt-1 pt-1 border-t border-border">
+        <div className="mt-3">
           <button
             onClick={() => onModal("more")}
-            className="w-full min-h-11 rounded-lg text-[11px] font-semibold text-dim active:bg-surface-2 hover:text-text hover:bg-surface-2 flex items-center justify-center gap-1.5"
+            className="w-full min-h-11 rounded-2xl neu-raised-sm text-[11px] font-semibold text-dim hover:text-text flex items-center justify-center gap-1.5"
           >
             <SettingsIcon width={12} height={12} />
             More
@@ -178,7 +184,7 @@ function CycleCell({
   return (
     <div
       className={`rounded-xl p-2.5 flex flex-col gap-1.5 ${
-        primary ? "bg-accent-soft border border-accent/20" : "bg-surface-2"
+        primary ? "bg-accent-soft" : "neu-raised-sm"
       }`}
     >
       <p className={`text-[10px] font-semibold leading-none ${dimColor}`}>{label}</p>
@@ -245,9 +251,9 @@ function ProgressRow({
           <span className="text-xs font-bold text-text">{label}</span>
           <span className="text-[11px] font-bold tabular text-accent">{pctLabel}</span>
         </div>
-        <div className="h-1.5 w-full bg-border-2 overflow-hidden">
+        <div className="h-2 w-full bg-border-2 overflow-hidden">
           <div
-            className="h-full transition-[width] duration-700 ease-out"
+            className="h-full rounded-full transition-[width] duration-700 ease-out"
             style={{ width: `${shown}%`, background: "var(--color-accent)" }}
           />
         </div>
@@ -266,7 +272,7 @@ function LunchWidget({ now, effectiveLetter, onEdit }: { now: Date; effectiveLet
     return (
       <div className="card shrink-0 px-4 py-3">
         <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-2">Lunch</p>
-        <button onClick={onEdit} className="text-[10px] text-accent hover:underline">
+        <button onClick={onEdit} className="text-[11px] font-semibold text-accent hover:underline">
           Set your lunch period →
         </button>
       </div>
@@ -309,7 +315,7 @@ function ActionBtn({ icon, onClick, children }: { icon: ReactNode; onClick: () =
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-3 min-h-11 rounded-xl text-xs font-semibold text-dim active:bg-surface-2 hover:text-text hover:bg-surface-2 w-full"
+      className="flex flex-col items-center justify-center gap-1.5 px-2 py-3 min-h-16 rounded-2xl neu-raised-sm text-xs font-semibold text-dim hover:text-text w-full"
     >
       <span className="shrink-0">{icon}</span>
       <span className="whitespace-nowrap">{children}</span>

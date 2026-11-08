@@ -96,18 +96,18 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
         </p>
 
         {/* Progress track */}
-        <div className="h-1.5 w-full max-w-xl overflow-hidden mb-8 bg-border">
+        <div className="h-2.5 w-full max-w-xl overflow-hidden mb-8 bg-border">
           <div
-            className="h-full bg-accent transition-[width] duration-1000 ease-linear"
+            className="h-full rounded-full bg-accent transition-[width] duration-1000 ease-linear"
             style={{ width: `${pct}%` }}
           />
         </div>
 
         {/* Upcoming strip */}
         {upcoming.length > 0 && (
-          <div className="scroll-x flex gap-2 pb-1">
+          <div className="scroll-x flex gap-4 p-3 -m-3">
             {upcoming.map((p) => (
-              <div key={p.slotLabel} className="card px-3.5 py-2.5 shrink-0 min-w-32">
+              <div key={p.slotLabel} className="card px-4 py-3 shrink-0 min-w-32 !rounded-2xl">
                 <p className="text-[10px] text-dim uppercase tracking-wider mb-1">
                   {p.slotLabel === "HR" ? "Homeroom" : `Period ${p.slotLabel}`}
                 </p>
@@ -150,11 +150,11 @@ export function HeroTimer({ now, letter, cycleDay, bellTables }: Props) {
 
         {/* Later periods strip */}
         {upcoming.length > 1 && (
-          <div className="scroll-x flex gap-2 pb-1">
+          <div className="scroll-x flex gap-4 p-3 -m-3">
             {upcoming.slice(1).map((p) => (
               <div
                 key={p.slotLabel}
-                className="card px-3.5 py-2.5 shrink-0 min-w-32"
+                className="card px-4 py-3 shrink-0 min-w-32 !rounded-2xl"
               >
                 <p className="text-[10px] text-dim uppercase tracking-wider mb-1">
                   {p.slotLabel === "HR" ? "Homeroom" : `Period ${p.slotLabel}`}

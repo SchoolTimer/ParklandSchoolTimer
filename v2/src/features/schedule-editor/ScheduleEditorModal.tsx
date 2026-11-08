@@ -6,7 +6,7 @@ import { useScheduleStore } from "../../store/useScheduleStore";
 type Props = { open: boolean; onClose: () => void; highlightLunch?: boolean };
 
 const inputClass =
-  "w-full min-w-0 bg-surface border border-border rounded-lg px-2.5 h-9 text-sm focus:outline-none focus:border-accent";
+  "w-full min-w-0 rounded-xl px-3 h-10 text-sm";
 
 export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: Props) {
   const schedule        = useScheduleStore((s) => s.schedule);
@@ -54,7 +54,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
                 aria-selected={on}
                 data-selected={on || undefined}
                 onClick={() => chooseDay(d)}
-                className={`w-9 h-9 rounded-lg text-sm font-bold ${on ? "bg-accent" : "bg-surface-2 text-dim"}`}
+                className={`w-10 h-10 rounded-xl text-sm font-bold ${on ? "bg-accent" : "neu-raised-sm text-dim"}`}
               >
                 {d}
               </button>
@@ -81,7 +81,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
             value={lunchPeriod ?? ""}
             title="Used for the lunch countdown"
             onChange={(e) => setLunchPeriod(e.target.value ? Number(e.target.value) : null)}
-            className={`${inputClass} w-36 ${highlightLunch ? "border-accent" : ""}`}
+            className={`${inputClass} w-36 ${highlightLunch ? "ring-2 ring-accent" : ""}`}
           >
             <option value="">None</option>
             {[4, 5, 6, 7].map((p) => (
@@ -122,7 +122,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
         <select
           value={targetDay}
           onChange={(e) => { setCopyTo(Number(e.target.value) as CycleDay); setCopied(false); }}
-          className="bg-surface border border-border rounded-lg px-2 h-9 text-sm"
+          className="rounded-xl px-2 h-10 text-sm"
           aria-label={`Day to copy day ${activeDay} onto`}
         >
           {otherDays.map((d) => (
@@ -132,7 +132,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
         <button
           type="button"
           onClick={() => { copyDay(activeDay, targetDay); setCopied(true); }}
-          className="h-9 px-3 rounded-lg border border-border text-sm font-semibold text-text"
+          className="h-10 px-4 rounded-xl neu-raised-sm text-sm font-semibold text-text"
         >
           {copied ? `Copied onto ${targetDay}` : "Copy"}
         </button>
@@ -147,7 +147,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
           type="button"
           onClick={onClose}
           data-selected
-          className="ml-auto h-9 px-5 rounded-lg bg-accent text-sm font-semibold"
+          className="ml-auto h-10 px-6 rounded-xl bg-accent text-sm font-semibold"
         >
           Done
         </button>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ThemeName = "light" | "dark" | "warm" | "ocean" | "forest" | "violet" | "custom";
+export type ThemeName = "default" | "dark" | "beach" | "stealth" | "eww" | "hacker" | "custom";
 
 type ThemeVars = {
   bg: string;
@@ -14,114 +14,84 @@ type ThemeVars = {
   dim: string;
   dim2: string;
   accent: string;
+  shadowLight: string;
+  shadowDark: string;
 };
 
 export type CustomColors = {
   accent: string;
   bg: string;
-  surface: string;
+  text: string;
 };
 
-function buildCustomVars(c: CustomColors): ThemeVars {
-  // Derive supporting tones from the three user-controlled values.
-  // surface2 / borders sit between bg and surface.
+// Same lighten/darken as V1: shift every channel by percent of 255, clamped.
+function shade(color: string, percent: number): string {
+  const num = parseInt(color.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const clamp = (v: number) => Math.max(0, Math.min(255, v));
+  const r = clamp((num >> 16) + amt);
+  const g = clamp(((num >> 8) & 0xff) + amt);
+  const b = clamp((num & 0xff) + amt);
+  return "#" + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
+}
+
+function mix(a: string, b: string, pctOfA: number) {
+  return `color-mix(in srgb, ${a} ${pctOfA}%, ${b})`;
+}
+
+// Neumorphic themes: surfaces are the background itself; depth comes from the
+// light/dark shadow pair. Supporting tones are derived from bg + text.
+function build(
+  bg: string,
+  text: string,
+  accent: string,
+  dimText: string,
+  shadowLight: string,
+  shadowDark: string,
+): ThemeVars {
   return {
-    bg:       c.bg,
-    surface:  c.surface,
-    surface2: c.bg,
-    border:   `color-mix(in srgb, ${c.surface} 60%, ${c.bg})`,
-    border2:  `color-mix(in srgb, ${c.surface} 40%, ${c.bg})`,
-    text:     "#111116",
-    dim:      "#8a8a96",
-    dim2:     "#c4c4cc",
-    accent:   c.accent,
+    bg,
+    surface: bg,
+    surface2: bg,
+    border: mix(text, bg, 12),
+    border2: mix(text, bg, 22),
+    text,
+    dim: dimText,
+    dim2: mix(text, bg, 35),
+    accent,
+    shadowLight,
+    shadowDark,
   };
 }
 
+function buildCustomVars(c: CustomColors): ThemeVars {
+  return build(c.bg, c.text, c.accent, mix(c.text, c.bg, 70), shade(c.bg, 5), shade(c.bg, -6));
+}
+
 export const DEFAULT_CUSTOM_COLORS: CustomColors = {
-  accent:  "#e8294c",
-  bg:      "#f5f5f7",
-  surface: "#ffffff",
+  accent: "#ff2b40",
+  bg:     "#ededed",
+  text:   "#575757",
 };
 
 export const THEME_PRESETS: Record<ThemeName, ThemeVars> = {
-  light: {
-    bg:       "#f5f5f7",
-    surface:  "#ffffff",
-    surface2: "#f0f0f2",
-    border:   "#e8e8ec",
-    border2:  "#d8d8de",
-    text:     "#111116",
-    dim:      "#8a8a96",
-    dim2:     "#c4c4cc",
-    accent:   "#e8294c",
-  },
-  dark: {
-    bg:       "#0e0e10",
-    surface:  "#1a1a1f",
-    surface2: "#141418",
-    border:   "#2a2a32",
-    border2:  "#38383f",
-    text:     "#f0f0f4",
-    dim:      "#6a6a78",
-    dim2:     "#3a3a44",
-    accent:   "#f0314f",
-  },
-  warm: {
-    bg:       "#faf6f1",
-    surface:  "#ffffff",
-    surface2: "#f5ede4",
-    border:   "#ede0d4",
-    border2:  "#ddd0c4",
-    text:     "#1a1410",
-    dim:      "#9a8a7a",
-    dim2:     "#c8b8a8",
-    accent:   "#d9520e",
-  },
-  ocean: {
-    bg:       "#f0f5fb",
-    surface:  "#ffffff",
-    surface2: "#e6eff8",
-    border:   "#d8e6f4",
-    border2:  "#c4d8ee",
-    text:     "#0d1f38",
-    dim:      "#6a88aa",
-    dim2:     "#b0c8e0",
-    accent:   "#1a6fdb",
-  },
-  forest: {
-    bg:       "#f2f6f2",
-    surface:  "#ffffff",
-    surface2: "#e8f0e8",
-    border:   "#d8e4d8",
-    border2:  "#c4d4c4",
-    text:     "#0d1f0d",
-    dim:      "#6a8a6a",
-    dim2:     "#b0c8b0",
-    accent:   "#1a8a3a",
-  },
-  violet: {
-    bg:       "#f5f3fb",
-    surface:  "#ffffff",
-    surface2: "#eeeaf8",
-    border:   "#e0d8f4",
-    border2:  "#cec4ec",
-    text:     "#120d28",
-    dim:      "#7a6aa0",
-    dim2:     "#b8acd8",
-    accent:   "#6d28d9",
-  },
-  custom: buildCustomVars(DEFAULT_CUSTOM_COLORS),
+  default: build("#ededed", "#575757", "#ff2b40", "#8c8c8c", "rgba(255, 255, 255, 0.8)", "rgba(0, 0, 0, 0.2)"),
+  dark:    build("#222226", "#d4d4d4", "#d11f3a", "#8a8a8f", shade("#222226", 3), shade("#222226", -2)),
+  beach:   build("#fff7eb", "#575757", "#55dde0", "#8c8c8c", shade("#fff7eb", 2), shade("#fff7eb", -5)),
+  stealth: build("#000000", "#1c1c1c", "#1c1c1c", "#1c1c1c", shade("#000000", 3), shade("#000000", -2)),
+  eww:     build("#050064", "#ff2afc", "#feff33", "#c020bd", shade("#050064", 6), shade("#050064", -6)),
+  hacker:  build("#000000", "#00ff33", "#00ff33", "#00b824", shade("#000000", 6), shade("#000000", -6)),
+  custom:  buildCustomVars(DEFAULT_CUSTOM_COLORS),
 };
 
 const THEME_DESCRIPTIONS: Record<ThemeName, string> = {
-  light:  "Clean · Red",
-  dark:   "Dark · Red",
-  warm:   "Warm · Orange",
-  ocean:  "Cool · Blue",
-  forest: "Fresh · Green",
-  violet: "Rich · Violet",
-  custom: "Your colors",
+  default: "Classic · Red",
+  dark:    "Dark · Red",
+  beach:   "Sand · Aqua",
+  stealth: "Blackout",
+  eww:     "Navy · Yellow",
+  hacker:  "Terminal · Green",
+  custom:  "Your colors",
 };
 
 export { THEME_DESCRIPTIONS };
@@ -136,7 +106,7 @@ type ThemeStore = {
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set) => ({
-      theme: "light",
+      theme: "default",
       setTheme: (name) => set({ theme: name }),
       customColors: DEFAULT_CUSTOM_COLORS,
       setCustomColors: (c) => {
@@ -146,9 +116,13 @@ export const useThemeStore = create<ThemeStore>()(
     }),
     {
       name: "schooltimer.v2.theme",
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<ThemeStore>;
+        return { ...current, ...p, customColors: { ...DEFAULT_CUSTOM_COLORS, ...(p.customColors ?? {}) } };
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
-          if (!THEME_PRESETS[state.theme]) state.theme = "light";
+          if (!THEME_PRESETS[state.theme]) state.theme = "default";
           if (state.theme === "custom" && state.customColors) {
             THEME_PRESETS["custom"] = buildCustomVars(state.customColors);
           }
@@ -165,7 +139,7 @@ export function useApplyTheme() {
   useEffect(() => {
     const p = theme === "custom"
       ? buildCustomVars(customColors)
-      : THEME_PRESETS[theme] ?? THEME_PRESETS["light"];
+      : THEME_PRESETS[theme] ?? THEME_PRESETS["default"];
     const root = document.documentElement;
     root.style.setProperty("--color-bg",          p.bg);
     root.style.setProperty("--color-surface",     p.surface);
@@ -178,5 +152,7 @@ export function useApplyTheme() {
     root.style.setProperty("--color-accent",      p.accent);
     root.style.setProperty("--color-accent-soft", `${p.accent}12`);
     root.style.setProperty("--color-accent-dim",  `${p.accent}38`);
+    root.style.setProperty("--shadow-light",      p.shadowLight);
+    root.style.setProperty("--shadow-dark",       p.shadowDark);
   }, [theme, customColors]);
 }
