@@ -37,7 +37,7 @@ const NORMAL_LIGHT = "-6px -6px 10px";
 const SOFT_LIGHT   = "-3px -6px 7px";
 const DARK_OFFSET  = "6px 6px 10px";
 
-function buildCustomVars(c: CustomColors): ThemeVars {
+export function buildCustomVars(c: CustomColors): ThemeVars {
   return {
     bg: c.bg, text: c.text, accent: c.accent, inactive: "#bfbfbf",
     lightDim: NORMAL_LIGHT, darkDim: DARK_OFFSET,
