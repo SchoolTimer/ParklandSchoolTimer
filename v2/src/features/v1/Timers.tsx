@@ -61,8 +61,9 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
   let height: number, radius: number, margin: number;
   if (narrow) {
     // Phones: true stadium pills with an even gap, centred in the column.
-    const gap = H * 0.022;
-    height = Math.min(H * 0.13, (H * 0.84 - gap * (n - 1)) / n);
+    // 64px at the top keeps clear of the toggle button.
+    const gap = 12;
+    height = Math.min(92, (H - 64 - 20 - gap * (n - 1)) / n);
     radius = height / 2;
     margin = 0;
   } else if (n <= 4) {

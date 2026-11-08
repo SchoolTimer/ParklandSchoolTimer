@@ -43,10 +43,10 @@ export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props)
   return (
     <>
     <Modal open={open} onClose={onClose} title="More Stuff">
-      <div style={{ marginBottom: "6vh" }}>
+      <div className="v1-stats">
         {stats.map((s) => (
-          <div key={s.label} style={{ marginBottom: "1.5vh" }}>
-            <span style={{ fontSize: 25, fontWeight: "bold", marginRight: 10 }}>{s.label}</span>
+          <div key={s.label} className="v1-stat">
+            <span className="v1-stat-label">{s.label}</span>
             <span className="v1-stat-row" style={{ display: "inline-block" }}>
               {s.end ? longFmt(endOfLocalDay(s.end).getTime() - now.getTime()) : "-"}
             </span>
@@ -54,7 +54,7 @@ export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props)
         ))}
       </div>
 
-      <div>
+      <div className="v1-request-grid">
         <div className="v1-request-row">
           <a className="v1-request shadows" href={`${REPO}/issues/new?template=bug_report.md`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>Bug Report</a>
           <a className="v1-request shadows" href={`${REPO}/issues/new`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>Feature Request</a>

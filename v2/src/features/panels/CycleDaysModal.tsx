@@ -7,7 +7,7 @@ export function CycleDaysModal({ open, onClose, data }: Props) {
   const dc = data?.daycycle;
   return (
     <Modal open={open} onClose={onClose} title="Cycle Days" size="short">
-      <div style={{ textAlign: "center" }}>
+      <div className="v1-cycle-row" style={{ textAlign: "center" }}>
         <Box label="Today" value={dc?.today} />
         <Box label="Tomorrow" value={dc?.tomorrow} />
         <Box label="The Next Day" value={dc?.next_day} />

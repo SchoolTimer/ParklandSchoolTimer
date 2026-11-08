@@ -288,7 +288,7 @@ body {
   justify-content: center;
   height: 100%;
   overflow-y: auto;
-  padding-top: 8vh;
+  padding-top: 64px;
   box-sizing: border-box;
 }
 
@@ -300,7 +300,7 @@ body {
   }
   /* gentler shadows: the desktop offsets read as heavy on a small screen */
   .shadows { box-shadow: -4px -4px 8px var(--shadow-light), 4px 4px 8px var(--shadow-dark); }
-  .v1-timers.narrow { justify-content: center; gap: 2.2vh; }
+  .v1-timers.narrow { justify-content: center; gap: 12px; padding: 64px 0 20px; box-sizing: border-box; }
   .v1-timer {
     display: flex;
     flex-wrap: wrap;
@@ -364,11 +364,6 @@ body {
 .popup.open { left: 50%; }
 .popup.short { height: 45vh; }
 .popup.wide { width: 80vw; max-width: 1100px; }
-@media (max-width: 800px) {
-  .popup { width: 88vw; height: 78vh; }
-  .popup.short { height: auto; max-height: 78vh; }
-}
-
 .popup-backdrop {
   position: fixed;
   inset: 0;
@@ -586,3 +581,48 @@ input[type="text"]:focus, select:focus, textarea:focus {
   border: 1px solid var(--color-border);
   border-radius: 18px;
 }
+
+/* Phone popups (kept last so they override the base popup rules above) */
+@media (max-width: 800px) {
+  .popup {
+    box-sizing: border-box;
+    width: 92vw;
+    max-width: 92vw;
+    height: auto;
+    max-height: 88dvh;
+    padding: 20px 20px 24px;
+    border-radius: 18px;
+  }
+  .popup.short, .popup.wide { height: auto; width: 92vw; }
+  .popupheader { font-size: 28px; }
+  .popup-rule { margin: 10px 0 22px; }
+  .popup-x { height: 36px; width: 36px; font-size: 34px; line-height: 36px; }
+  .popuplabel { font-size: 18px; margin: 24px 0 8px; }
+  .v1-request-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .v1-request-row, .v1-request-row.center { display: contents; }
+  .v1-request {
+    width: auto;
+    flex: 1 1 40%;
+    margin: 0;
+    padding: 12px 8px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+  .v1-stats { margin-bottom: 6vh; }
+.v1-stat { margin-bottom: 1.5vh; }
+.v1-stat-label { font-size: 25px; font-weight: bold; margin-right: 10px; }
+.v1-stat-row { font-size: 20px; }
+  .v1-menu-title { font-size: 24px; margin: 6px 0; }
+  .v1-menu-items { font-size: 18px; margin: 6px 0; }
+  .v1-weather-line { font-size: 17px; padding: 10px 14px; border-radius: 14px; margin-bottom: 10px; }
+  .v1-select { height: auto; font-size: 16px; padding: 10px; }
+  .v1-color-el { display: flex; align-items: center; padding: 12px; margin: 0 0 14px; border-radius: 14px; }
+  .v1-color-el input[type="color"] { width: 44px; height: 44px; }
+  .v1-color-el p { font-size: 16px; margin-left: 10px; }
+  .v1-cycle-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .v1-cycle-box { margin: 0; width: auto; height: auto; padding-bottom: 14px; border-radius: 14px; }
+  .v1-cycle-box .v1-h6 { font-size: 12px; padding: 12px 4px 0; }
+  .v1-cycle-out { font-size: 26px; margin-top: 10px; }
+  .v1-dev { font-size: 12px; margin-top: 20px; }
+}
+
