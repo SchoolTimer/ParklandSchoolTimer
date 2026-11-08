@@ -4,7 +4,6 @@ import {
   useThemeStore,
   THEME_PRESETS,
   THEME_LABELS,
-  buildCustomVars,
   type ThemeName,
   type CustomColors,
 } from "../../store/useThemeStore";
@@ -86,25 +85,26 @@ export function ColorsModal({ open, onClose }: Props) {
 
       <div className="pp-section">
         <p className="pp-label">Make your own{theme === "custom" ? <span className="pp-badge">In use</span> : null}</p>
-        <div className="pp-custom">
-          <Preview look={buildCustomVars(draft)} />
-          <div className="pp-custom-rows">
-            <ColorRow label="Accent" value={draft.accent} onChange={(v) => change("accent", v)}>
-              <div className="pp-chips" role="group" aria-label="Accent suggestions">
-                {ACCENTS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`pp-chip${draft.accent.toLowerCase() === c ? " on" : ""}`}
-                    style={{ background: c }}
-                    aria-label={`Accent ${c}`}
-                    onClick={() => change("accent", c)}
-                  />
-                ))}
-              </div>
-            </ColorRow>
-            <ColorRow label="Background" value={draft.bg} onChange={(v) => change("bg", v)} />
-            <ColorRow label="Text" value={draft.text} onChange={(v) => change("text", v)} />
+        <div className="pp-custom pp-card">
+          <div className="pp-color-cols">
+            <ColorCol label="Accent" value={draft.accent} onChange={(v) => change("accent", v)} />
+            <ColorCol label="Background" value={draft.bg} onChange={(v) => change("bg", v)} />
+            <ColorCol label="Text" value={draft.text} onChange={(v) => change("text", v)} />
+          </div>
+          <div className="pp-chips-row">
+            <span>Accent ideas</span>
+            <div className="pp-chips" role="group" aria-label="Accent suggestions">
+              {ACCENTS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`pp-chip${draft.accent.toLowerCase() === c ? " on" : ""}`}
+                  style={{ background: c }}
+                  aria-label={`Accent ${c}`}
+                  onClick={() => change("accent", c)}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -116,39 +116,29 @@ export function ColorsModal({ open, onClose }: Props) {
   );
 }
 
-function ColorRow({
-  label, value, onChange, children,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  children?: React.ReactNode;
-}) {
+function ColorCol({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   // While typing, show what the user typed; only valid hex values are applied.
   const [typed, setTyped] = useState<string | null>(null);
   return (
-    <div className="pp-color-row">
-      <div className="pp-color-line">
-        <label className="pp-color-sw" style={{ background: value }}>
-          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={`${label} color`} />
-        </label>
-        <span className="pp-color-name">{label}</span>
-        <input
-          type="text"
-          className="pp-input pp-hexin"
-          value={typed ?? value.toUpperCase()}
-          maxLength={7}
-          spellCheck={false}
-          aria-label={`${label} hex`}
-          onChange={(e) => {
-            const v = e.target.value.startsWith("#") ? e.target.value : `#${e.target.value}`;
-            setTyped(v);
-            if (HEX.test(v)) onChange(v.toLowerCase());
-          }}
-          onBlur={() => setTyped(null)}
-        />
-      </div>
-      {children}
+    <div className="pp-color-col">
+      <label className="pp-color-sw" style={{ background: value }}>
+        <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={`${label} color`} />
+      </label>
+      <span className="pp-color-name">{label}</span>
+      <input
+        type="text"
+        className="pp-input pp-hexin"
+        value={typed ?? value.toUpperCase()}
+        maxLength={7}
+        spellCheck={false}
+        aria-label={`${label} hex`}
+        onChange={(e) => {
+          const v = e.target.value.startsWith("#") ? e.target.value : `#${e.target.value}`;
+          setTyped(v);
+          if (HEX.test(v)) onChange(v.toLowerCase());
+        }}
+        onBlur={() => setTyped(null)}
+      />
     </div>
   );
 }
