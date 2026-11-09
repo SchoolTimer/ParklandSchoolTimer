@@ -88,11 +88,15 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
             className={`v1-timer shadows${live ? " live" : ""}`}
             style={{ height, borderRadius: radius, marginTop: margin }}
           >
-            <h2 className="v1-timer-text v1-timer-title">
-              {r.title}
-              {r.room ? <span style={{ fontWeight: 300, fontSize: "60%" }}> · {r.room}</span> : null}
-              {r.lunch ? <span style={{ fontWeight: 300, fontSize: "60%" }}> · Lunch</span> : null}
-            </h2>
+            <div className="v1-timer-text v1-timer-title">
+              <h2 className={`v1-timer-name${r.title.length > 14 ? " xlong" : r.title.length > 11 ? " long" : ""}`} title={r.title}>{r.title}</h2>
+              {r.room || r.lunch ? (
+                <div className="v1-timer-sub">
+                  {r.room ? <span>{r.room}</span> : null}
+                  {r.lunch ? <span className="v1-lunch-tag">Lunch</span> : null}
+                </div>
+              ) : null}
+            </div>
             <span className="v1-pair">
               <span className="v1-timer-text v1-timer-start-label">Start:</span>
               <span className="v1-timer-text v1-timer-start">
