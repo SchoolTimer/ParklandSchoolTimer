@@ -239,12 +239,8 @@ body {
   flex: none;
 }
 .v1-timer.live { border-color: var(--accent); }
-/* Lunch: same raised pill as the rest; the title is an accent badge with an icon */
-.v1-timer.lunch .v1-timer-name {
-  display: inline-flex; align-items: center; gap: 0.4em; width: max-content; max-width: 100%;
-  padding: 0.12em 0.7em 0.12em 0.55em; border-radius: 999px;
-  color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent);
-}
+/* Lunch: same raised pill and title as the rest, in the accent color with a small icon */
+.v1-timer.lunch .v1-timer-name { display: flex; align-items: center; gap: 0.4em; color: var(--accent); }
 .v1-lunch-icon { width: 0.85em; height: 0.85em; flex: none; fill: currentColor; }
 .v1-timer-text {
   margin: 0;
@@ -790,4 +786,5 @@ input[type="text"]:focus, select:focus, textarea:focus {
   .pp-chips-row { flex-direction: column; align-items: flex-start; gap: 10px; }
   .pp-hexin { font-size: 12px; padding: 8px 4px; }
 }
+
 
