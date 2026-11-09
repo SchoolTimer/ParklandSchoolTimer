@@ -3,6 +3,7 @@ import { formatCountdown } from "../../lib/time";
 import { ordinal } from "../../lib/time";
 import type { ScheduleLetter, CycleDay } from "../../lib/schedule";
 import { daySlots } from "../../lib/timers";
+import { UtensilsIcon } from "../../components/Icons";
 import { useScheduleStore } from "../../store/useScheduleStore";
 import type { BellTables } from "../../store/useBellStore";
 
@@ -90,11 +91,11 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
         return (
           <div
             key={r.key}
-            className={`v1-timer shadows${live ? " live" : ""}`}
+            className={`v1-timer${r.lunch ? " lunch" : " shadows"}${live ? " live" : ""}`}
             style={{ height, borderRadius: radius, marginTop: margin, "--ph": `${height}px` } as React.CSSProperties}
           >
             <div className="v1-timer-text v1-timer-title">
-              <h2 className="v1-timer-name" title={r.title}>{r.title}</h2>
+              <h2 className="v1-timer-name" title={r.title}>{r.lunch ? <UtensilsIcon className="v1-lunch-icon" aria-hidden="true" /> : null}{r.title}</h2>
               {r.room ? <div className="v1-timer-sub"><span>{r.room}</span></div> : null}
             </div>
             <span className="v1-pair">
