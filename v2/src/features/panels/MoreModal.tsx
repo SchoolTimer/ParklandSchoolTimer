@@ -12,6 +12,7 @@ type Props = {
   onClose: () => void;
   schoolDates: SchoolDates | null;
   onOpenSchedule: () => void;
+  onOpenNews: () => void;
 };
 
 const REPO = "https://github.com/SchoolTimer/ParklandSchoolTimer";
@@ -27,7 +28,7 @@ function parts(ms: number) {
   return { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 };
 }
 
-export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props) {
+export function MoreModal({ open, onClose, schoolDates, onOpenSchedule, onOpenNews }: Props) {
   const now      = useClock(1000);
   const resetAll = useScheduleStore((s) => s.resetAll);
   const soundsOn = useSettingsStore((s) => s.soundsOn);
@@ -95,6 +96,9 @@ export function MoreModal({ open, onClose, schoolDates, onOpenSchedule }: Props)
       <div className="pp-section">
         <p className="pp-label">Help &amp; feedback</p>
         <div className="pp-list">
+          <button className="pp-row" onClick={() => { onClose(); onOpenNews(); }}>
+            <span>What&apos;s new</span><span className="chev">&#8250;</span>
+          </button>
           <a className="pp-row" href={`${REPO}/issues/new?template=bug_report.md`} target="_blank" rel="noreferrer">
             <span>Report a bug</span><span className="chev">&#8250;</span>
           </a>

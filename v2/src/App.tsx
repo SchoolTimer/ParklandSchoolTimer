@@ -19,8 +19,9 @@ import { WeatherModal } from "./features/panels/WeatherModal";
 import { MoreModal } from "./features/panels/MoreModal";
 import { CycleDaysModal } from "./features/panels/CycleDaysModal";
 import { ColorsModal } from "./features/panels/ColorsModal";
+import { AnnouncementModal, ANNOUNCEMENT_ID } from "./features/announcement/AnnouncementModal";
 
-type ModalKey = null | "schedule" | "colors" | "weather" | "more" | "menus" | "cycle";
+type ModalKey = null | "news" | "schedule" | "colors" | "weather" | "more" | "menus" | "cycle";
 
 function useViewport() {
   const read = () => ({ w: window.innerWidth, h: window.innerHeight });
@@ -45,6 +46,8 @@ function App() {
   const letterOverride     = useSettingsStore((s) => s.letterOverride);
   const letterOverrideDate = useSettingsStore((s) => s.letterOverrideDate);
   const setLetterOverride  = useSettingsStore((s) => s.setLetterOverride);
+  const seenAnnouncement   = useSettingsStore((s) => s.seenAnnouncement);
+  const setSeenAnnouncement = useSettingsStore((s) => s.setSeenAnnouncement);
   const effectiveLetter: ScheduleLetter =
     effectiveLetterOverride(letterOverride, letterOverrideDate) ?? today?.letter ?? "A";
   const baseBellTables = useBellTables();
@@ -68,8 +71,19 @@ function App() {
 
   useDocumentTitle(now, effectiveLetter, today?.cycleDay ?? null, noSchool, bellTables);
 
+  // Show the announcement once per id, shortly after load so the slide-in is visible.
+  useEffect(() => {
+    if (seenAnnouncement === ANNOUNCEMENT_ID) return;
+    const t = setTimeout(() => setModal((m) => m ?? "news"), 700);
+    return () => clearTimeout(t);
+  }, [seenAnnouncement]);
+
   const open = (key: ModalKey) => { setHighlightLunch(false); setModal(key); };
-  const close = () => { setHighlightLunch(false); setModal(null); };
+  const close = () => {
+    setHighlightLunch(false);
+    if (modal === "news") setSeenAnnouncement(ANNOUNCEMENT_ID);
+    setModal(null);
+  };
 
   const sidebar = (
     <Sidebar
@@ -122,6 +136,7 @@ function App() {
       </div>
 
       <ScheduleEditorModal open={modal === "schedule"} highlightLunch={highlightLunch} onClose={close} />
+      <AnnouncementModal open={modal === "news"} onClose={close} />
       <ColorsModal    open={modal === "colors"}  onClose={close} />
       <WeatherModal   open={modal === "weather"} onClose={close} weather={weather} />
       <MenusModal     open={modal === "menus"}   onClose={close} menu={data?.foodmenu ?? null} />
@@ -131,6 +146,7 @@ function App() {
         onClose={close}
         schoolDates={schoolDates}
         onOpenSchedule={() => open("schedule")}
+        onOpenNews={() => open("news")}
       />
     </>
   );
