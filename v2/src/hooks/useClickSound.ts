@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useSettingsStore } from "../store/useSettingsStore";
 
 export function useClickSound() {
   const bufferRef = useRef<AudioBuffer | null>(null);
@@ -17,6 +18,7 @@ export function useClickSound() {
     function handler(e: MouseEvent) {
       const target = e.target as HTMLElement;
       if (!target.closest("button, a, select, input[type='color']")) return;
+      if (!useSettingsStore.getState().soundsOn) return;
       const buf = bufferRef.current;
       const ctx = ctxRef.current;
       if (!buf || !ctx) return;

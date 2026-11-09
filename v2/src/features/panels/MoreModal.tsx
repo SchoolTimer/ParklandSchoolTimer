@@ -2,124 +2,156 @@ import { useState } from "react";
 import { useClock } from "../../hooks/useClock";
 import { Modal } from "../../components/Modal";
 import { useScheduleStore } from "../../store/useScheduleStore";
+import { useSettingsStore } from "../../store/useSettingsStore";
 import type { SchoolDates } from "../../lib/api";
+import { endOfLocalDay } from "../../lib/time";
 import { schoolYearProgress } from "../../lib/progress";
-import { endOfLocalDay, formatMonthDay } from "../../lib/time";
 
-type Props = { open: boolean; onClose: () => void; schoolDates: SchoolDates | null };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  schoolDates: SchoolDates | null;
+  onOpenSchedule: () => void;
+  onOpenNews: () => void;
+};
 
-const CONTRIBUTORS = [
-  { name: "Luke Gutman",     role: "Developer",   email: "luke@schooltimer.net",       github: "lukelmg",       social: "LinkedIn: @lukegutman" },
-  { name: "Krushil Amrutiya", role: "Maintainer",  email: "krushilamrutiya@gmail.com",  github: "krushil1",      social: "Instagram: @krushil.amrutiya" },
-  { name: "Sooraj Tharumia", role: "Maintainer",  email: "sendsooraj@gmail.com",        github: "soorajtharumia", social: "Instagram: @soorajtharumia" },
+const REPO = "https://github.com/SchoolTimer/ParklandSchoolTimer";
+
+const CONTACTS = [
+  { name: "Luke Gutman", role: "Developer", info: " Email: luke@schooltimer.net \n LinkedIn: @lukegutman \n GitHub: @lukelmg" },
+  { name: "Krushil Amrutiya", role: "Maintainer", info: " Email: krushilamrutiya@gmail.com \n Instagram: @krushil.amrutiya \n GitHub: @krushil1" },
+  { name: "Sooraj Tharumia", role: "Maintainer", info: " Email: sendsooraj@gmail.com \n Instagram: @soorajtharumia \n GitHub: @soorajtharumia" },
 ];
 
-function fmt(ms: number): string {
-  if (ms <= 0) return "0s";
-  const s = Math.floor(ms / 1000);
-  const d = Math.floor(s / 86400);
-  const h = Math.floor((s % 86400) / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sc = s % 60;
-  return [d && `${d}d`, h && `${h}h`, m && `${m}m`, `${sc}s`].filter(Boolean).join(" ");
+function parts(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 };
 }
 
-export function MoreModal({ open, onClose, schoolDates }: Props) {
+export function MoreModal({ open, onClose, schoolDates, onOpenSchedule, onOpenNews }: Props) {
   const now      = useClock(1000);
   const resetAll = useScheduleStore((s) => s.resetAll);
+  const soundsOn = useSettingsStore((s) => s.soundsOn);
+  const setSoundsOn = useSettingsStore((s) => s.setSoundsOn);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
-  const msLast = schoolDates
-    ? Math.max(0, endOfLocalDay(schoolDates.schoolYearEnd).getTime() - now.getTime())
-    : null;
-  const msSeniors = schoolDates
-    ? Math.max(0, endOfLocalDay(schoolDates.seniorsLastDay).getTime() - now.getTime())
-    : null;
+  const stats = [
+    { label: "Last day of school", end: schoolDates?.schoolYearEnd },
+    { label: "Seniors' last day", end: schoolDates?.seniorsLastDay },
+  ];
 
   return (
     <>
-    <Modal open={open} onClose={onClose} title="More" widthClass="max-w-lg">
-
-      {/* ── Countdowns ─────────────────────────────────────────── */}
-      <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-2">Countdowns</p>
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <Countdown
-          label="Last Day of School"
-          date={schoolDates ? formatMonthDay(schoolDates.schoolYearEnd) : "—"}
-          ms={msLast}
-          pct={schoolDates ? schoolYearProgress(now, schoolDates.schoolYearStart, schoolDates.schoolYearEnd) : null}
-        />
-        <Countdown
-          label="Seniors' Last Day"
-          date={schoolDates ? formatMonthDay(schoolDates.seniorsLastDay) : "—"}
-          ms={msSeniors}
-          pct={schoolDates ? schoolYearProgress(now, schoolDates.schoolYearStart, schoolDates.seniorsLastDay) : null}
-        />
+    <Modal open={open} onClose={onClose} title="More Stuff">
+      <div className="pp-section">
+        <p className="pp-label">Countdowns</p>
+        <div className="pp-grid c2 stack">
+          {stats.map((st) => {
+            const ms = st.end ? endOfLocalDay(st.end).getTime() - now.getTime() : null;
+            const done = ms !== null && ms <= 0;
+            const t = ms !== null ? parts(ms) : null;
+            const pct = st.end && schoolDates ? schoolYearProgress(now, schoolDates.schoolYearStart, st.end) : 0;
+            return (
+              <div key={st.label} className="pp-card">
+                <p className="pp-count-title">{st.label}</p>
+                {t ? (
+                  done ? (
+                    <div className="pp-count-n">Done</div>
+                  ) : (
+                    <div className="pp-count-n">{t.d}<small>days</small></div>
+                  )
+                ) : (
+                  <div className="pp-count-n">-</div>
+                )}
+                <p className="pp-count-sub">{t && !done ? `${t.h}h ${t.m}m ${t.s}s` : done ? "Expired" : ""}</p>
+                <div className="pp-bar"><div style={{ width: `${pct}%` }} /></div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ── Actions ────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 mb-4">
-        <a
-          href="https://github.com/SchoolTimer/ParklandSchoolTimer/issues/new?template=bug_report.md"
-          target="_blank" rel="noreferrer"
-          className="text-center px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:border-border-2 transition-colors"
-        >
-          Bug Report
-        </a>
-        <button
-          onClick={() => setPrivacyOpen(true)}
-          className="px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:border-border-2 transition-colors"
-        >
-          Privacy Policy
-        </button>
-        <button
-          onClick={() => setConfirmOpen(true)}
-          className="px-3 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-danger hover:border-border-2 transition-colors"
-        >
-          Reset Data
-        </button>
-      </div>
-
-      {/* ── Contributors ───────────────────────────────────────── */}
-      <p className="text-[10px] font-bold text-dim uppercase tracking-[0.15em] mb-2">Contributors</p>
-      <div className="flex flex-col gap-1.5 mb-4">
-        {CONTRIBUTORS.map((c) => (
-          <div key={c.name} className="flex items-start gap-3 px-3 py-2.5 rounded-xl bg-surface-2 border border-border">
-            <div className="w-7 h-7 rounded-full bg-accent-soft border border-accent/20 flex items-center justify-center shrink-0">
-              <span className="text-xs font-bold text-accent">{c.name[0]}</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-text leading-none">{c.name}</p>
-              <p className="text-[10px] text-dim mt-0.5">{c.role} · {c.social}</p>
-              <p className="text-[10px] text-dim mt-1 break-all">
-                <a href={`mailto:${c.email}`} className="hover:text-accent">{c.email}</a>
-                {" · "}
-                <a href={`https://github.com/${c.github}`} target="_blank" rel="noreferrer" className="hover:text-accent">gh/{c.github}</a>
-              </p>
-            </div>
+      <div className="pp-section">
+        <p className="pp-label">Preferences</p>
+        <div className="pp-list">
+          <button className="pp-row" onClick={() => { onClose(); onOpenSchedule(); }}>
+            <span>My schedule<small>Class names, rooms and lunch period</small></span>
+            <span className="chev">&#8250;</span>
+          </button>
+          <div className="pp-row static">
+            <span id="snd-l">Button click sounds</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={soundsOn}
+              aria-labelledby="snd-l"
+              className="pp-switch"
+              onClick={() => setSoundsOn(!soundsOn)}
+            />
           </div>
-        ))}
+        </div>
       </div>
 
+      <div className="pp-section">
+        <p className="pp-label">Help &amp; feedback</p>
+        <div className="pp-list">
+          <button className="pp-row" onClick={() => { onClose(); onOpenNews(); }}>
+            <span>What&apos;s new</span><span className="chev">&#8250;</span>
+          </button>
+          <a className="pp-row" href={`${REPO}/issues/new?template=bug_report.md`} target="_blank" rel="noreferrer">
+            <span>Report a bug</span><span className="chev">&#8250;</span>
+          </a>
+          <a className="pp-row" href={`${REPO}/issues/new`} target="_blank" rel="noreferrer">
+            <span>Request a feature</span><span className="chev">&#8250;</span>
+          </a>
+          <button className="pp-row" onClick={() => setPrivacyOpen(true)}>
+            <span>Privacy policy</span><span className="chev">&#8250;</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="pp-section">
+        <p className="pp-label">Contact the team</p>
+        <div className="pp-list">
+          {CONTACTS.map((c) => (
+            <button key={c.name} className="pp-row" onClick={() => alert(c.info)}>
+              <span>{c.name}<small>{c.role}</small></span><span className="chev">&#8250;</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="pp-section">
+        <div className="pp-list">
+          <button className="pp-row danger" onClick={() => setConfirmOpen(true)}>
+            <span>Reset School Timer</span>
+          </button>
+        </div>
+      </div>
+
+      <p className="pp-foot">
+        Developed by Luke Gutman, maintained by Krushil Amrutiya &amp; Sooraj Tharumia<br />
+        <b>Copyright &copy; Luke Gutman, 2025</b>
+      </p>
     </Modal>
 
-    {/* ── Privacy Policy ─────────────────────────────────────────── */}
-    <Modal open={privacyOpen} onClose={() => setPrivacyOpen(false)} title="Privacy Policy" widthClass="max-w-lg">
-      <div className="flex flex-col gap-4 text-xs text-text leading-relaxed">
-        <p className="text-[10px] text-dim">Last updated: April 26, 2026</p>
+    <Modal open={privacyOpen} onClose={() => setPrivacyOpen(false)} title="Privacy Policy">
+
+      <div className="pp-policy">
+        <p style={{ opacity: 0.7 }}>Last updated: April 26, 2026</p>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">What We Collect</h4>
+          <h4>What We Collect</h4>
           <p>
-            SchoolTimer does <span className="font-semibold text-text">not</span> require an account
+            SchoolTimer does <span>not</span> require an account
             and does not collect personally identifying information such as your name, email, or location.
             We do, however, use anonymous analytics tools to understand aggregate usage — see &ldquo;Analytics&rdquo; below.
           </p>
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Local Storage</h4>
+          <h4>Local Storage</h4>
           <p>
             Your preferences — color theme, class schedule, room numbers, and lunch period —
             are stored only in your browser&apos;s local storage on your device. They never leave your device
@@ -128,46 +160,46 @@ export function MoreModal({ open, onClose, schoolDates }: Props) {
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">External Data</h4>
-          <p className="mb-1.5">The app fetches the following public data over the network:</p>
-          <ul className="list-disc pl-4 space-y-1">
+          <h4>External Data</h4>
+          <p>The app fetches the following public data over the network:</p>
+          <ul>
             <li>Day cycle, food menu, and bell schedules from our SchoolTimer API.</li>
             <li>Local weather from a public weather API.</li>
             <li>Calendar data scraped from the school&apos;s publicly available calendar page.</li>
           </ul>
-          <p className="mt-1.5">No identifying request data (such as your IP) is logged or retained beyond standard hosting provider defaults.</p>
+          <p>No identifying request data (such as your IP) is logged or retained beyond standard hosting provider defaults.</p>
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Analytics</h4>
-          <p className="mb-1.5">SchoolTimer uses two anonymous analytics services:</p>
-          <ul className="list-disc pl-4 space-y-1">
+          <h4>Analytics</h4>
+          <p>SchoolTimer uses two anonymous analytics services:</p>
+          <ul>
             <li>
-              <span className="font-semibold text-text">Google Analytics 4</span> — aggregate page-view
+              <span>Google Analytics 4</span> — aggregate page-view
               and session counts. We do not share data with other Google products and IP anonymization
               is enabled by default in GA4.
             </li>
             <li>
-              <span className="font-semibold text-text">Microsoft Clarity</span> — anonymized session
+              <span>Microsoft Clarity</span> — anonymized session
               recordings and heatmaps used to identify UI bugs. Recordings are masked by default and
               do not capture text input.
             </li>
           </ul>
-          <p className="mt-1.5">
+          <p>
             Both services may set first-party cookies. You can block them with any standard ad-blocker
             (uBlock Origin, Brave Shields, etc.) without affecting the app&apos;s functionality.
           </p>
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Advertising</h4>
+          <h4>Advertising</h4>
           <p>
             SchoolTimer does not display ads and does not use advertising or remarketing tracking.
           </p>
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Children&apos;s Privacy</h4>
+          <h4>Children&apos;s Privacy</h4>
           <p>
             SchoolTimer is intended for students. Because no personally identifying information is collected,
             it is consistent with COPPA and FERPA expectations for school-context tools. Analytics data is
@@ -176,13 +208,13 @@ export function MoreModal({ open, onClose, schoolDates }: Props) {
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Open Source</h4>
+          <h4>Open Source</h4>
           <p>
             The full source code is available at{" "}
             <a
               href="https://github.com/SchoolTimer/ParklandSchoolTimer"
               target="_blank" rel="noreferrer"
-              className="text-accent hover:underline"
+             
             >
               https://github.com/SchoolTimer/ParklandSchoolTimer
             </a>{" "}
@@ -191,7 +223,7 @@ export function MoreModal({ open, onClose, schoolDates }: Props) {
         </section>
 
         <section>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-dim mb-1.5">Contact</h4>
+          <h4>Contact</h4>
           <p>
             Questions or concerns? Reach out to a maintainer listed in the Contributors section,
             or open an issue on GitHub.
@@ -200,61 +232,15 @@ export function MoreModal({ open, onClose, schoolDates }: Props) {
       </div>
     </Modal>
 
-    {/* ── Reset confirm ──────────────────────────────────────────── */}
-    {confirmOpen && (
-      <div
-        className="fixed inset-0 z-60 flex items-center justify-center p-6"
-        style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)" }}
-        onClick={() => setConfirmOpen(false)}
-      >
-        <div
-          className="card w-full max-w-sm p-6"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h3 className="text-base font-bold text-text mb-1">Reset all data?</h3>
-          <p className="text-xs text-dim mb-4">This will permanently erase:</p>
-          <ul className="flex flex-col gap-2 mb-6">
-            {["Color theme", "Class schedule & room numbers"].map((item) => (
-              <li key={item} className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-surface-2 border border-border">
-                <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
-                <span className="text-xs font-medium text-text">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="text-[11px] text-dim mb-4">This action cannot be undone.</p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setConfirmOpen(false)}
-              className="flex-1 py-2 rounded-xl border border-border bg-surface-2 text-xs font-semibold text-text hover:bg-border transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={resetAll}
-              className="flex-1 py-2 rounded-xl bg-danger text-xs font-bold text-white hover:opacity-90 transition-opacity"
-            >
-              Erase Everything
-            </button>
-          </div>
-        </div>
+    <Modal open={confirmOpen} onClose={() => setConfirmOpen(false)} title="Reset all data?" size="short">
+      <p className="pp-hint">
+        This permanently erases your color theme and your class schedule and room numbers. It cannot be undone.
+      </p>
+      <div className="pp-grid c2" style={{ marginTop: 20 }}>
+        <button className="pp-btn" onClick={() => setConfirmOpen(false)}>Cancel</button>
+        <button className="pp-btn solid" onClick={resetAll}>Erase everything</button>
       </div>
-    )}
+    </Modal>
     </>
-  );
-}
-
-function Countdown({ label, date, ms, pct: p }: { label: string; date: string; ms: number | null; pct: number | null }) {
-  return (
-    <div className="px-3 py-3 rounded-xl bg-surface-2 border border-border">
-      <div className="flex items-baseline justify-between mb-1.5">
-        <span className="text-[11px] font-semibold text-text">{label}</span>
-        <span className="text-[10px] text-dim">{date}</span>
-      </div>
-      <p className="text-base font-bold tabular text-text leading-none mb-2">{ms === null ? "—" : fmt(ms)}</p>
-      <div className="h-1 w-full bg-border overflow-hidden">
-        <div className="h-full" style={{ width: `${p ?? 0}%`, background: "var(--color-accent)" }} />
-      </div>
-      <p className="text-[9px] text-dim mt-1">{p === null ? "—" : `${p}% elapsed`}</p>
-    </div>
   );
 }

@@ -13,6 +13,10 @@ type SettingsStore = {
   letterOverride: ScheduleLetter | null;
   letterOverrideDate: string | null;
   periodView: PeriodView;
+  soundsOn: boolean;
+  seenAnnouncement: string | null;
+  setSeenAnnouncement: (id: string) => void;
+  setSoundsOn: (on: boolean) => void;
   setLetterOverride: (letter: ScheduleLetter | null) => void;
   setPeriodView: (view: PeriodView) => void;
   getEffectiveOverride: () => ScheduleLetter | null;
@@ -32,6 +36,10 @@ export const useSettingsStore = create<SettingsStore>()(
       letterOverride: null,
       letterOverrideDate: null,
       periodView: "all",
+      soundsOn: true,
+      seenAnnouncement: null,
+      setSeenAnnouncement: (seenAnnouncement) => set({ seenAnnouncement }),
+      setSoundsOn: (soundsOn) => set({ soundsOn }),
       setLetterOverride: (letter) => set({
         letterOverride: letter,
         letterOverrideDate: letter !== null ? todayDateKey() : null,

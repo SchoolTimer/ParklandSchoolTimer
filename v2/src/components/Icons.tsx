@@ -87,7 +87,8 @@ export const FoodIcon = (p: IconProps) => (
 
 export const UtensilsIcon = (p: IconProps) => (
   <svg {...baseProps} {...p}>
-    <path d="M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1a2 2 0 0 0 2-2V2h-2v5H7V2H5v5H4V2H3z" />
-    <path d="M19 2c-1.7 0-3 1.9-3 5v4h2v9h2V2h-1z" />
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+    <path d="M7 2v20" />
+    <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
   </svg>
 );

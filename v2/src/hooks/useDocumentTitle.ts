@@ -8,6 +8,7 @@ import type { BellTables } from "../store/useBellStore";
 
 export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: CycleDay | null, noSchool: boolean, bellTables: BellTables) {
   const userSchedule = useScheduleStore((s) => s.schedule);
+  const lunchPeriod = useScheduleStore((s) => s.lunchPeriod);
 
   const title = useMemo(() => {
     if (noSchool) return "No School · School Timer";
@@ -19,7 +20,8 @@ export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: Cy
       const entry = (cycleDay && periodNum !== null)
         ? userSchedule[cycleDay].find((p) => p.period === periodNum)
         : undefined;
-      const name = slotLabel === "HR" ? "Homeroom" : (entry?.className?.trim() || `Period ${slotLabel}`);
+      const isLunch = lunchPeriod !== null && String(lunchPeriod) === slotLabel;
+      const name = isLunch ? "Lunch" : slotLabel === "HR" ? "Homeroom" : (entry?.className?.trim() || `Period ${slotLabel}`);
       return { slotLabel, name, state: computePeriodState(now, s, table.end[i]) };
     });
 
@@ -36,7 +38,7 @@ export function useDocumentTitle(now: Date, letter: ScheduleLetter, cycleDay: Cy
     }
 
     return "School Is Over · School Timer";
-  }, [now, letter, cycleDay, noSchool, userSchedule, bellTables]);
+  }, [now, letter, cycleDay, noSchool, userSchedule, lunchPeriod, bellTables]);
 
   useEffect(() => {
     document.title = title;

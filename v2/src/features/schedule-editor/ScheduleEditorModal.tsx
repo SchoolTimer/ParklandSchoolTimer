@@ -1,12 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Modal } from "../../components/Modal";
 import { CYCLE_DAYS, type CycleDay } from "../../lib/schedule";
 import { useScheduleStore } from "../../store/useScheduleStore";
 
 type Props = { open: boolean; onClose: () => void; highlightLunch?: boolean };
-
-const inputClass =
-  "w-full min-w-0 bg-surface border border-border rounded-lg px-2.5 h-9 text-sm focus:outline-none focus:border-accent";
 
 export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: Props) {
   const schedule        = useScheduleStore((s) => s.schedule);
@@ -21,13 +18,9 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
   const [activeDay, setActiveDay] = useState<CycleDay>(1);
   const [copyTo, setCopyTo]       = useState<CycleDay>(2);
   const [copied, setCopied]       = useState(false);
-  const lunchRef = useRef<HTMLSelectElement>(null);
-
-  useEffect(() => {
-    if (open && highlightLunch) lunchRef.current?.focus();
-  }, [open, highlightLunch]);
 
   const entries = schedule[activeDay];
+  const filled = entries.filter((e) => e.className.trim()).length;
   const otherDays = CYCLE_DAYS.filter((d) => d !== activeDay);
   const targetDay = otherDays.includes(copyTo) ? copyTo : otherDays[0];
 
@@ -40,117 +33,101 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="My Schedule" widthClass="max-w-5xl">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3">
-        <div className="flex items-center gap-1.5" role="tablist" aria-label="Cycle day">
-          <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-dim mr-1">Day</span>
-          {CYCLE_DAYS.map((d) => {
-            const on = activeDay === d;
-            return (
-              <button
-                key={d}
-                type="button"
-                role="tab"
-                aria-selected={on}
-                data-selected={on || undefined}
-                onClick={() => chooseDay(d)}
-                className={`w-9 h-9 rounded-lg text-sm font-bold ${on ? "bg-accent" : "bg-surface-2 text-dim"}`}
-              >
-                {d}
-              </button>
-            );
-          })}
+    <Modal open={open} onClose={onClose} title="My Schedule" size="wide">
+      <div className="pp-section">
+        <p className="pp-label">Cycle day</p>
+        <div className="pp-seg fill" role="tablist" aria-label="Cycle day">
+          {CYCLE_DAYS.map((d) => (
+            <button key={d} type="button" role="tab" aria-selected={activeDay === d} onClick={() => chooseDay(d)}>
+              Day {d}
+            </button>
+          ))}
         </div>
-
-        <label className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-semibold text-text shrink-0">Homeroom</span>
-          <input
-            type="text"
-            value={homeroomRoom}
-            placeholder="Room"
-            title="Shown on homeroom (B) days"
-            onChange={(e) => setHomeroomRoom(e.target.value)}
-            className={`${inputClass} w-28`}
-          />
-        </label>
-
-        <label className={`flex items-center gap-2 min-w-0 rounded-lg ${highlightLunch ? "lunch-blink px-2 py-1" : ""}`}>
-          <span className={`text-xs font-semibold shrink-0 ${highlightLunch ? "text-accent" : "text-text"}`}>Lunch</span>
-          <select
-            ref={lunchRef}
-            value={lunchPeriod ?? ""}
-            title="Used for the lunch countdown"
-            onChange={(e) => setLunchPeriod(e.target.value ? Number(e.target.value) : null)}
-            className={`${inputClass} w-36 ${highlightLunch ? "border-accent" : ""}`}
-          >
-            <option value="">None</option>
-            {[4, 5, 6, 7].map((p) => (
-              <option key={p} value={p}>Period {p}</option>
-            ))}
-          </select>
-        </label>
-
-        <p className="text-[11px] text-dim ml-auto">Saves as you type</p>
       </div>
 
-      <ul className="grid grid-cols-2 min-[900px]:grid-cols-3 gap-x-4 gap-y-1.5">
-        {entries.map((p) => (
-          <li key={p.period} className="grid grid-cols-[1.25rem_1fr_4.5rem] gap-1.5 items-center">
-            <span className="text-xs font-bold text-dim text-center tabular">{p.period}</span>
-            <input
-              type="text"
-              value={p.className}
-              placeholder="Class"
-              aria-label={`Period ${p.period} class`}
-              onChange={(e) => { setCopied(false); setPeriod(activeDay, p.period, { className: e.target.value }); }}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              value={p.room}
-              placeholder="Room"
-              aria-label={`Period ${p.period} room`}
-              onChange={(e) => setPeriod(activeDay, p.period, { room: e.target.value })}
-              className={inputClass}
-            />
-          </li>
-        ))}
-      </ul>
+      <div className="pp-section pp-settings">
+        <label className="pp-field">
+          <span>Homeroom room</span>
+          <input
+            type="text"
+            className="pp-input"
+            value={homeroomRoom}
+            placeholder="e.g. 204"
+            title="Shown on homeroom (B) days"
+            onChange={(e) => setHomeroomRoom(e.target.value)}
+          />
+        </label>
+        <div className={`pp-field${highlightLunch ? " lunch-blink" : ""}`} style={highlightLunch ? { padding: 8, margin: -8 } : undefined}>
+          <span>Lunch period <em className="pp-saved" style={{ textTransform: "none", letterSpacing: 0, fontStyle: "normal" }}>(shown as its own row)</em></span>
+          <div className="pp-seg fill" role="radiogroup" aria-label="Lunch period">
+            {[null, 4, 5, 6, 7].map((p) => (
+              <button
+                key={p ?? "none"}
+                type="button"
+                role="radio"
+                aria-checked={lunchPeriod === p}
+                onClick={() => setLunchPeriod(p)}
+              >
+                {p ?? "None"}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-dim">Copy day {activeDay} onto</span>
-        <select
-          value={targetDay}
-          onChange={(e) => { setCopyTo(Number(e.target.value) as CycleDay); setCopied(false); }}
-          className="bg-surface border border-border rounded-lg px-2 h-9 text-sm"
-          aria-label={`Day to copy day ${activeDay} onto`}
-        >
-          {otherDays.map((d) => (
-            <option key={d} value={d}>{d}</option>
+      <div className="pp-section">
+        <p className="pp-label">Day {activeDay} classes<span className="pp-badge">{filled} of {entries.length} filled</span><span className="pp-saved"> · saves as you type</span></p>
+        <ul className="pp-periods">
+          {entries.map((p) => (
+            <li key={p.period} className="pp-card sm pp-period">
+              <span className="pp-period-n">{p.period}</span>
+              <input
+                type="text"
+                className="pp-input"
+                value={p.className}
+                placeholder="Class"
+                aria-label={`Period ${p.period} class`}
+                onChange={(e) => { setCopied(false); setPeriod(activeDay, p.period, { className: e.target.value }); }}
+              />
+              <input
+                type="text"
+                className="pp-input"
+                value={p.room}
+                placeholder="Room"
+                aria-label={`Period ${p.period} room`}
+                onChange={(e) => setPeriod(activeDay, p.period, { room: e.target.value })}
+              />
+            </li>
           ))}
-        </select>
+        </ul>
+      </div>
+
+      <div className="pp-actions">
+        <div className="pp-copy">
+          <span>Copy day {activeDay} onto</span>
+          <select
+            className="pp-input"
+            value={targetDay}
+            onChange={(e) => { setCopyTo(Number(e.target.value) as CycleDay); setCopied(false); }}
+            aria-label={`Day to copy day ${activeDay} onto`}
+          >
+            {otherDays.map((d) => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+          <button type="button" className="pp-btn" onClick={() => { copyDay(activeDay, targetDay); setCopied(true); }}>
+            {copied ? `Copied to ${targetDay}` : "Copy"}
+          </button>
+        </div>
         <button
           type="button"
-          onClick={() => { copyDay(activeDay, targetDay); setCopied(true); }}
-          className="h-9 px-3 rounded-lg border border-border text-sm font-semibold text-text"
-        >
-          {copied ? `Copied onto ${targetDay}` : "Copy"}
-        </button>
-        <button
-          type="button"
+          className="pp-btn danger"
           onClick={() => { if (confirm(`Clear day ${activeDay}?`)) resetDay(activeDay); }}
-          className="h-9 px-3 rounded-lg text-sm font-semibold text-danger"
         >
-          Clear
+          Clear day
         </button>
-        <button
-          type="button"
-          onClick={onClose}
-          data-selected
-          className="ml-auto h-9 px-5 rounded-lg bg-accent text-sm font-semibold"
-        >
-          Done
-        </button>
+        <span className="spacer" />
+        <button type="button" className="pp-btn solid" onClick={onClose}>Done</button>
       </div>
     </Modal>
   );

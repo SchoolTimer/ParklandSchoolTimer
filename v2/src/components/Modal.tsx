@@ -5,10 +5,11 @@ type Props = {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  widthClass?: string;
+  size?: "default" | "short" | "wide";
 };
 
-export function Modal({ open, onClose, title, children, widthClass = "max-w-2xl" }: Props) {
+/** Slide-in popup: thin title, red rule, round close button, content below. */
+export function Modal({ open, onClose, title, children, size = "default" }: Props) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -16,30 +17,25 @@ export function Modal({ open, onClose, title, children, widthClass = "max-w-2xl"
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  if (!open) return null;
+  const cls = ["popup", open ? "open" : "", size === "short" ? "short" : "", size === "wide" ? "wide" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-6"
-      style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)" }}
-      onClick={onClose}
-    >
-      <div
-        className={`card w-full ${widthClass} max-h-[92dvh] overflow-auto rounded-b-none sm:rounded-b-[18px]`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-base font-semibold text-text">{title}</h2>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-full bg-surface-2 hover:bg-border flex items-center justify-center text-dim hover:text-text transition-colors text-base leading-none"
-            aria-label="Close"
-          >
-            ×
+    <>
+      {open && <div className="popup-backdrop" onClick={onClose} />}
+      <div className={cls} role="dialog" aria-modal={open} aria-label={title} aria-hidden={!open}>
+        <div className="pp-head">
+          <div>
+            <h1 className="popupheader">{title}</h1>
+            <hr className="popup-rule" />
+          </div>
+          <button className="popup-x" onClick={onClose} aria-label="Close" tabIndex={open ? 0 : -1}>
+            &#215;
           </button>
         </div>
-        <div className="p-4 sm:p-6">{children}</div>
+        <div className="pp-body">{children}</div>
       </div>
-    </div>
+    </>
   );
 }
