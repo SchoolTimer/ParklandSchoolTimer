@@ -38,9 +38,10 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
         // C schedule and the B-schedule homeroom keep V1's labels ("1st Period", "Homeroom").
         const base = slot.slotLabel === "HR" ? "Homeroom" : `${ordinal(Number(slot.slotLabel))} Period`;
         const custom = entry?.className?.trim();
-        const room = slot.slotLabel === "HR" ? homeroomRoom : entry?.room;
+        // The period set as lunch is shown as its own "Lunch" row in place of the class.
         const lunch = lunchPeriod !== null && String(lunchPeriod) === slot.slotLabel;
-        return { ...slot, key: `${i}-${slot.slotLabel}`, title: custom || base, room, lunch };
+        const room = lunch ? undefined : slot.slotLabel === "HR" ? homeroomRoom : entry?.room;
+        return { ...slot, key: `${i}-${slot.slotLabel}`, title: lunch ? "Lunch" : custom || base, room, lunch };
       }),
     [now, letter, bellTables, userSchedule, cycleDay, homeroomRoom, lunchPeriod],
   );
@@ -94,12 +95,7 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
           >
             <div className="v1-timer-text v1-timer-title">
               <h2 className="v1-timer-name" title={r.title}>{r.title}</h2>
-              {r.room || r.lunch ? (
-                <div className="v1-timer-sub">
-                  {r.room ? <span>{r.room}</span> : null}
-                  {r.lunch ? <span className="v1-lunch-tag">Lunch</span> : null}
-                </div>
-              ) : null}
+              {r.room ? <div className="v1-timer-sub"><span>{r.room}</span></div> : null}
             </div>
             <span className="v1-pair">
               <span className="v1-timer-text v1-timer-start-label">Start:</span>

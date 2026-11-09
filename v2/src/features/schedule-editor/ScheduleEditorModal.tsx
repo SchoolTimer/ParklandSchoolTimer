@@ -58,7 +58,7 @@ export function ScheduleEditorModal({ open, onClose, highlightLunch = false }: P
           />
         </label>
         <div className={`pp-field${highlightLunch ? " lunch-blink" : ""}`} style={highlightLunch ? { padding: 8, margin: -8 } : undefined}>
-          <span>Lunch period</span>
+          <span>Lunch period <em className="pp-saved" style={{ textTransform: "none", letterSpacing: 0, fontStyle: "normal" }}>(shown as its own row)</em></span>
           <div className="pp-seg fill" role="radiogroup" aria-label="Lunch period">
             {[null, 4, 5, 6, 7].map((p) => (
               <button
