@@ -358,7 +358,7 @@ body {
   padding: 30px 36px 34px;
   text-align: left;
   border-radius: 24px;
-  box-shadow: 0 14px 36px rgba(0,0,0,0.16);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.09);
   transition: left 550ms ease;
   color: var(--text);
   scrollbar-width: thin;
@@ -371,8 +371,8 @@ body {
 .popup, .popup * {
   --pp-line: color-mix(in srgb, var(--text) 13%, transparent);
   --pp-tint: color-mix(in srgb, var(--text) 4.5%, transparent);
-  --pp-soft: -2px -2px 5px var(--shadow-light), 2px 2px 5px var(--shadow-dark);
-  --pp-soft-in: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  --pp-soft: -1px -1px 3px var(--shadow-light), 1px 1px 3px var(--shadow-dark);
+  --pp-soft-in: inset 1px 1px 3px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
 }
 
 .popup-backdrop { position: fixed; inset: 0; z-index: 90; background: transparent; }
