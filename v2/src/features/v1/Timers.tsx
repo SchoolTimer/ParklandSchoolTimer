@@ -71,13 +71,17 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
     radius = H / 4;
     margin = (H - height * n) / (n + 1);
   } else {
-    height = H / n - (H / n) * 0.25;
+    height = H / n - (H / n) * 0.3;
     radius = H / n;
-    margin = height / 3.5;
+    margin = height / 3.2;
   }
 
+  // Size every title together from the longest one, so long names fit without ellipsis.
+  const longest = Math.max(...visible.map((r) => r.title.length));
+  const titleScale = Math.max(0.6, Math.min(1, 12 / longest));
+
   return (
-    <div className={`v1-timers${narrow ? " narrow" : ""}`}>
+    <div className={`v1-timers${narrow ? " narrow" : ""}`} style={{ "--ts": titleScale } as React.CSSProperties}>
       {visible.map((r) => {
         const live = r.state.status === "active";
         const startsIn = r.state.status === "upcoming" ? r.state.startsIn : null;
@@ -86,10 +90,10 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
           <div
             key={r.key}
             className={`v1-timer shadows${live ? " live" : ""}`}
-            style={{ height, borderRadius: radius, marginTop: margin }}
+            style={{ height, borderRadius: radius, marginTop: margin, "--ph": `${height}px` } as React.CSSProperties}
           >
             <div className="v1-timer-text v1-timer-title">
-              <h2 className={`v1-timer-name${r.title.length > 14 ? " xlong" : r.title.length > 11 ? " long" : ""}`} title={r.title}>{r.title}</h2>
+              <h2 className="v1-timer-name" title={r.title}>{r.title}</h2>
               {r.room || r.lunch ? (
                 <div className="v1-timer-sub">
                   {r.room ? <span>{r.room}</span> : null}
