@@ -7,8 +7,9 @@ import { FoodMenuSection } from './pages/FoodMenuPage'
 import { SchoolDatesSection } from './pages/SchoolDatesPage'
 import { BellScheduleSection } from './pages/BellSchedulePage'
 import { CustomScheduleSection } from './pages/CustomSchedulePage'
+import { InvitesSection } from './pages/InvitesPage'
 
-type Page = 'daycycle' | 'foodmenu' | 'dates' | 'bells' | 'custom'
+type Page = 'daycycle' | 'foodmenu' | 'dates' | 'bells' | 'custom' | 'invites'
 
 const NAV: { id: Page; label: string; icon: React.ReactNode }[] = [
   {
@@ -31,6 +32,10 @@ const NAV: { id: Page; label: string; icon: React.ReactNode }[] = [
     id: 'custom', label: 'Custom Schedule',
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
   },
+  {
+    id: 'invites', label: 'Members',
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>,
+  },
 ]
 
 const PAGE_TITLES: Record<Page, { title: string; subtitle: string }> = {
@@ -39,6 +44,7 @@ const PAGE_TITLES: Record<Page, { title: string; subtitle: string }> = {
   dates:    { title: 'School Dates',    subtitle: 'Configure key dates for the school year' },
   bells:    { title: 'Bell Schedules',  subtitle: 'Edit period times for each schedule type' },
   custom:   { title: 'Custom Schedule', subtitle: 'Create and enable custom modified schedules' },
+  invites:  { title: 'Members',         subtitle: 'Invite new admins and remove people who should no longer have access' },
 }
 
 function AdminShell() {
@@ -143,6 +149,7 @@ function AdminShell() {
           {page === 'dates'    && <SchoolDatesSection />}
           {page === 'bells'    && <BellScheduleSection />}
           {page === 'custom'   && <CustomScheduleSection />}
+          {page === 'invites'  && <InvitesSection />}
         </main>
       </div>
 
