@@ -91,7 +91,7 @@ export function Timers({ now, letter, cycleDay, bellTables, noSchool, viewport }
         return (
           <div
             key={r.key}
-            className={`v1-timer${r.lunch ? " lunch" : " shadows"}${live ? " live" : ""}`}
+            className={`v1-timer shadows${r.lunch ? " lunch" : ""}${live ? " live" : ""}`}
             style={{ height, borderRadius: radius, marginTop: margin, "--ph": `${height}px` } as React.CSSProperties}
           >
             <div className="v1-timer-text v1-timer-title">

@@ -239,11 +239,12 @@ body {
   flex: none;
 }
 .v1-timer.live { border-color: var(--accent); }
-/* Lunch: pressed-in rather than raised, with an accent title and a fork-and-knife icon */
-.v1-timer.lunch {
-  box-shadow: inset 5px 5px 9px var(--shadow-dark), inset -5px -5px 9px var(--shadow-light);
+/* Lunch: same raised pill as the rest; the title is an accent badge with an icon */
+.v1-timer.lunch .v1-timer-name {
+  display: inline-flex; align-items: center; gap: 0.4em; width: max-content; max-width: 100%;
+  padding: 0.12em 0.7em 0.12em 0.55em; border-radius: 999px;
+  color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent);
 }
-.v1-timer.lunch .v1-timer-name { color: var(--accent); display: flex; align-items: center; gap: 0.4em; }
 .v1-lunch-icon { width: 0.85em; height: 0.85em; flex: none; fill: currentColor; }
 .v1-timer-text {
   margin: 0;
